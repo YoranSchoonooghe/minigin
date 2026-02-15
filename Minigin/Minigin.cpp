@@ -1,9 +1,12 @@
 ﻿#include <stdexcept>
 #include <sstream>
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #if WIN32
-#define WIN32_LEAN_AND_MEAN 
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <windows.h>
 #endif
 
@@ -91,6 +94,8 @@ void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 #ifndef __EMSCRIPTEN__
+	m_lastTime = std::chrono::high_resolution_clock::now();
+	m_lag = 0.0f;
 	while (!m_quit)
 		RunOneFrame();
 #else
@@ -100,7 +105,22 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 void dae::Minigin::RunOneFrame()
 {
+	const auto CURRENT_TIME = std::chrono::high_resolution_clock::now();
+	const float DELTA_TIME = std::chrono::duration<float>(CURRENT_TIME - m_lastTime).count();
+	m_lastTime = CURRENT_TIME;
+	m_lag += DELTA_TIME;
+
 	m_quit = !InputManager::GetInstance().ProcessInput();
-	SceneManager::GetInstance().Update();
+	const float FIXED_TIME_STEP = 1 / 60.0f;
+	while (m_lag >= FIXED_TIME_STEP)
+	{
+		SceneManager::GetInstance().FixedUpdate(FIXED_TIME_STEP);
+		m_lag -= FIXED_TIME_STEP;
+	}
+	SceneManager::GetInstance().Update(DELTA_TIME);
 	Renderer::GetInstance().Render();
+
+	const int MS_PER_FRAME = 16;
+	const auto SLEEP_TIME = CURRENT_TIME + std::chrono::milliseconds(MS_PER_FRAME) - std::chrono::high_resolution_clock::now();
+	std::this_thread::sleep_for(SLEEP_TIME);
 }
