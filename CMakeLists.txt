@@ -17,7 +17,7 @@ endif()
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Component.cpp
   Minigin/Font.cpp
-  Minigin/FPS.cpp
+  Minigin/FPSComponent.cpp
   Minigin/GameObject.cpp
   Minigin/InputManager.cpp
   Minigin/Main.cpp

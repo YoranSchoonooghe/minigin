@@ -11,7 +11,7 @@
 #include "TextObject.h"
 #include "Scene.h"
 #include "TextComponent.h"
-#include "FPS.h"
+#include "FPSComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -42,7 +42,7 @@ static void load()
 
 	auto pFpsCounter = std::make_unique<dae::GameObject>();
 	pFpsCounter->AddComponent<dae::TextComponent>("60.0 FPS", font);
-	pFpsCounter->AddComponent<dae::FPS>();
+	pFpsCounter->AddComponent<dae::FPSComponent>();
 	pFpsCounter->SetPosition(10, 10);
 	scene.Add(std::move(pFpsCounter));
 	//auto fps = std::make_unique<dae::TextObject>("60.0 FPS", font);
