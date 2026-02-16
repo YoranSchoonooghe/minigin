@@ -7,8 +7,6 @@
 
 namespace dae
 {
-	class Texture2D;
-
 	class GameObject 
 	{
 	public:
@@ -23,9 +21,8 @@ namespace dae
 		virtual void Update(float deltaTime);
 		virtual void Render() const;
 
-		void SetTexture(const std::string& filename);
 		void SetPosition(float x, float y);
-		Transform GetTransfrom() const;
+		Transform GetTransform() const;
 		glm::mat2x3 matrix{};
 
 		template<typename T, typename... Args>
@@ -58,7 +55,6 @@ namespace dae
 
 	private:
 		Transform m_transform{};
-		std::shared_ptr<Texture2D> m_pTexture{};
 		std::vector<std::unique_ptr<Component>> m_pComponents{};
 	};
 }

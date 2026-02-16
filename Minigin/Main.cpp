@@ -12,6 +12,7 @@
 #include "Scene.h"
 #include "TextComponent.h"
 #include "FPSComponent.h"
+#include "RenderComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -21,11 +22,11 @@ static void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	auto go = std::make_unique<dae::GameObject>();
-	go->SetTexture("background.png");
+	go->AddComponent<dae::RenderComponent>("background.png");
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
-	go->SetTexture("logo.png");
+	go->AddComponent<dae::RenderComponent>("logo.png");
 	go->SetPosition(358, 180);
 	scene.Add(std::move(go));
 
@@ -40,11 +41,11 @@ static void load()
 	pTitle->SetPosition(292, 20);
 	scene.Add(std::move(pTitle));
 
-	auto pFpsCounter = std::make_unique<dae::GameObject>();
-	pFpsCounter->AddComponent<dae::TextComponent>("60.0 FPS", font);
-	pFpsCounter->AddComponent<dae::FPSComponent>();
-	pFpsCounter->SetPosition(10, 10);
-	scene.Add(std::move(pFpsCounter));
+	auto pFPSCounter = std::make_unique<dae::GameObject>();
+	pFPSCounter->AddComponent<dae::TextComponent>("60.0 FPS", font);
+	pFPSCounter->AddComponent<dae::FPSComponent>();
+	pFPSCounter->SetPosition(10, 10);
+	scene.Add(std::move(pFPSCounter));
 	//auto fps = std::make_unique<dae::TextObject>("60.0 FPS", font);
 	//fps->SetPosition(10, 10);
 	//scene.Add(std::move(fps));
