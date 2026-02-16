@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include <memory>
 #include <vector>
 #include "Transform.h"
@@ -7,19 +6,19 @@
 
 namespace dae
 {
-	class GameObject 
+	class GameObject final
 	{
 	public:
 		explicit GameObject() = default;
-		virtual ~GameObject() = default;
+		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
-		virtual void FixedUpdate(float fixedDeltaTime);
-		virtual void Update(float deltaTime);
-		virtual void Render() const;
+		void FixedUpdate(float fixedDeltaTime);
+		void Update(float deltaTime);
+		void Render() const;
 
 		void SetPosition(float x, float y);
 		Transform GetTransform() const;
