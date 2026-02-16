@@ -10,6 +10,8 @@
 #include "ResourceManager.h"
 #include "TextObject.h"
 #include "Scene.h"
+#include "TextComponent.h"
+#include "FPS.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -28,10 +30,24 @@ static void load()
 	scene.Add(std::move(go));
 
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto to = std::make_unique<dae::TextObject>("Programming 4 Assignment", font);
-	to->SetColor({ 255, 255, 0, 255 });
-	to->SetPosition(292, 20);
-	scene.Add(std::move(to));
+	//auto to = std::make_unique<dae::TextObject>("Programming 4 Assignment", font);
+	//to->SetColor({ 255, 255, 0, 255 });
+	//to->SetPosition(292, 20);
+	//scene.Add(std::move(to));
+
+	auto pTitle = std::make_unique<dae::GameObject>();
+	pTitle->AddComponent<dae::TextComponent>("Programming 4 Assignment", font);
+	pTitle->SetPosition(292, 20);
+	scene.Add(std::move(pTitle));
+
+	auto pFpsCounter = std::make_unique<dae::GameObject>();
+	pFpsCounter->AddComponent<dae::TextComponent>("60.0 FPS", font);
+	pFpsCounter->AddComponent<dae::FPS>();
+	pFpsCounter->SetPosition(10, 10);
+	scene.Add(std::move(pFpsCounter));
+	//auto fps = std::make_unique<dae::TextObject>("60.0 FPS", font);
+	//fps->SetPosition(10, 10);
+	//scene.Add(std::move(fps));
 }
 
 int main(int, char*[]) {
