@@ -18,10 +18,14 @@ namespace dae
 		virtual void Update(float deltaTime);
 		virtual void Render() const;
 
+		void Destroy();
+		bool IsDestroyed() const;
+
 	protected:
 		GameObject* owner = nullptr;
 
 	private:
 		friend class GameObject;
+		bool m_markedForDestroy = false;
 	};
 }

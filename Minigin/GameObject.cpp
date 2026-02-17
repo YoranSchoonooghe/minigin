@@ -14,6 +14,8 @@ void dae::GameObject::Update(float deltaTime)
 	{
 		pComponent->Update(deltaTime);
 	}
+
+	CleanupDestroyedComponents();
 }
 
 void dae::GameObject::Render() const
@@ -32,4 +34,15 @@ void dae::GameObject::SetPosition(float x, float y)
 dae::Transform dae::GameObject::GetTransform() const
 {
 	return m_transform;
+}
+
+void dae::GameObject::CleanupDestroyedComponents()
+{
+	m_pComponents.erase(std::remove_if(m_pComponents.begin(), m_pComponents.end(),
+		[](const std::unique_ptr<Component>& pComp)
+		{
+			return pComp->IsDestroyed();
+		}),
+		m_pComponents.end()
+	);
 }
