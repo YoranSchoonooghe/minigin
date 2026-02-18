@@ -20,21 +20,16 @@ static void load()
 {
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
-	auto go = std::make_unique<dae::GameObject>();
-	go->AddComponent<dae::RenderComponent>("background.png");
-	scene.Add(std::move(go));
+	auto pBackground = std::make_unique<dae::GameObject>();
+	pBackground->AddComponent<dae::RenderComponent>("background.png");
+	scene.Add(std::move(pBackground));
 
-	go = std::make_unique<dae::GameObject>();
-	go->AddComponent<dae::RenderComponent>("logo.png");
-	go->SetPosition(358, 180);
-	scene.Add(std::move(go));
+	auto pLogo = std::make_unique<dae::GameObject>();
+	pLogo->AddComponent<dae::RenderComponent>("logo.png");
+	pLogo->SetPosition(358, 180);
+	scene.Add(std::move(pLogo));
 
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	//auto to = std::make_unique<dae::TextObject>("Programming 4 Assignment", font);
-	//to->SetColor({ 255, 255, 0, 255 });
-	//to->SetPosition(292, 20);
-	//scene.Add(std::move(to));
-
 	auto pTitle = std::make_unique<dae::GameObject>();
 	pTitle->AddComponent<dae::TextComponent>("Programming 4 Assignment", font);
 	pTitle->SetPosition(292, 20);
@@ -45,9 +40,6 @@ static void load()
 	pFPSCounter->AddComponent<dae::FPSComponent>();
 	pFPSCounter->SetPosition(10, 10);
 	scene.Add(std::move(pFPSCounter));
-	//auto fps = std::make_unique<dae::TextObject>("60.0 FPS", font);
-	//fps->SetPosition(10, 10);
-	//scene.Add(std::move(fps));
 }
 
 int main(int, char*[]) {
