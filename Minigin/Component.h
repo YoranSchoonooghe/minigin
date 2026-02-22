@@ -7,7 +7,6 @@ namespace dae
 	class Component
 	{
 	public:
-		explicit Component() = default;
 		virtual ~Component() = default;
 		Component(const Component& other) = delete;
 		Component(Component&& other) = delete;
@@ -22,10 +21,11 @@ namespace dae
 		bool IsDestroyed() const;
 
 	protected:
-		GameObject* owner = nullptr;
+		explicit Component(GameObject* pOwner) : m_pOwner{ pOwner } {};
+		GameObject* GetOwner() const;
 
 	private:
-		friend class GameObject;
+		GameObject* m_pOwner = nullptr;
 		bool m_markedForDestroy = false;
 	};
 }

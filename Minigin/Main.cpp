@@ -32,10 +32,12 @@ static void load()
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	auto pTitle = std::make_unique<dae::GameObject>();
 	pTitle->AddComponent<dae::TextComponent>("Programming 4 Assignment", font);
+	pTitle->AddComponent<dae::RenderComponent>();
 	pTitle->SetPosition(292, 20);
 	scene.Add(std::move(pTitle));
 
 	auto pFPSCounter = std::make_unique<dae::GameObject>();
+	pFPSCounter->AddComponent<dae::RenderComponent>();
 	pFPSCounter->AddComponent<dae::TextComponent>("60.0 FPS", font);
 	pFPSCounter->AddComponent<dae::FPSComponent>();
 	pFPSCounter->SetPosition(10, 10);

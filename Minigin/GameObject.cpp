@@ -1,15 +1,12 @@
 #include "GameObject.h"
 #include "Transform.h"
 
-void dae::GameObject::FixedUpdate(float fixedDeltaTime)
+void dae::GameObject::FixedUpdate(float)
 {
-	(void)fixedDeltaTime;
 }
 
 void dae::GameObject::Update(float deltaTime)
 {
-	(void)deltaTime;
-
 	for (auto& pComponent : m_pComponents)
 	{
 		pComponent->Update(deltaTime);
@@ -45,4 +42,14 @@ void dae::GameObject::CleanupDestroyedComponents()
 		}),
 		m_pComponents.end()
 	);
+}
+
+void dae::GameObject::Destroy()
+{
+	m_markedForDestroy = true;
+}
+
+bool dae::GameObject::IsDestroyed() const
+{
+	return m_markedForDestroy;
 }

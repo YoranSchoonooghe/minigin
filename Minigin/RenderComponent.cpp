@@ -4,17 +4,26 @@
 #include "GameObject.h"
 #include "Transform.h"
 
-dae::RenderComponent::RenderComponent(const std::string& filename)
-	: m_pTexture{ ResourceManager::GetInstance().LoadTexture(filename) }
+dae::RenderComponent::RenderComponent(GameObject* pOwner, const std::string& filename)
+	: Component(pOwner)
 {
+	if (filename != "")
+	{
+		m_pTexture = ResourceManager::GetInstance().LoadTexture(filename);
+	}
 }
 
 void dae::RenderComponent::Render() const
 {
-	const auto& pos = owner->GetTransform().GetPosition();
+	const auto& position = GetOwner()->GetTransform().GetPosition();
 
 	if (m_pTexture != nullptr)
 	{
-		Renderer::GetInstance().RenderTexture(*m_pTexture, pos.x, pos.y);
+		Renderer::GetInstance().RenderTexture(*m_pTexture, position.x, position.y);
 	}
+}
+
+void dae::RenderComponent::SetTexture(std::shared_ptr<Texture2D> pTexture)
+{
+	m_pTexture = pTexture;
 }

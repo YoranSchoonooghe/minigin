@@ -8,7 +8,7 @@ namespace dae
 	class FPSComponent final : public Component
 	{
 	public:
-		explicit FPSComponent(float updateInterval = 0.4f);
+		explicit FPSComponent(GameObject* pOwner, float updateInterval = 0.4f);
 		~FPSComponent() = default;
 		FPSComponent(const FPSComponent& other) = delete;
 		FPSComponent(FPSComponent&& other) = delete;
@@ -19,7 +19,7 @@ namespace dae
 
 	private:
 		float m_updateInterval;
-		float m_elapsedUpdateTime;
+		float m_elapsedUpdateTime = 0.0f;
 		TextComponent* m_pTextComponent = nullptr;
 	};
 }

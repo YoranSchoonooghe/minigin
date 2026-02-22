@@ -3,9 +3,9 @@
 #include "TextComponent.h"
 #include "GameObject.h"
 
-dae::FPSComponent::FPSComponent(float updateInterval)
-	: m_updateInterval{ updateInterval }
-	, m_elapsedUpdateTime{ 0.0f }
+dae::FPSComponent::FPSComponent(GameObject* pOwner, float updateInterval)
+	: Component(pOwner)
+	, m_updateInterval{ updateInterval }
 {
 }
 
@@ -16,7 +16,7 @@ void dae::FPSComponent::Update(float deltaTime)
 
 	if (m_pTextComponent == nullptr)
 	{
-		m_pTextComponent = owner->GetComponent<dae::TextComponent>();
+		m_pTextComponent = GetOwner()->GetComponent<dae::TextComponent>();
 	}
 
 	if (m_pTextComponent)

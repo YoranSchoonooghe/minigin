@@ -38,9 +38,13 @@ namespace dae
 		template<typename T>
 		T* GetComponent();
 
+		void Destroy();
+		bool IsDestroyed() const;
+
 	private:
 		Transform m_transform{};
 		std::vector<std::unique_ptr<Component>> m_pComponents{};
+		bool m_markedForDestroy = false;
 	};
 
 	template<typename T, typename ...Args>
@@ -48,8 +52,7 @@ namespace dae
 	{
 		static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
 
-		auto pComponent = std::make_unique<T>(std::forward<Args>(args)...);
-		pComponent->owner = this;
+		auto pComponent = std::make_unique<T>(this, std::forward<Args>(args)...);
 
 		T* rawPtr = pComponent.get();
 		m_pComponents.emplace_back(std::move(pComponent));
