@@ -17,7 +17,6 @@ namespace dae
 		void Update(float deltaTime) override;
 
 	private:
-		glm::vec3 m_centerPosition{};
 		float m_radius;
 		float m_angularVelocity;
 		float m_angle = 0.0f;
