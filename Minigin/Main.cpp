@@ -12,6 +12,7 @@
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "RenderComponent.h"
+#include "RotatorComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -42,6 +43,25 @@ static void load()
 	pFPSCounter->AddComponent<dae::FPSComponent>();
 	pFPSCounter->SetPosition(10, 10);
 	scene.Add(std::move(pFPSCounter));
+
+	auto pPivotPoint = std::make_unique<dae::GameObject>();
+	pPivotPoint->SetLocalPosition({ 300, 400, 0 });
+
+	auto pBomberman = std::make_unique<dae::GameObject>();
+	pBomberman->AddComponent<dae::RenderComponent>("Bomberman.png");
+	pBomberman->AddComponent<dae::RotatorComponent>(16.f, -10.f);
+	pBomberman->SetParent(pPivotPoint.get());
+
+	auto pBomb = std::make_unique<dae::GameObject>();
+	pBomb->AddComponent<dae::RenderComponent>("Bomb.png");
+	pBomb->AddComponent<dae::RotatorComponent>(32.f, 8.f);
+	pBomb->SetParent(pBomberman.get());
+	pBomb->SetLocalPosition({ 32, 32, 0 });
+
+	scene.Add(std::move(pPivotPoint));
+	scene.Add(std::move(pBomberman));
+	scene.Add(std::move(pBomb));
+
 }
 
 int main(int, char*[]) {

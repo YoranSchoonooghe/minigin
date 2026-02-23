@@ -24,29 +24,47 @@ namespace dae
 		Transform GetTransform() const;
 		glm::mat2x3 matrix{};
 
-		void CleanupDestroyedComponents();
+		void SetParent(GameObject* pParent, bool keepWorldPosition = true);
+		void RemoveParent();
+		GameObject* GetParent() const { return m_pParent; };
+		int GetChildCount() const { return static_cast<int>(m_pChildren.size()); };
+		GameObject* GetChildAt(int index) const;
+		void SetLocalPosition(const glm::vec3& pos);
+		const glm::vec3& GetWorldPosition();
 
 		template<typename T, typename... Args>
 		T* AddComponent(Args&&... args);
-
 		template<typename T>
 		bool HasComponent();
-
 		template<typename T>
 		void RemoveComponent();
-
 		template<typename T>
 		T* GetComponent();
 
+		void CleanupDestroyedComponents();
 		void Destroy();
 		bool IsDestroyed() const;
 
 	private:
+		void UpdateWorldPosition();
+		void SetPositionDirty();
+		void AddChild(GameObject* pChild);
+		void RemoveChild(GameObject* pChild);
+		bool IsChild(GameObject* pChild);
+
+		GameObject* m_pParent = nullptr;
+		std::vector<GameObject*> m_pChildren{};
+
 		Transform m_transform{};
+		glm::vec3 m_localPosition{};
+		glm::vec3 m_worldPosition{};
+		bool m_positionIsDirty = false;
+
 		std::vector<std::unique_ptr<Component>> m_pComponents{};
 		bool m_markedForDestroy = false;
 	};
 
+#pragma region TemplateFunctions
 	template<typename T, typename ...Args>
 	inline T* GameObject::AddComponent(Args && ...args)
 	{
@@ -102,4 +120,5 @@ namespace dae
 		}
 		return nullptr;
 	}
+#pragma endregion
 }

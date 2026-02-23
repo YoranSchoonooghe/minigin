@@ -15,7 +15,7 @@ dae::RenderComponent::RenderComponent(GameObject* pOwner, const std::string& fil
 
 void dae::RenderComponent::Render() const
 {
-	const auto& position = GetOwner()->GetTransform().GetPosition();
+	const auto& position = GetOwner()->GetWorldPosition();
 
 	if (m_pTexture != nullptr)
 	{

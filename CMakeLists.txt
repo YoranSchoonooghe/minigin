@@ -25,6 +25,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/RenderComponent.cpp
   Minigin/Renderer.cpp
   Minigin/ResourceManager.cpp
+  Minigin/RotatorComponent.cpp
   Minigin/Scene.cpp
   Minigin/SceneManager.cpp
   Minigin/TextComponent.cpp
