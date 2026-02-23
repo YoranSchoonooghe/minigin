@@ -79,7 +79,7 @@ void dae::GameObject::RemoveParent()
 
 dae::GameObject* dae::GameObject::GetChildAt(int index) const
 {
-	if (index >= 0 && index < m_pChildren.size())
+	if (index >= 0 && index < static_cast<int>(m_pChildren.size()))
 	{
 		return m_pChildren[index];
 	}
