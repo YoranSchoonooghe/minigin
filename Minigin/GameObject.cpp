@@ -1,6 +1,18 @@
 #include "GameObject.h"
 #include "Transform.h"
-#include "RotatorComponent.h"
+
+dae::GameObject::~GameObject()
+{
+	if (m_pParent)
+	{
+		m_pParent->RemoveChild(this);
+	}
+
+	for (auto& pChild : m_pChildren)
+	{
+		pChild->RemoveParent();
+	}
+}
 
 void dae::GameObject::FixedUpdate(float)
 {
@@ -117,6 +129,11 @@ void dae::GameObject::CleanupDestroyedComponents()
 void dae::GameObject::Destroy()
 {
 	m_markedForDestroy = true;
+
+	for (auto& pChild : m_pChildren)
+	{
+		pChild->Destroy();
+	}
 }
 
 bool dae::GameObject::IsDestroyed() const
