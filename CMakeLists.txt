@@ -131,6 +131,25 @@ target_link_libraries(imgui PUBLIC SDL3::SDL3)
 # enable c++20 features
 target_compile_features(imgui PUBLIC cxx_std_20)
 
+# ImPlot
+FetchContent_Declare(
+  implot
+  GIT_REPOSITORY https://github.com/epezent/implot.git
+  GIT_TAG v0.17
+  GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(implot)
+
+add_library(implot STATIC
+  ${implot_SOURCE_DIR}/implot.cpp
+  ${implot_SOURCE_DIR}/implot_items.cpp
+  ${implot_SOURCE_DIR}/implot_demo.cpp
+)
+
+target_include_directories(implot PUBLIC ${implot_SOURCE_DIR})
+target_link_libraries(implot PUBLIC imgui)
+target_compile_features(implot PUBLIC cxx_std_20)
+
 if (WIN32)
   # Add VLD (Visual Leak Detector) for memory leak detection on Windows
   find_package(VLD CONFIG)
@@ -151,6 +170,7 @@ target_link_libraries("${TARGET_NAME}" PUBLIC
   SDL3_ttf::SDL3_ttf
   glm::glm
   imgui
+  implot
   ${VLD_LIBRARIES}
 )
 

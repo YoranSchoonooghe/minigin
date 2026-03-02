@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include "Singleton.h"
+#include <vector>
 
 namespace dae
 {
@@ -10,9 +11,6 @@ namespace dae
 	 */
 	class Renderer final : public Singleton<Renderer>
 	{
-		SDL_Renderer* m_renderer{};
-		SDL_Window* m_window{};
-		SDL_Color m_clearColor{};	
 	public:
 		void Init(SDL_Window* window);
 		void Render() const;
@@ -25,6 +23,17 @@ namespace dae
 
 		const SDL_Color& GetBackgroundColor() const { return m_clearColor; }
 		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
+
+	private:
+		static std::vector<float> ThrashCache();
+
+		SDL_Renderer* m_renderer{};
+		SDL_Window* m_window{};
+		SDL_Color m_clearColor{};
+
+		static int m_samplesExercise1;
+		static int m_samplesExercise2;
+		static std::vector<float> m_plotDataExercise1;
 	};
 }
 
