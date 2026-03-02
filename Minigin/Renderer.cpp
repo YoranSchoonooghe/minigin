@@ -188,7 +188,7 @@ std::vector<float> dae::Renderer::ThrashCache()
 	{
 		const auto start = std::chrono::high_resolution_clock::now();
 
-		for (int index = 0; index < buffer.size(); index += stepsize)
+		for (int index = 0; index < static_cast<int>(buffer.size()); index += stepsize)
 		{
 			buffer[index] *= 2;
 		}
