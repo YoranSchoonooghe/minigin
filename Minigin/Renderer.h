@@ -25,7 +25,9 @@ namespace dae
 		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
 
 	private:
-		static std::vector<float> ThrashCache();
+		static std::vector<float> ThrashCache(int samples);
+		static std::vector<float> ThrashCacheGameObject(int samples);
+		static std::vector<float> ThrashCacheGameObjectAlt(int samples);
 
 		SDL_Renderer* m_renderer{};
 		SDL_Window* m_window{};
@@ -34,6 +36,8 @@ namespace dae
 		static int m_samplesExercise1;
 		static int m_samplesExercise2;
 		static std::vector<float> m_plotDataExercise1;
+		static std::vector<float> m_plotDataExercise2;
+		static std::vector<float> m_plotDataExercise2Alt;
 	};
 }
 
