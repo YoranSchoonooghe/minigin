@@ -19,6 +19,7 @@ namespace dae
 		void FixedUpdate(float fixedDeltaTime);
 		void Update(float deltaTime);
 		void Render() const;
+		void RenderUI();
 
 		void SetPosition(float x, float y);
 		Transform GetTransform() const;

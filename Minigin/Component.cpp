@@ -13,6 +13,10 @@ void dae::Component::Render() const
 {
 }
 
+void dae::Component::RenderUI()
+{
+}
+
 void dae::Component::Destroy()
 {
 	m_markedForDestroy = true;

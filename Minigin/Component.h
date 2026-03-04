@@ -16,6 +16,7 @@ namespace dae
 		virtual void FixedUpdate(float fixedDeltaTime);
 		virtual void Update(float deltaTime);
 		virtual void Render() const;
+		virtual void RenderUI();
 
 		void Destroy();
 		bool IsDestroyed() const;

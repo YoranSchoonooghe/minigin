@@ -13,6 +13,7 @@
 #include "FPSComponent.h"
 #include "RenderComponent.h"
 #include "RotatorComponent.h"
+#include "ThrashCacheComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -62,6 +63,9 @@ static void load()
 	scene.Add(std::move(pBomberman));
 	scene.Add(std::move(pBomb));
 
+	auto pThrashTheCache = std::make_unique<dae::GameObject>();
+	pThrashTheCache->AddComponent<dae::ThrashCacheComponent>();
+	scene.Add(std::move(pThrashTheCache));
 }
 
 int main(int, char*[]) {
