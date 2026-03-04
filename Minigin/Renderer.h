@@ -25,6 +25,12 @@ namespace dae
 		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
 
 	private:
+		void RenderExercise1() const;
+		void RenderExercise2() const;
+		void RenderExercise2Base() const;
+		void RenderExercise2Alt() const;
+		void RenderExercise2Combined() const;
+
 		static std::vector<float> ThrashCache(int samples);
 		static std::vector<float> ThrashCacheGameObject(int samples);
 		static std::vector<float> ThrashCacheGameObjectAlt(int samples);
@@ -38,6 +44,11 @@ namespace dae
 		static std::vector<float> m_plotDataExercise1;
 		static std::vector<float> m_plotDataExercise2;
 		static std::vector<float> m_plotDataExercise2Alt;
+
+		static const char* STEP_LABELS[];
+		static const double STEP_INDICES[];
+		static const char* STEP_LABELS_HALF[];
+		static const double STEP_INDICES_HALF[];
 	};
 }
 

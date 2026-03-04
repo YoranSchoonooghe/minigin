@@ -16,6 +16,11 @@ std::vector<float> dae::Renderer::m_plotDataExercise1{};
 std::vector<float> dae::Renderer::m_plotDataExercise2{};
 std::vector<float> dae::Renderer::m_plotDataExercise2Alt{};
 
+const char* dae::Renderer::STEP_LABELS[] = { "1", "2", "4", "8", "16", "32", "64", "128", "256", "512", "1024" };
+const double dae::Renderer::STEP_INDICES[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+const char* dae::Renderer::STEP_LABELS_HALF[] = { "1", "4", "16", "64", "256", "1024" };
+const double dae::Renderer::STEP_INDICES_HALF[] = { 0, 2, 4, 6, 8, 10 };
+
 void dae::Renderer::Init(SDL_Window* window)
 {
 	m_window = window;
@@ -56,218 +61,8 @@ void dae::Renderer::Render() const
 	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
 
-	// Exercise 1
-	ImGui::Begin("Exercise 1");
-
-	ImGui::InputInt("##samples1", &m_samplesExercise1);
-	ImGui::SameLine();
-	ImGui::Text("# samples");
-
-	if (ImGui::Button("Thrash the cache"))
-	{
-		m_plotDataExercise1 = ThrashCache(m_samplesExercise1);
-	}
-
-	if (!m_plotDataExercise1.empty())
-	{
-		float maxValue = *std::max_element(m_plotDataExercise1.begin(), m_plotDataExercise1.end()) * 1.1f;
-
-		if (ImPlot::BeginPlot("Exercise 1", ImVec2(300, 150), ImPlotFlags_NoLegend | ImPlotFlags_NoMouseText))
-		{
-			const char* stepLabels[] = { "1", "4", "16", "64", "256", "1024" };
-			double stepIndices[] = { 0, 2, 4, 6, 8, 10 };
-			const char* stepLabelsFull[] = { "1", "2", "4", "8", "16", "32", "64", "128", "256", "512", "1024" };
-			double stepIndicesFull[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-			ImPlot::SetupAxisTicks(ImAxis_X1, stepIndices, 6, stepLabels);
-
-			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, maxValue, ImPlotCond_Always);
-
-			ImPlot::SetNextLineStyle(ImColor(213, 99, 14), 2.0f);
-
-			ImPlot::PlotLine("##ThrashData", m_plotDataExercise1.data(), (int)m_plotDataExercise1.size());
-
-			double verticalLine = 4;
-			ImPlot::SetNextLineStyle(ImVec4(1, 0, 0, 1), 1.0f);
-			ImPlot::PlotInfLines("Vertical Line", &verticalLine, 1);
-
-			if (ImPlot::IsPlotHovered())
-			{
-				ImPlotPoint mouse = ImPlot::GetPlotMousePos();
-
-				int idx = (int)round(mouse.x);
-
-				if (idx >= 0 && idx < (int)m_plotDataExercise1.size())
-				{
-					float xVal = (float)stepIndicesFull[idx];
-					float yVal = m_plotDataExercise1[idx];
-
-					ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4.0f, ImColor(255, 100, 100), -1.0f, ImColor(255, 100, 100));
-					ImPlot::PlotScatter("##hover_dot", &xVal, &yVal, 1);
-
-					ImGui::BeginTooltip();
-					ImGui::Text("x=%s, y=%.2f", stepLabelsFull[idx], yVal);
-					ImGui::EndTooltip();
-				}
-			}
-
-			ImPlot::EndPlot();
-		}
-	}
-
-	ImGui::End();
-
-	// Exercise 2
-	ImGui::Begin("Exercise 2");
-
-	ImGui::InputInt("##samples1", &m_samplesExercise2);
-	ImGui::SameLine();
-	ImGui::Text("# samples");
-
-	if (ImGui::Button("Thrash the cache with GameObject3D"))
-	{
-		m_plotDataExercise2 = ThrashCacheGameObject(m_samplesExercise2);
-	}
-
-	if (!m_plotDataExercise2.empty())
-	{
-		float maxValue = *std::max_element(m_plotDataExercise2.begin(), m_plotDataExercise2.end()) * 1.1f;
-
-		if (ImPlot::BeginPlot("Exercise 2", ImVec2(300, 150), ImPlotFlags_NoLegend | ImPlotFlags_NoMouseText))
-		{
-			const char* stepLabels[] = { "1", "4", "16", "64", "256", "1024" };
-			double stepIndices[] = { 0, 2, 4, 6, 8, 10 };
-			const char* stepLabelsFull[] = { "1", "2", "4", "8", "16", "32", "64", "128", "256", "512", "1024" };
-			double stepIndicesFull[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-			ImPlot::SetupAxisTicks(ImAxis_X1, stepIndices, 6, stepLabels);
-
-			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, maxValue, ImPlotCond_Always);
-
-			ImPlot::SetNextLineStyle(ImColor(51, 179, 87), 2.0f);
-
-			ImPlot::PlotLine("##ThrashData", m_plotDataExercise2.data(), (int)m_plotDataExercise2.size());
-
-			if (ImPlot::IsPlotHovered())
-			{
-				ImPlotPoint mouse = ImPlot::GetPlotMousePos();
-
-				int idx = (int)round(mouse.x);
-
-				if (idx >= 0 && idx < (int)m_plotDataExercise2.size())
-				{
-					float xVal = (float)stepIndicesFull[idx];
-					float yVal = m_plotDataExercise2[idx];
-
-					ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4.0f, ImColor(255, 100, 100), -1.0f, ImColor(255, 100, 100));
-					ImPlot::PlotScatter("##hover_dot", &xVal, &yVal, 1);
-
-					ImGui::BeginTooltip();
-					ImGui::Text("x=%s, y=%.2f", stepLabelsFull[idx], yVal);
-					ImGui::EndTooltip();
-				}
-			}
-
-			ImPlot::EndPlot();
-		}
-	}
-
-	if (ImGui::Button("Thrash the cache with GameObject3DAlt"))
-	{
-		m_plotDataExercise2Alt = ThrashCacheGameObjectAlt(m_samplesExercise2);
-	}
-
-	if (!m_plotDataExercise2Alt.empty())
-	{
-		float maxValue = *std::max_element(m_plotDataExercise2Alt.begin(), m_plotDataExercise2Alt.end()) * 1.1f;
-
-		if (ImPlot::BeginPlot("Exercise 2 Alt", ImVec2(300, 150), ImPlotFlags_NoLegend | ImPlotFlags_NoMouseText))
-		{
-			const char* stepLabels[] = { "1", "4", "16", "64", "256", "1024" };
-			double stepIndices[] = { 0, 2, 4, 6, 8, 10 };
-			const char* stepLabelsFull[] = { "1", "2", "4", "8", "16", "32", "64", "128", "256", "512", "1024" };
-			double stepIndicesFull[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-			ImPlot::SetupAxisTicks(ImAxis_X1, stepIndices, 6, stepLabels);
-
-			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, maxValue, ImPlotCond_Always);
-
-			ImPlot::SetNextLineStyle(ImColor(66, 150, 250), 2.0f);
-
-			ImPlot::PlotLine("##ThrashData", m_plotDataExercise2Alt.data(), (int)m_plotDataExercise2Alt.size());
-
-			if (ImPlot::IsPlotHovered())
-			{
-				ImPlotPoint mouse = ImPlot::GetPlotMousePos();
-
-				int idx = (int)round(mouse.x);
-
-				if (idx >= 0 && idx < (int)m_plotDataExercise2Alt.size())
-				{
-					float xVal = (float)stepIndicesFull[idx];
-					float yVal = m_plotDataExercise2Alt[idx];
-
-					ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4.0f, ImColor(255, 100, 100), -1.0f, ImColor(255, 100, 100));
-					ImPlot::PlotScatter("##hover_dot", &xVal, &yVal, 1);
-
-					ImGui::BeginTooltip();
-					ImGui::Text("x=%s, y=%.2f", stepLabelsFull[idx], yVal);
-					ImGui::EndTooltip();
-				}
-			}
-
-			ImPlot::EndPlot();
-		}
-	}
-
-	if (!m_plotDataExercise2.empty() && !m_plotDataExercise2Alt.empty())
-	{
-		ImGui::Text("Combined:");
-
-		float maxValue = *std::max_element(m_plotDataExercise2.begin(), m_plotDataExercise2.end()) * 1.1f;
-
-		if (ImPlot::BeginPlot("Exercise 2 Combined", ImVec2(300, 150), ImPlotFlags_NoLegend | ImPlotFlags_NoMouseText))
-		{
-			const char* stepLabels[] = { "1", "4", "16", "64", "256", "1024" };
-			double stepIndices[] = { 0, 2, 4, 6, 8, 10 };
-			const char* stepLabelsFull[] = { "1", "2", "4", "8", "16", "32", "64", "128", "256", "512", "1024" };
-			double stepIndicesFull[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-			ImPlot::SetupAxisTicks(ImAxis_X1, stepIndices, 6, stepLabels);
-
-			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, maxValue, ImPlotCond_Always);
-
-			ImPlot::SetNextLineStyle(ImColor(51, 179, 87), 2.0f);
-			ImPlot::PlotLine("##ThrashData", m_plotDataExercise2.data(), (int)m_plotDataExercise2.size());
-
-			ImPlot::SetNextLineStyle(ImColor(66, 150, 250), 2.0f);
-			ImPlot::PlotLine("##ThrashData", m_plotDataExercise2Alt.data(), (int)m_plotDataExercise2Alt.size());
-
-			if (ImPlot::IsPlotHovered())
-			{
-				ImPlotPoint mouse = ImPlot::GetPlotMousePos();
-
-				int idx = (int)round(mouse.x);
-
-				if (idx >= 0 && idx < (int)m_plotDataExercise2Alt.size())
-				{
-					float xVal = (float)stepIndicesFull[idx];
-					float yVal = m_plotDataExercise2Alt[idx];
-
-					ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4.0f, ImColor(255, 100, 100), -1.0f, ImColor(255, 100, 100));
-					ImPlot::PlotScatter("##hover_dot", &xVal, &yVal, 1);
-
-					ImGui::BeginTooltip();
-					ImGui::Text("x=%s, y=%.2f", stepLabelsFull[idx], yVal);
-					ImGui::EndTooltip();
-				}
-			}
-
-			ImPlot::EndPlot();
-		}
-	}
-
-	ImGui::End();
+	RenderExercise1();
+	RenderExercise2();
 
 	ImGui::Render();
 	
@@ -316,6 +111,209 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const
 
 SDL_Renderer* dae::Renderer::GetSDLRenderer() const { return m_renderer; }
 
+#pragma region RenderExercises
+void dae::Renderer::RenderExercise1() const
+{
+	ImGui::Begin("Exercise 1");
+
+	ImGui::InputInt("##samples1", &m_samplesExercise1);
+	ImGui::SameLine();
+	ImGui::Text("# samples");
+
+	if (ImGui::Button("Thrash the cache"))
+	{
+		m_plotDataExercise1 = ThrashCache(m_samplesExercise1);
+	}
+
+	if (!m_plotDataExercise1.empty())
+	{
+		float maxValue = *std::max_element(m_plotDataExercise1.begin(), m_plotDataExercise1.end()) * 1.1f;
+
+		if (ImPlot::BeginPlot("Exercise 1", ImVec2(300, 150), ImPlotFlags_NoLegend | ImPlotFlags_NoMouseText))
+		{
+			ImPlot::SetupAxisTicks(ImAxis_X1, STEP_INDICES_HALF, 6, STEP_LABELS_HALF);
+			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, maxValue, ImPlotCond_Always);
+
+			ImPlot::SetNextLineStyle(ImColor(213, 99, 14), 2.0f);
+			ImPlot::PlotLine("##ThrashData", m_plotDataExercise1.data(), (int)m_plotDataExercise1.size());
+
+			double verticalLine = 4;
+			ImPlot::SetNextLineStyle(ImVec4(1, 0, 0, 1), 1.0f);
+			ImPlot::PlotInfLines("Vertical Line", &verticalLine, 1);
+
+			if (ImPlot::IsPlotHovered())
+			{
+				ImPlotPoint mouse = ImPlot::GetPlotMousePos();
+
+				int idx = (int)round(mouse.x);
+
+				if (idx >= 0 && idx < (int)m_plotDataExercise1.size())
+				{
+					float xVal = (float)STEP_INDICES[idx];
+					float yVal = m_plotDataExercise1[idx];
+
+					ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4.0f, ImColor(255, 100, 100), -1.0f, ImColor(255, 100, 100));
+					ImPlot::PlotScatter("##hover_dot", &xVal, &yVal, 1);
+
+					ImGui::BeginTooltip();
+					ImGui::Text("x=%s, y=%.2f", STEP_LABELS[idx], yVal);
+					ImGui::EndTooltip();
+				}
+			}
+
+			ImPlot::EndPlot();
+		}
+	}
+
+	ImGui::End();
+}
+
+void dae::Renderer::RenderExercise2() const
+{
+	ImGui::Begin("Exercise 2");
+
+	ImGui::InputInt("##samples2", &m_samplesExercise2);
+	ImGui::SameLine();
+	ImGui::Text("# samples");
+
+	RenderExercise2Base();
+	RenderExercise2Alt();
+	RenderExercise2Combined();
+
+	ImGui::End();
+}
+void dae::Renderer::RenderExercise2Base() const
+{
+	if (ImGui::Button("Thrash the cache with GameObject3D"))
+	{
+		m_plotDataExercise2 = ThrashCacheGameObject(m_samplesExercise2);
+	}
+
+	if (!m_plotDataExercise2.empty())
+	{
+		float maxValue = *std::max_element(m_plotDataExercise2.begin(), m_plotDataExercise2.end()) * 1.1f;
+
+		if (ImPlot::BeginPlot("Exercise 2", ImVec2(300, 150), ImPlotFlags_NoLegend | ImPlotFlags_NoMouseText))
+		{
+			ImPlot::SetupAxisTicks(ImAxis_X1, STEP_INDICES_HALF, 6, STEP_LABELS_HALF);
+			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, maxValue, ImPlotCond_Always);
+
+			ImPlot::SetNextLineStyle(ImColor(51, 179, 87), 2.0f);
+			ImPlot::PlotLine("##ThrashData", m_plotDataExercise2.data(), (int)m_plotDataExercise2.size());
+
+			if (ImPlot::IsPlotHovered())
+			{
+				ImPlotPoint mouse = ImPlot::GetPlotMousePos();
+
+				int idx = (int)round(mouse.x);
+
+				if (idx >= 0 && idx < (int)m_plotDataExercise2.size())
+				{
+					float xVal = (float)STEP_INDICES[idx];
+					float yVal = m_plotDataExercise2[idx];
+
+					ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4.0f, ImColor(255, 100, 100), -1.0f, ImColor(255, 100, 100));
+					ImPlot::PlotScatter("##hover_dot", &xVal, &yVal, 1);
+
+					ImGui::BeginTooltip();
+					ImGui::Text("x=%s, y=%.2f", STEP_LABELS[idx], yVal);
+					ImGui::EndTooltip();
+				}
+			}
+
+			ImPlot::EndPlot();
+		}
+	}
+}
+void dae::Renderer::RenderExercise2Alt() const
+{
+	if (ImGui::Button("Thrash the cache with GameObject3DAlt"))
+	{
+		m_plotDataExercise2Alt = ThrashCacheGameObjectAlt(m_samplesExercise2);
+	}
+
+	if (!m_plotDataExercise2Alt.empty())
+	{
+		float maxValue = *std::max_element(m_plotDataExercise2Alt.begin(), m_plotDataExercise2Alt.end()) * 1.1f;
+
+		if (ImPlot::BeginPlot("Exercise 2 Alt", ImVec2(300, 150), ImPlotFlags_NoLegend | ImPlotFlags_NoMouseText))
+		{
+			ImPlot::SetupAxisTicks(ImAxis_X1, STEP_INDICES_HALF, 6, STEP_LABELS_HALF);
+			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, maxValue, ImPlotCond_Always);
+
+			ImPlot::SetNextLineStyle(ImColor(66, 150, 250), 2.0f);
+			ImPlot::PlotLine("##ThrashData", m_plotDataExercise2Alt.data(), (int)m_plotDataExercise2Alt.size());
+
+			if (ImPlot::IsPlotHovered())
+			{
+				ImPlotPoint mouse = ImPlot::GetPlotMousePos();
+
+				int idx = (int)round(mouse.x);
+
+				if (idx >= 0 && idx < (int)m_plotDataExercise2Alt.size())
+				{
+					float xVal = (float)STEP_INDICES[idx];
+					float yVal = m_plotDataExercise2Alt[idx];
+
+					ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4.0f, ImColor(255, 100, 100), -1.0f, ImColor(255, 100, 100));
+					ImPlot::PlotScatter("##hover_dot", &xVal, &yVal, 1);
+
+					ImGui::BeginTooltip();
+					ImGui::Text("x=%s, y=%.2f", STEP_LABELS[idx], yVal);
+					ImGui::EndTooltip();
+				}
+			}
+
+			ImPlot::EndPlot();
+		}
+	}
+}
+void dae::Renderer::RenderExercise2Combined() const
+{
+	if (!m_plotDataExercise2.empty() && !m_plotDataExercise2Alt.empty())
+	{
+		ImGui::Text("Combined:");
+
+		float maxValue = *std::max_element(m_plotDataExercise2.begin(), m_plotDataExercise2.end()) * 1.1f;
+
+		if (ImPlot::BeginPlot("Exercise 2 Combined", ImVec2(300, 150), ImPlotFlags_NoLegend | ImPlotFlags_NoMouseText))
+		{
+			ImPlot::SetupAxisTicks(ImAxis_X1, STEP_INDICES_HALF, 6, STEP_LABELS_HALF);
+			ImPlot::SetupAxisLimits(ImAxis_Y1, 0, maxValue, ImPlotCond_Always);
+
+			ImPlot::SetNextLineStyle(ImColor(51, 179, 87), 2.0f);
+			ImPlot::PlotLine("##ThrashData", m_plotDataExercise2.data(), (int)m_plotDataExercise2.size());
+
+			ImPlot::SetNextLineStyle(ImColor(66, 150, 250), 2.0f);
+			ImPlot::PlotLine("##ThrashData", m_plotDataExercise2Alt.data(), (int)m_plotDataExercise2Alt.size());
+
+			if (ImPlot::IsPlotHovered())
+			{
+				ImPlotPoint mouse = ImPlot::GetPlotMousePos();
+
+				int idx = (int)round(mouse.x);
+
+				if (idx >= 0 && idx < (int)m_plotDataExercise2Alt.size())
+				{
+					float xVal = (float)STEP_INDICES[idx];
+					float yVal = m_plotDataExercise2Alt[idx];
+
+					ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 4.0f, ImColor(255, 100, 100), -1.0f, ImColor(255, 100, 100));
+					ImPlot::PlotScatter("##hover_dot", &xVal, &yVal, 1);
+
+					ImGui::BeginTooltip();
+					ImGui::Text("x=%s, y=%.2f", STEP_LABELS[idx], yVal);
+					ImGui::EndTooltip();
+				}
+			}
+
+			ImPlot::EndPlot();
+		}
+	}
+}
+#pragma endregion
+
+#pragma region ThrashCache
 std::vector<float> dae::Renderer::ThrashCache(int samples)
 {
 	const int numSteps = 11;
@@ -457,3 +455,4 @@ std::vector<float> dae::Renderer::ThrashCacheGameObjectAlt(int samples)
 
 	return averagedResults;
 }
+#pragma endregion
