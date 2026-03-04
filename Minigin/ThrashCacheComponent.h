@@ -48,8 +48,8 @@ namespace dae
 		void RenderExercise2Combined();
 
 		std::vector<float> ThrashCache(int samples) const;
+		template <typename T>
 		std::vector<float> ThrashCacheGameObject(int samples) const;
-		std::vector<float> ThrashCacheGameObjectAlt(int samples) const;
 
 		int m_samplesExercise1 = 10;
 		int m_samplesExercise2 = 100;

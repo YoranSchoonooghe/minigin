@@ -89,7 +89,7 @@ void dae::ThrashCacheComponent::RenderExercise2Base()
 {
 	if (ImGui::Button("Thrash the cache with GameObject3D"))
 	{
-		m_plotDataExercise2 = ThrashCacheGameObject(m_samplesExercise2);
+		m_plotDataExercise2 = ThrashCacheGameObject<GameObjectBase>(m_samplesExercise2);
 	}
 
 	if (!m_plotDataExercise2.empty())
@@ -132,7 +132,7 @@ void dae::ThrashCacheComponent::RenderExercise2Alt()
 {
 	if (ImGui::Button("Thrash the cache with GameObject3DAlt"))
 	{
-		m_plotDataExercise2Alt = ThrashCacheGameObjectAlt(m_samplesExercise2);
+		m_plotDataExercise2Alt = ThrashCacheGameObject<GameObjectAlt>(m_samplesExercise2);
 	}
 
 	if (!m_plotDataExercise2Alt.empty())
@@ -222,7 +222,7 @@ std::vector<float> dae::ThrashCacheComponent::ThrashCache(int samples) const
 	const int numSteps = 11;
 	std::vector<float> averagedResults(numSteps, 0.0f);
 
-	const int bufferSize = 50'000'000;
+	const int bufferSize = 30'000'000;
 	std::vector<int> buffer(bufferSize, 1);
 
 	for (int s = 0; s < samples; ++s)
@@ -253,49 +253,14 @@ std::vector<float> dae::ThrashCacheComponent::ThrashCache(int samples) const
 	return averagedResults;
 }
 
+template<typename T>
 std::vector<float> dae::ThrashCacheComponent::ThrashCacheGameObject(int samples) const
 {
 	const int numSteps = 11;
 	std::vector<float> averagedResults(numSteps, 0.0f);
 
 	const int bufferSize = 30'000'000;
-	std::vector<GameObjectBase> buffer(bufferSize);
-
-	for (int s = 0; s < samples; ++s)
-	{
-		int stepIdx = 0;
-		for (int stepsize = 1; stepsize <= 1024; stepsize *= 2)
-		{
-			const auto start = std::chrono::high_resolution_clock::now();
-
-			for (int index = 0; index < bufferSize; index += stepsize)
-			{
-				buffer[index].id *= 2;
-			}
-
-			const auto end = std::chrono::high_resolution_clock::now();
-			const auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-
-			averagedResults[stepIdx] += static_cast<float>(elapsedTime);
-			++stepIdx;
-		}
-	}
-
-	for (float& result : averagedResults)
-	{
-		result /= static_cast<float>(samples);
-	}
-
-	return averagedResults;
-}
-
-std::vector<float> dae::ThrashCacheComponent::ThrashCacheGameObjectAlt(int samples) const
-{
-	const int numSteps = 11;
-	std::vector<float> averagedResults(numSteps, 0.0f);
-
-	const int bufferSize = 30'000'000;
-	std::vector<GameObjectAlt> buffer(bufferSize);
+	std::vector<T> buffer(bufferSize);
 
 	for (int s = 0; s < samples; ++s)
 	{
