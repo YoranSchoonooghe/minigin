@@ -1,6 +1,7 @@
 #include "RotatorComponent.h"
 #include "GameObject.h"
-#include <glm/gtc/constants.hpp>
+#include <glm/ext/scalar_constants.inl>
+#include <glm/gtc/constants.inl>
 
 dae::RotatorComponent::RotatorComponent(GameObject* pOwner, float radius, float angularVelocity)
 	: Component(pOwner)
@@ -25,7 +26,7 @@ void dae::RotatorComponent::Update(float deltaTime)
 	);
 }
 
-float dae::RotatorComponent::WrapAngle(float angle) const
+void dae::RotatorComponent::WrapAngle(float& angle) const
 {
 	constexpr float pi = glm::pi<float>();
 	constexpr float twoPi = glm::two_pi<float>();
@@ -33,6 +34,4 @@ float dae::RotatorComponent::WrapAngle(float angle) const
 	angle = fmodf(angle + pi, twoPi);
 	if (angle < 0) angle += twoPi;
 	angle -= pi;
-
-	return angle;
 }

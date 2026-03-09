@@ -17,7 +17,7 @@ namespace dae
 		void Update(float deltaTime) override;
 
 	private:
-		float WrapAngle(float angle) const;
+		void WrapAngle(float& angle) const;
 
 		float m_radius;
 		float m_angularVelocity;
