@@ -1,6 +1,11 @@
 #include "GameObject.h"
 #include "Transform.h"
 
+dae::GameObject::GameObject()
+	: m_transform{ this }
+{
+}
+
 dae::GameObject::~GameObject()
 {
 	if (m_pParent)
@@ -42,18 +47,6 @@ void dae::GameObject::RenderUI()
 	{
 		pComponent->RenderUI();
 	}
-}
-
-void dae::GameObject::SetPosition(float x, float y)
-{
-	m_transform.SetPosition(x, y, 0.0f);
-
-	m_worldPosition = m_transform.GetPosition();
-}
-
-dae::Transform dae::GameObject::GetTransform() const
-{
-	return m_transform;
 }
 
 void dae::GameObject::SetParent(GameObject* pParent, bool keepWorldPosition)
@@ -107,20 +100,21 @@ dae::GameObject* dae::GameObject::GetChildAt(int index) const
 	return nullptr;
 }
 
+void dae::GameObject::SetLocalPosition(float x, float y, float z)
+{
+	m_transform.SetLocalPosition(x, y, z);
+	SetPositionDirty();
+}
+
 void dae::GameObject::SetLocalPosition(const glm::vec3& pos)
 {
-	m_localPosition = pos;
+	m_transform.SetLocalPosition(pos);
 	SetPositionDirty();
 }
 
 const glm::vec3& dae::GameObject::GetWorldPosition()
 {
-	if (m_positionIsDirty)
-	{
-		UpdateWorldPosition();
-	}
-
-	return m_worldPosition;
+	return m_transform.GetWorldPosition();
 }
 
 void dae::GameObject::CleanupDestroyedComponents()
@@ -149,26 +143,9 @@ bool dae::GameObject::IsDestroyed() const
 	return m_markedForDestroy;
 }
 
-void dae::GameObject::UpdateWorldPosition()
-{
-	if (m_positionIsDirty)
-	{
-		if (m_pParent == nullptr)
-		{
-			m_worldPosition = m_localPosition;
-		}
-		else
-		{
-			m_worldPosition = m_pParent->GetWorldPosition() + m_localPosition;
-		}
-		m_transform.SetPosition(m_worldPosition);
-	}
-	m_positionIsDirty = false;
-}
-
 void dae::GameObject::SetPositionDirty()
 {
-	m_positionIsDirty = true;
+	m_transform.SetPositionDirty();
 
 	for (auto& pChild : m_pChildren)
 	{

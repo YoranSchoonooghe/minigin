@@ -9,7 +9,7 @@ namespace dae
 	class GameObject final
 	{
 	public:
-		explicit GameObject() = default;
+		explicit GameObject();
 		~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -21,15 +21,13 @@ namespace dae
 		void Render() const;
 		void RenderUI();
 
-		void SetPosition(float x, float y);
-		Transform GetTransform() const;
-		glm::mat2x3 matrix{};
-
 		void SetParent(GameObject* pParent, bool keepWorldPosition = true);
 		void RemoveParent();
 		GameObject* GetParent() const { return m_pParent; };
 		int GetChildCount() const { return static_cast<int>(m_pChildren.size()); };
 		GameObject* GetChildAt(int index) const;
+
+		void SetLocalPosition(float x, float y, float z = 0);
 		void SetLocalPosition(const glm::vec3& pos);
 		const glm::vec3& GetWorldPosition();
 
@@ -47,7 +45,6 @@ namespace dae
 		bool IsDestroyed() const;
 
 	private:
-		void UpdateWorldPosition();
 		void SetPositionDirty();
 		void AddChild(GameObject* pChild);
 		void RemoveChild(GameObject* pChild);
@@ -56,10 +53,7 @@ namespace dae
 		GameObject* m_pParent = nullptr;
 		std::vector<GameObject*> m_pChildren{};
 
-		Transform m_transform{};
-		glm::vec3 m_localPosition{};
-		glm::vec3 m_worldPosition{};
-		bool m_positionIsDirty = false;
+		Transform m_transform;
 
 		std::vector<std::unique_ptr<Component>> m_pComponents{};
 		bool m_markedForDestroy = false;

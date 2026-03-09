@@ -28,21 +28,21 @@ static void load()
 
 	auto pLogo = std::make_unique<dae::GameObject>();
 	pLogo->AddComponent<dae::RenderComponent>("logo.png");
-	pLogo->SetPosition(358, 180);
+	pLogo->SetLocalPosition(358, 180);
 	scene.Add(std::move(pLogo));
 
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	auto pTitle = std::make_unique<dae::GameObject>();
 	pTitle->AddComponent<dae::TextComponent>("Programming 4 Assignment", font);
 	pTitle->AddComponent<dae::RenderComponent>();
-	pTitle->SetPosition(292, 20);
+	pTitle->SetLocalPosition(292, 20);
 	scene.Add(std::move(pTitle));
 
 	auto pFPSCounter = std::make_unique<dae::GameObject>();
 	pFPSCounter->AddComponent<dae::RenderComponent>();
 	pFPSCounter->AddComponent<dae::TextComponent>("60.0 FPS", font);
 	pFPSCounter->AddComponent<dae::FPSComponent>();
-	pFPSCounter->SetPosition(10, 10);
+	pFPSCounter->SetLocalPosition(10, 10);
 	scene.Add(std::move(pFPSCounter));
 
 	auto pPivotPoint = std::make_unique<dae::GameObject>();
