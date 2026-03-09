@@ -3,7 +3,7 @@
 
 dae::Transform::Transform(GameObject* pOwner, const glm::vec3& position)
 	: Component(pOwner)
-	, m_localPosition{ position }, m_worldPosition{ position }
+	, m_worldPosition{ position }, m_localPosition{ position }
 {
 }
 
