@@ -19,6 +19,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Font.cpp
   Minigin/FPSComponent.cpp
   Minigin/GameObject.cpp
+  Minigin/GamePad.cpp
   Minigin/InputManager.cpp
   Minigin/Main.cpp
   Minigin/Minigin.cpp
@@ -159,6 +160,9 @@ endif()
 # Add steam if available
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/steam")
 find_package(Steamworks QUIET)
+
+#Xinput
+target_link_libraries("${TARGET_NAME}" PUBLIC xinput)
 
 target_include_directories("${TARGET_NAME}" PUBLIC
   ${CMAKE_SOURCE_DIR}/Minigin/

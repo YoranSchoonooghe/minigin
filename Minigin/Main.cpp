@@ -7,6 +7,7 @@
 
 #include "Minigin.h"
 #include "SceneManager.h"
+#include "InputManager.h"
 #include "ResourceManager.h"
 #include "Scene.h"
 #include "TextComponent.h"
@@ -14,6 +15,11 @@
 #include "RenderComponent.h"
 #include "RotatorComponent.h"
 #include "ThrashCacheComponent.h"
+#include "Commands/MoveCommand.h"
+
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <Xinput.h>
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -21,6 +27,7 @@ namespace fs = std::filesystem;
 static void load()
 {
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
+	auto& input = dae::InputManager::GetInstance();
 
 	auto pBackground = std::make_unique<dae::GameObject>();
 	pBackground->AddComponent<dae::RenderComponent>("background.png");
@@ -45,27 +52,40 @@ static void load()
 	pFPSCounter->SetLocalPosition(10, 10);
 	scene.Add(std::move(pFPSCounter));
 
-	auto pPivotPoint = std::make_unique<dae::GameObject>();
-	pPivotPoint->SetLocalPosition({ 300, 400, 0 });
+	auto inputFont = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
+	auto pGamepadText = std::make_unique<dae::GameObject>();
+	pGamepadText->AddComponent<dae::TextComponent>("Use the D-Pad to move Bomberman", inputFont);
+	pGamepadText->AddComponent<dae::RenderComponent>();
+	pGamepadText->SetLocalPosition(10, 120);
+	scene.Add(std::move(pGamepadText));
+
+	auto pKeyboardText = std::make_unique<dae::GameObject>();
+	pKeyboardText->AddComponent<dae::TextComponent>("Use WASD to move Balloom", inputFont);
+	pKeyboardText->AddComponent<dae::RenderComponent>();
+	pKeyboardText->SetLocalPosition(10, 140);
+	scene.Add(std::move(pKeyboardText));
 
 	auto pBomberman = std::make_unique<dae::GameObject>();
 	pBomberman->AddComponent<dae::RenderComponent>("Bomberman.png");
-	pBomberman->AddComponent<dae::RotatorComponent>(16.f, -10.f);
-	pBomberman->SetParent(pPivotPoint.get());
+	pBomberman->SetLocalPosition({ 300, 400, 0 });
 
-	auto pBomb = std::make_unique<dae::GameObject>();
-	pBomb->AddComponent<dae::RenderComponent>("Bomb.png");
-	pBomb->AddComponent<dae::RotatorComponent>(32.f, 8.f);
-	pBomb->SetParent(pBomberman.get());
-	pBomb->SetLocalPosition({ 32, 32, 0 });
+	input.BindCommand(0, XINPUT_GAMEPAD_DPAD_UP, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(0, -1)));
+	input.BindCommand(0, XINPUT_GAMEPAD_DPAD_LEFT, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(-1, 0)));
+	input.BindCommand(0, XINPUT_GAMEPAD_DPAD_DOWN, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(0, 1)));
+	input.BindCommand(0, XINPUT_GAMEPAD_DPAD_RIGHT, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(1, 0)));
 
-	scene.Add(std::move(pPivotPoint));
 	scene.Add(std::move(pBomberman));
-	scene.Add(std::move(pBomb));
 
-	auto pThrashTheCache = std::make_unique<dae::GameObject>();
-	pThrashTheCache->AddComponent<dae::ThrashCacheComponent>();
-	scene.Add(std::move(pThrashTheCache));
+	auto pBalloom = std::make_unique<dae::GameObject>();
+	pBalloom->AddComponent<dae::RenderComponent>("Balloom.png");
+	pBalloom->SetLocalPosition({ 300, 400, 0 });
+
+	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), 1.f, glm::vec2(0, -1)));
+	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), 1.f, glm::vec2(-1, 0)));
+	input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), 1.f, glm::vec2(0, 1)));
+	input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), 1.f, glm::vec2(1, 0)));
+
+	scene.Add(std::move(pBalloom));
 }
 
 int main(int, char*[]) {

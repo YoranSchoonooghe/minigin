@@ -30,6 +30,7 @@ namespace dae
 		void SetLocalPosition(float x, float y, float z = 0);
 		void SetLocalPosition(const glm::vec3& pos);
 		const glm::vec3& GetWorldPosition();
+		const Transform* GetTransform() const;
 
 		template<typename T, typename... Args>
 		T* AddComponent(Args&&... args);

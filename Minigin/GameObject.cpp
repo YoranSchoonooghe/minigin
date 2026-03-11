@@ -117,6 +117,11 @@ const glm::vec3& dae::GameObject::GetWorldPosition()
 	return m_transform.GetWorldPosition();
 }
 
+const dae::Transform* dae::GameObject::GetTransform() const
+{
+	return &m_transform;
+}
+
 void dae::GameObject::CleanupDestroyedComponents()
 {
 	m_pComponents.erase(std::remove_if(m_pComponents.begin(), m_pComponents.end(),
