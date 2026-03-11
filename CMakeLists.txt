@@ -15,6 +15,7 @@ endif()
 
 # list source files here
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
+  Minigin/AnimatedSpriteComponent.cpp
   Minigin/Component.cpp
   Minigin/Font.cpp
   Minigin/FPSComponent.cpp
@@ -162,7 +163,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/steam")
 find_package(Steamworks QUIET)
 
 #Xinput
-target_link_libraries("${TARGET_NAME}" PUBLIC xinput)
+if (WIN32)
+    target_link_libraries("${TARGET_NAME}" PUBLIC xinput)
+endif()
 
 target_include_directories("${TARGET_NAME}" PUBLIC
   ${CMAKE_SOURCE_DIR}/Minigin/
