@@ -16,6 +16,7 @@
 #include "RotatorComponent.h"
 #include "ThrashCacheComponent.h"
 #include "Commands/MoveCommand.h"
+#include "CharacterControllerComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -61,25 +62,29 @@ static void load()
 	pKeyboardText->SetLocalPosition(10, 140);
 	scene.Add(std::move(pKeyboardText));
 
+	const float SPEED{ 100.0f };
+
 	auto pBomberman = std::make_unique<dae::GameObject>();
 	pBomberman->AddComponent<dae::RenderComponent>("Bomberman.png");
-	pBomberman->SetLocalPosition({ 300, 400, 0 });
+	pBomberman->AddComponent<dae::CharacterControllerComponent>(SPEED);
+	pBomberman->SetLocalPosition({ 300, 380, 0 });
 
-	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(0, -1)));
-	input.BindCommand(0, dae::GamePadButton::DPadLeft, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(-1, 0)));
-	input.BindCommand(0, dae::GamePadButton::DPadDown, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(0, 1)));
-	input.BindCommand(0, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(1, 0)));
+	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(0, -1)));
+	input.BindCommand(0, dae::GamePadButton::DPadLeft, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(-1, 0)));
+	input.BindCommand(0, dae::GamePadButton::DPadDown, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(0, 1)));
+	input.BindCommand(0, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(1, 0)));
 
 	scene.Add(std::move(pBomberman));
 
 	auto pBalloom = std::make_unique<dae::GameObject>();
 	pBalloom->AddComponent<dae::RenderComponent>("Balloom.png");
-	pBalloom->SetLocalPosition({ 300, 400, 0 });
+	pBalloom->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
+	pBalloom->SetLocalPosition({ 320, 400, 0 });
 
-	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), 1.f, glm::vec2(0, -1)));
-	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), 1.f, glm::vec2(-1, 0)));
-	input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), 1.f, glm::vec2(0, 1)));
-	input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), 1.f, glm::vec2(1, 0)));
+	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(0, -1)));
+	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(-1, 0)));
+	input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(0, 1)));
+	input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(1, 0)));
 
 	scene.Add(std::move(pBalloom));
 }

@@ -1,32 +1,34 @@
 #pragma once
 #include "Command.h"
 #include "GameObject.h"
+#include "CharacterControllerComponent.h"
 #include <glm/glm.hpp>
+#include <cassert>
 
 namespace dae
 {
 	class MoveCommand : public Command
 	{
 	public:
-		explicit MoveCommand(GameObject* pGameObject, float speed, const glm::vec2& direction)
-			: m_pGameObject{ pGameObject }, m_speed{ speed }, m_direction{ direction }
+		explicit MoveCommand(GameObject* pGameObject, const glm::vec2& direction)
+			: m_direction{ direction }
 		{
+			if (!m_pCharacterController)
+			{
+				m_pCharacterController = pGameObject->GetComponent<dae::CharacterControllerComponent>();
+			}
+
+			assert(m_pCharacterController != nullptr && "MoveCommand: GameObject is missing a CharacterControllerComponent!");
 		}
 
 		void Execute() override
 		{
-			const auto& localPosition = m_pGameObject->GetTransform()->GetLocalPosition();
-
-			float xPosition = localPosition.x + m_direction.x * m_speed;
-			float yPosition = localPosition.y + m_direction.y * m_speed;
-
-			m_pGameObject->SetLocalPosition(xPosition, yPosition);
+			m_pCharacterController->SetMoveDirection(m_direction);
 		}
 
 	private:
-		GameObject* m_pGameObject;
+		CharacterControllerComponent* m_pCharacterController = nullptr;
 
-		float m_speed;
 		glm::vec2 m_direction;
 	};
 }
