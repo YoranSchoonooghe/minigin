@@ -28,7 +28,8 @@ namespace dae
 
 		void BindCommand(uint16_t controllerIndex, uint16_t button, KeyState state, std::unique_ptr<Command> command);
 		void BindCommand(SDL_Scancode scancode, KeyState state, std::unique_ptr<Command> command);
-		void UnBindCommand();
+		void UnbindCommand(uint16_t controllerIndex, uint16_t button, KeyState state);
+		void UnbindCommand(SDL_Scancode scancode, KeyState state);
 
 	private:
 		struct ControllerBinding

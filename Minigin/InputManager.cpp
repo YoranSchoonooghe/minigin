@@ -113,3 +113,24 @@ void dae::InputManager::BindCommand(SDL_Scancode scancode, KeyState state, std::
 
     m_keyboardBindings.push_back({ scancode, state, std::move(command) });
 }
+
+void dae::InputManager::UnbindCommand(uint16_t controllerIndex, uint16_t button, KeyState state)
+{
+    std::erase_if(m_controllerBindings,
+        [controllerIndex, button, state](const ControllerBinding& binding)
+        {
+            return binding.controllerIndex == controllerIndex &&
+                binding.button == button &&
+                binding.state == state;
+        });
+}
+
+void dae::InputManager::UnbindCommand(SDL_Scancode scancode, KeyState state)
+{
+    std::erase_if(m_keyboardBindings,
+        [scancode, state](const KeyboardBinding& binding)
+        {
+            return binding.scancode == scancode && binding.state == state;
+        }
+    );
+}
