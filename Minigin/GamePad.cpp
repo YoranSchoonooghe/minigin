@@ -62,14 +62,13 @@ namespace dae
     {
     public:
         explicit GamePadImpl(uint16_t controllerIndex)
-            : m_controllerIndex(controllerIndex)
-            , m_previousButtons(static_cast<size_t>(SDL_GAMEPAD_BUTTON_COUNT), false)
+            : m_previousButtons(static_cast<size_t>(SDL_GAMEPAD_BUTTON_COUNT), false)
             , m_currentButtons(static_cast<size_t>(SDL_GAMEPAD_BUTTON_COUNT), false)
         {
             int count;
             auto gamepads = SDL_GetGamepads(&count);
 
-            if (controllerIndex < (uint16_t)count)
+            if (controllerIndex < static_cast<uint16_t>(count))
             {
                 m_pGamepad = SDL_OpenGamepad(gamepads[controllerIndex]);
             }
@@ -149,8 +148,6 @@ namespace dae
                 return SDL_GAMEPAD_BUTTON_INVALID;
             }
         }
-
-        uint16_t m_controllerIndex;
 
         SDL_Gamepad* m_pGamepad = nullptr;
 
