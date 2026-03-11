@@ -32,6 +32,9 @@ namespace dae
 		void UnbindCommand(SDL_Scancode scancode, KeyState state);
 
 	private:
+		void ProcessControllerInput();
+		void ProcessKeyboardInput();
+
 		struct ControllerBinding
 		{
 			uint16_t controllerIndex;

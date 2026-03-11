@@ -15,83 +15,17 @@ dae::InputManager::InputManager()
 
 bool dae::InputManager::ProcessInput()
 {
-    int numKeys;
-    const bool* pCurrentKeyboardState = SDL_GetKeyboardState(&numKeys);
-
-    if (m_previousKeyboardState.empty())
-    {
-        m_previousKeyboardState.assign(numKeys, 0);
-    }
-
     SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		if (e.type == SDL_EVENT_QUIT) {
 			return false;
 		}
-		if (e.type == SDL_EVENT_KEY_DOWN) {
-			
-		}
-		if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
-			
-		}
-		// etc...
 
-		//process event for IMGUI
 		ImGui_ImplSDL3_ProcessEvent(&e);
 	}
 
-    for (const auto& pController : m_pControllers)
-    {
-        pController->Update();
-    }
-
-    for (const auto& binding : m_controllerBindings)
-    {
-        auto& gamepad = m_pControllers[binding.controllerIndex];
-
-        switch (binding.state)
-        {
-        case KeyState::Pressed:
-            if (gamepad->IsDownThisFrame(binding.button))
-            {
-                binding.command->Execute();
-            }
-            break;
-        case KeyState::Down:
-            if (gamepad->IsPressed(binding.button))
-            {
-                binding.command->Execute();
-            }
-            break;
-        case KeyState::Up:
-            if (gamepad->IsUpThisFrame(binding.button))
-            {
-                binding.command->Execute();
-            }
-            break;
-        }
-    }
-
-    for (const auto& binding : m_keyboardBindings)
-    {
-        bool isDown = pCurrentKeyboardState[binding.scancode];
-        bool wasDown = m_previousKeyboardState[binding.scancode];
-
-        switch (binding.state)
-        {
-        case KeyState::Pressed:
-            if (isDown && !wasDown) binding.command->Execute();
-            break;
-        case KeyState::Down:
-            if (isDown) binding.command->Execute();
-            break;
-        case KeyState::Up:
-            if (!isDown && wasDown) binding.command->Execute();
-            break;
-        }
-    }
-
-    std::copy(pCurrentKeyboardState, pCurrentKeyboardState + numKeys, m_previousKeyboardState.begin());
+    ProcessControllerInput();
+    ProcessKeyboardInput();
 
 	return true;
 }
@@ -126,4 +60,71 @@ void dae::InputManager::UnbindCommand(SDL_Scancode scancode, KeyState state)
             return binding.scancode == scancode && binding.state == state;
         }
     );
+}
+
+void dae::InputManager::ProcessControllerInput()
+{
+    for (const auto& pController : m_pControllers)
+    {
+        pController->Update();
+    }
+
+    for (const auto& binding : m_controllerBindings)
+    {
+        auto& gamepad = m_pControllers[binding.controllerIndex];
+
+        switch (binding.state)
+        {
+        case KeyState::Pressed:
+            if (gamepad->IsDownThisFrame(binding.button))
+            {
+                binding.command->Execute();
+            }
+            break;
+        case KeyState::Down:
+            if (gamepad->IsPressed(binding.button))
+            {
+                binding.command->Execute();
+            }
+            break;
+        case KeyState::Up:
+            if (gamepad->IsUpThisFrame(binding.button))
+            {
+                binding.command->Execute();
+            }
+            break;
+        }
+    }
+}
+
+void dae::InputManager::ProcessKeyboardInput()
+{
+    int numKeys;
+    const bool* pCurrentKeyboardState = SDL_GetKeyboardState(&numKeys);
+
+    if (m_previousKeyboardState.empty())
+    {
+        m_previousKeyboardState.assign(numKeys, 0);
+    }
+
+    for (const auto& binding : m_keyboardBindings)
+    {
+        bool isDown = pCurrentKeyboardState[binding.scancode];
+        bool wasDown = m_previousKeyboardState[binding.scancode];
+
+        switch (binding.state)
+        {
+        case KeyState::Pressed:
+            if (isDown && !wasDown) binding.command->Execute();
+            break;
+        case KeyState::Down:
+            if (isDown) binding.command->Execute();
+            break;
+        case KeyState::Up:
+            if (!isDown && wasDown) binding.command->Execute();
+            break;
+        }
+    }
+
+    std::copy(pCurrentKeyboardState, pCurrentKeyboardState + numKeys, m_previousKeyboardState.begin());
 }
