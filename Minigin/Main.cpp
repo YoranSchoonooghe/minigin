@@ -17,10 +17,6 @@
 #include "ThrashCacheComponent.h"
 #include "Commands/MoveCommand.h"
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <Xinput.h>
-
 #include <filesystem>
 namespace fs = std::filesystem;
 
@@ -69,10 +65,10 @@ static void load()
 	pBomberman->AddComponent<dae::RenderComponent>("Bomberman.png");
 	pBomberman->SetLocalPosition({ 300, 400, 0 });
 
-	input.BindCommand(0, XINPUT_GAMEPAD_DPAD_UP, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(0, -1)));
-	input.BindCommand(0, XINPUT_GAMEPAD_DPAD_LEFT, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(-1, 0)));
-	input.BindCommand(0, XINPUT_GAMEPAD_DPAD_DOWN, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(0, 1)));
-	input.BindCommand(0, XINPUT_GAMEPAD_DPAD_RIGHT, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(1, 0)));
+	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(0, -1)));
+	input.BindCommand(0, dae::GamePadButton::DPadLeft, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(-1, 0)));
+	input.BindCommand(0, dae::GamePadButton::DPadDown, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(0, 1)));
+	input.BindCommand(0, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), 1.f, glm::vec2(1, 0)));
 
 	scene.Add(std::move(pBomberman));
 

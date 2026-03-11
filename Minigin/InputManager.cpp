@@ -2,13 +2,6 @@
 #include <backends/imgui_impl_sdl3.h>
 #include "InputManager.h"
 
-#if WIN32
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
-#include <Xinput.h>
-#endif
-
 dae::InputManager::InputManager()
 {
 	const int MAX_CONTROLLERS{ 4 };
@@ -103,7 +96,7 @@ bool dae::InputManager::ProcessInput()
 	return true;
 }
 
-void dae::InputManager::BindCommand(uint16_t controllerIndex, uint16_t button, KeyState state, std::unique_ptr<Command> command)
+void dae::InputManager::BindCommand(uint16_t controllerIndex, dae::GamePadButton button, KeyState state, std::unique_ptr<Command> command)
 {
     m_controllerBindings.push_back({ controllerIndex, button, state, std::move(command) });
 }
@@ -114,7 +107,7 @@ void dae::InputManager::BindCommand(SDL_Scancode scancode, KeyState state, std::
     m_keyboardBindings.push_back({ scancode, state, std::move(command) });
 }
 
-void dae::InputManager::UnbindCommand(uint16_t controllerIndex, uint16_t button, KeyState state)
+void dae::InputManager::UnbindCommand(uint16_t controllerIndex, dae::GamePadButton button, KeyState state)
 {
     std::erase_if(m_controllerBindings,
         [controllerIndex, button, state](const ControllerBinding& binding)
