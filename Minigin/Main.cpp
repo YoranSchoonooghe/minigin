@@ -14,6 +14,7 @@
 #include "FPSComponent.h"
 #include "RenderComponent.h"
 #include "RotatorComponent.h"
+#include "AnimatedSpriteComponent.h"
 #include "ThrashCacheComponent.h"
 #include "Commands/MoveCommand.h"
 #include "CharacterControllerComponent.h"
@@ -65,9 +66,10 @@ static void load()
 	const float SPEED{ 100.0f };
 
 	auto pBomberman = std::make_unique<dae::GameObject>();
-	pBomberman->AddComponent<dae::RenderComponent>("Bomberman.png");
+	pBomberman->AddComponent<dae::RenderComponent>();
+	pBomberman->AddComponent<dae::AnimatedSpriteComponent>("BombermanWalk.png", 4, 0.1f, 16.0f);
 	pBomberman->AddComponent<dae::CharacterControllerComponent>(SPEED);
-	pBomberman->SetLocalPosition({ 300, 380, 0 });
+	pBomberman->SetLocalPosition(300, 380);
 
 	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(0, -1)));
 	input.BindCommand(0, dae::GamePadButton::DPadLeft, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(-1, 0)));
@@ -79,7 +81,7 @@ static void load()
 	auto pBalloom = std::make_unique<dae::GameObject>();
 	pBalloom->AddComponent<dae::RenderComponent>("Balloom.png");
 	pBalloom->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
-	pBalloom->SetLocalPosition({ 320, 400, 0 });
+	pBalloom->SetLocalPosition(320, 400);
 
 	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(0, -1)));
 	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(-1, 0)));
