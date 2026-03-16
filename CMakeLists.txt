@@ -34,6 +34,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Scene.cpp
   Minigin/SceneManager.cpp
   Minigin/ScoreComponent.cpp
+  Minigin/ScoreDisplayComponent.cpp
   Minigin/TextComponent.cpp
   Minigin/Texture2D.cpp
   Minigin/ThrashCacheComponent.cpp

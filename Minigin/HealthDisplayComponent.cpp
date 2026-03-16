@@ -2,6 +2,7 @@
 #include "TextComponent.h"
 #include "HealthComponent.h"
 #include "Events/Subject.h"
+#include <string>
 
 dae::HealthDisplayComponent::HealthDisplayComponent(GameObject* pOwner, GameObject* pHealthOwner)
 	: Component{ pOwner }
