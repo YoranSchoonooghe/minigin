@@ -18,6 +18,9 @@
 #include "ThrashCacheComponent.h"
 #include "Commands/MoveCommand.h"
 #include "CharacterControllerComponent.h"
+#include "HealthComponent.h"
+#include "HealthDisplayComponent.h"
+#include "Commands/DamageCommand.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -69,6 +72,7 @@ static void load()
 	pBomberman->AddComponent<dae::RenderComponent>();
 	pBomberman->AddComponent<dae::AnimatedSpriteComponent>("BombermanWalk.png", 4, 0.1f, 16.0f);
 	pBomberman->AddComponent<dae::CharacterControllerComponent>(SPEED);
+	pBomberman->AddComponent<dae::HealthComponent>(3);
 	pBomberman->SetLocalPosition(300, 380);
 
 	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(0, -1)));
@@ -76,7 +80,16 @@ static void load()
 	input.BindCommand(0, dae::GamePadButton::DPadDown, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(0, 1)));
 	input.BindCommand(0, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(1, 0)));
 
+	input.BindCommand(0, dae::GamePadButton::ButtonX, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pBomberman.get()));
+
+	auto pBombermanLivesDisplay = std::make_unique<dae::GameObject>();
+	pBombermanLivesDisplay->AddComponent<dae::RenderComponent>();
+	pBombermanLivesDisplay->AddComponent<dae::TextComponent>("Lives", inputFont);
+	pBombermanLivesDisplay->AddComponent<dae::HealthDisplayComponent>(pBomberman.get());
+	pBombermanLivesDisplay->SetLocalPosition(10, 180);
+
 	scene.Add(std::move(pBomberman));
+	scene.Add(std::move(pBombermanLivesDisplay));
 
 	auto pBalloom = std::make_unique<dae::GameObject>();
 	pBalloom->AddComponent<dae::RenderComponent>("Balloom.png");

@@ -23,6 +23,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/GameObject.cpp
   Minigin/GamePad.cpp
   Minigin/HealthComponent.cpp
+  Minigin/HealthDisplayComponent.cpp
   Minigin/InputManager.cpp
   Minigin/Main.cpp
   Minigin/Minigin.cpp

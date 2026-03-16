@@ -38,4 +38,5 @@ void dae::AnimatedSpriteComponent::InitializeRenderComponent()
 	assert(m_pRenderComponent != nullptr && "AnimatedSpriteComponent: GameObject is missing a RenderComponent!");
 
 	m_pRenderComponent->SetTexture(m_pTexture);
+	m_pRenderComponent->SetSrcRect(0, m_currentCol, m_tileSize, m_tileSize);
 }
