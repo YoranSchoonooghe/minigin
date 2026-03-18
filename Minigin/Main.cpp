@@ -24,6 +24,7 @@
 #include "ScoreComponent.h"
 #include "ScoreDisplayComponent.h"
 #include "Commands/ScoreCommand.h"
+#include "SteamAchievementComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -58,7 +59,7 @@ static void load()
 
 	auto inputFont = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
 	auto pGamepadText = std::make_unique<dae::GameObject>();
-	pGamepadText->AddComponent<dae::TextComponent>("Use the D-Pad to move Bomberman", inputFont);
+	pGamepadText->AddComponent<dae::TextComponent>("Use the D-Pad to move Bomberman. Press A to increase score and X to inflict damage.", inputFont);
 	pGamepadText->AddComponent<dae::RenderComponent>();
 	pGamepadText->SetLocalPosition(10, 120);
 	scene.Add(std::move(pGamepadText));
@@ -85,7 +86,7 @@ static void load()
 	input.BindCommand(0, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(1, 0)));
 
 	input.BindCommand(0, dae::GamePadButton::ButtonX, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pBomberman.get()));
-	input.BindCommand(0, dae::GamePadButton::ButtonY, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pBomberman.get()));
+	input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pBomberman.get()));
 
 	auto pBombermanLivesDisplay = std::make_unique<dae::GameObject>();
 	pBombermanLivesDisplay->AddComponent<dae::RenderComponent>();
@@ -98,6 +99,12 @@ static void load()
 	pBombermanScoreDisplay->AddComponent<dae::TextComponent>("Score: 0", inputFont);
 	pBombermanScoreDisplay->AddComponent<dae::ScoreDisplayComponent>(pBomberman.get());
 	pBombermanScoreDisplay->SetLocalPosition(10, 200);
+
+#if USE_STEAMWORKS
+	auto pSteamAchievement = std::make_unique<dae::GameObject>();
+	pSteamAchievement->AddComponent<dae::SteamAchievementComponent>(pBomberman.get());
+	scene.Add(std::move(pSteamAchievement));
+#endif
 
 	scene.Add(std::move(pBomberman));
 	scene.Add(std::move(pBombermanLivesDisplay));

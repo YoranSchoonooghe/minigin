@@ -1,7 +1,6 @@
 #include "ScoreComponent.h"
 #include "Events/Event.h"
 
-
 dae::ScoreComponent::ScoreComponent(GameObject* pOwner, int startScore)
 	: Component{ pOwner }
 	, m_score{ startScore }

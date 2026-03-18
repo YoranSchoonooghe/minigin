@@ -14,6 +14,7 @@
 #pragma warning (push)
 #pragma warning (disable:4996)
 #include <steam_api.h>
+#include "SpacewarAchievements.h"
 #pragma warning (pop)
 #endif
 
@@ -67,7 +68,12 @@ void PrintSDLVersion()
 dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 {
 #if USE_STEAMWORKS
-	if (!SteamAPI_Init())
+	bool bRet = SteamAPI_Init();
+	if (bRet)
+	{
+		g_SteamAchievements = new CSteamAchievements(g_Achievements, 4);
+	}
+	else
 	{
 		throw std::runtime_error(std::string("Fatal Error - Steam must be running to play this game (SteamAPI_Init() failed)."));
 	}
@@ -100,6 +106,8 @@ dae::Minigin::~Minigin()
 {
 #if USE_STEAMWORKS
 	SteamAPI_Shutdown();
+	if (g_SteamAchievements)
+		delete g_SteamAchievements;
 #endif
 
 	Renderer::GetInstance().Destroy();
