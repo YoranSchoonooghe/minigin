@@ -59,68 +59,89 @@ static void load()
 
 	auto inputFont = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
 	auto pGamepadText = std::make_unique<dae::GameObject>();
-	pGamepadText->AddComponent<dae::TextComponent>("Use the D-Pad to move Bomberman. Press A to increase score and X to inflict damage.", inputFont);
+	pGamepadText->AddComponent<dae::TextComponent>("Use the D-Pad to move Player 1. Press A to increase score and X to inflict damage.", inputFont);
 	pGamepadText->AddComponent<dae::RenderComponent>();
 	pGamepadText->SetLocalPosition(10, 120);
 	scene.Add(std::move(pGamepadText));
 
 	auto pKeyboardText = std::make_unique<dae::GameObject>();
-	pKeyboardText->AddComponent<dae::TextComponent>("Use WASD to move Balloom", inputFont);
+	pKeyboardText->AddComponent<dae::TextComponent>("Use WASD to move Player 2. Press Space to increase score and F to inflict damage.", inputFont);
 	pKeyboardText->AddComponent<dae::RenderComponent>();
 	pKeyboardText->SetLocalPosition(10, 140);
 	scene.Add(std::move(pKeyboardText));
 
 	const float SPEED{ 100.0f };
 
-	auto pBomberman = std::make_unique<dae::GameObject>();
-	pBomberman->AddComponent<dae::RenderComponent>();
-	pBomberman->AddComponent<dae::AnimatedSpriteComponent>("BombermanWalk.png", 4, 0.1f, 16.0f);
-	pBomberman->AddComponent<dae::CharacterControllerComponent>(SPEED);
-	pBomberman->AddComponent<dae::HealthComponent>(3);
-	pBomberman->AddComponent<dae::ScoreComponent>();
-	pBomberman->SetLocalPosition(300, 380);
+	auto pPlayer1 = std::make_unique<dae::GameObject>();
+	pPlayer1->AddComponent<dae::RenderComponent>();
+	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("BombermanWalk.png", 4, 0.1f, 16.0f);
+	pPlayer1->AddComponent<dae::CharacterControllerComponent>(SPEED);
+	pPlayer1->AddComponent<dae::HealthComponent>(3);
+	pPlayer1->AddComponent<dae::ScoreComponent>();
+	pPlayer1->SetLocalPosition(300, 380);
 
-	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(0, -1)));
-	input.BindCommand(0, dae::GamePadButton::DPadLeft, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(-1, 0)));
-	input.BindCommand(0, dae::GamePadButton::DPadDown, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(0, 1)));
-	input.BindCommand(0, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBomberman.get(), glm::vec2(1, 0)));
+	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
+	input.BindCommand(0, dae::GamePadButton::DPadLeft, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(-1, 0)));
+	input.BindCommand(0, dae::GamePadButton::DPadDown, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, 1)));
+	input.BindCommand(0, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(1, 0)));
 
-	input.BindCommand(0, dae::GamePadButton::ButtonX, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pBomberman.get()));
-	input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pBomberman.get()));
+	input.BindCommand(0, dae::GamePadButton::ButtonX, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer1.get()));
+	input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer1.get()));
 
-	auto pBombermanLivesDisplay = std::make_unique<dae::GameObject>();
-	pBombermanLivesDisplay->AddComponent<dae::RenderComponent>();
-	pBombermanLivesDisplay->AddComponent<dae::TextComponent>("Lives: 0", inputFont);
-	pBombermanLivesDisplay->AddComponent<dae::HealthDisplayComponent>(pBomberman.get());
-	pBombermanLivesDisplay->SetLocalPosition(10, 180);
+	auto pPlayer1LivesDisplay = std::make_unique<dae::GameObject>();
+	pPlayer1LivesDisplay->AddComponent<dae::RenderComponent>();
+	pPlayer1LivesDisplay->AddComponent<dae::TextComponent>("Lives: 0", inputFont);
+	pPlayer1LivesDisplay->AddComponent<dae::HealthDisplayComponent>(pPlayer1.get());
+	pPlayer1LivesDisplay->SetLocalPosition(10, 180);
 
-	auto pBombermanScoreDisplay = std::make_unique<dae::GameObject>();
-	pBombermanScoreDisplay->AddComponent<dae::RenderComponent>();
-	pBombermanScoreDisplay->AddComponent<dae::TextComponent>("Score: 0", inputFont);
-	pBombermanScoreDisplay->AddComponent<dae::ScoreDisplayComponent>(pBomberman.get());
-	pBombermanScoreDisplay->SetLocalPosition(10, 200);
+	auto pPlayer1ScoreDisplay = std::make_unique<dae::GameObject>();
+	pPlayer1ScoreDisplay->AddComponent<dae::RenderComponent>();
+	pPlayer1ScoreDisplay->AddComponent<dae::TextComponent>("Score: 0", inputFont);
+	pPlayer1ScoreDisplay->AddComponent<dae::ScoreDisplayComponent>(pPlayer1.get());
+	pPlayer1ScoreDisplay->SetLocalPosition(10, 200);
+
+	auto pPlayer2 = std::make_unique<dae::GameObject>();
+	pPlayer2->AddComponent<dae::RenderComponent>();
+	pPlayer2->AddComponent<dae::AnimatedSpriteComponent>("BombermanWalk.png", 4, 0.1f, 16.0f);
+	pPlayer2->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
+	pPlayer2->AddComponent<dae::HealthComponent>(3);
+	pPlayer2->AddComponent<dae::ScoreComponent>();
+	pPlayer2->SetLocalPosition(340, 420);
+
+	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, -1)));
+	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(-1, 0)));
+	input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, 1)));
+	input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(1, 0)));
+
+	input.BindCommand(SDL_SCANCODE_F, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer2.get()));
+	input.BindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer2.get()));
+
+	auto pPlayer2LivesDisplay = std::make_unique<dae::GameObject>();
+	pPlayer2LivesDisplay->AddComponent<dae::RenderComponent>();
+	pPlayer2LivesDisplay->AddComponent<dae::TextComponent>("Lives: 0", inputFont);
+	pPlayer2LivesDisplay->AddComponent<dae::HealthDisplayComponent>(pPlayer2.get());
+	pPlayer2LivesDisplay->SetLocalPosition(920, 180);
+
+	auto pPlayer2ScoreDisplay = std::make_unique<dae::GameObject>();
+	pPlayer2ScoreDisplay->AddComponent<dae::RenderComponent>();
+	pPlayer2ScoreDisplay->AddComponent<dae::TextComponent>("Score: 0", inputFont);
+	pPlayer2ScoreDisplay->AddComponent<dae::ScoreDisplayComponent>(pPlayer2.get());
+	pPlayer2ScoreDisplay->SetLocalPosition(920, 200);
 
 #if USE_STEAMWORKS
 	auto pSteamAchievement = std::make_unique<dae::GameObject>();
-	pSteamAchievement->AddComponent<dae::SteamAchievementComponent>(pBomberman.get());
+	pSteamAchievement->AddComponent<dae::SteamAchievementComponent>(pPlayer1.get());
+	pSteamAchievement->AddComponent<dae::SteamAchievementComponent>(pPlayer2.get());
 	scene.Add(std::move(pSteamAchievement));
 #endif
 
-	scene.Add(std::move(pBomberman));
-	scene.Add(std::move(pBombermanLivesDisplay));
-	scene.Add(std::move(pBombermanScoreDisplay));
+	scene.Add(std::move(pPlayer1));
+	scene.Add(std::move(pPlayer1LivesDisplay));
+	scene.Add(std::move(pPlayer1ScoreDisplay));
 
-	auto pBalloom = std::make_unique<dae::GameObject>();
-	pBalloom->AddComponent<dae::RenderComponent>("Balloom.png");
-	pBalloom->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
-	pBalloom->SetLocalPosition(320, 400);
-
-	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(0, -1)));
-	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(-1, 0)));
-	input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(0, 1)));
-	input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(1, 0)));
-
-	scene.Add(std::move(pBalloom));
+	scene.Add(std::move(pPlayer2));
+	scene.Add(std::move(pPlayer2LivesDisplay));
+	scene.Add(std::move(pPlayer2ScoreDisplay));
 }
 
 int main(int, char*[]) {
