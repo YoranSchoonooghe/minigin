@@ -101,4 +101,16 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, const SDL_FRect& src
 	SDL_RenderTexture(GetSDLRenderer(), texture.GetSDLTexture(), &srcRect, &dstRect);
 }
 
+void dae::Renderer::RenderRect(float x, float y, float width, float height, const SDL_Color& color) const
+{
+	SDL_FRect rect{};
+	rect.x = x;
+	rect.y = y;
+	rect.w = width;
+	rect.h = height;
+
+	SDL_SetRenderDrawColor(GetSDLRenderer(), color.r, color.g, color.b, color.a);
+	SDL_RenderFillRect(GetSDLRenderer(), &rect);
+}
+
 SDL_Renderer* dae::Renderer::GetSDLRenderer() const { return m_renderer; }

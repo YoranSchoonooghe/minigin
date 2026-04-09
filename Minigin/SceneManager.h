@@ -18,6 +18,8 @@ namespace dae
 		void Render();
 		void RenderUI();
 
+		Scene* GetScene() const { return m_scenes.front().get(); };
+
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;

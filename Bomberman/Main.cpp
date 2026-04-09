@@ -25,6 +25,8 @@
 #include "Renderer.h"
 #include "Components/TimerComponent.h"
 #include "Components/TimerDisplayComponent.h"
+#include "Components/BoxColliderComponent.h"
+#include "Commands/DropBombCommand.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -34,6 +36,7 @@ static void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 	auto& input = dae::InputManager::GetInstance();
 
+	SDL_SetRenderDrawBlendMode(dae::Renderer::GetInstance().GetSDLRenderer(), SDL_BLENDMODE_BLEND);
 	dae::Renderer::GetInstance().SetBackgroundColor({ 161, 161, 161, 255 });
 
 	auto pBackground = std::make_unique<dae::GameObject>();
@@ -71,6 +74,7 @@ static void load()
 	pPlayer1->AddComponent<dae::CharacterControllerComponent>(SPEED);
 	pPlayer1->AddComponent<dae::HealthComponent>(3);
 	pPlayer1->AddComponent<dae::ScoreComponent>();
+	pPlayer1->AddComponent<dae::BoxColliderComponent>(32.0f, 64.0f, glm::vec2{ 16.0f, 0.0f });
 	pPlayer1->SetLocalPosition(64, 288);
 
 	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
@@ -80,6 +84,7 @@ static void load()
 
 	input.BindCommand(0, dae::GamePadButton::ButtonX, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer1.get()));
 	input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer1.get()));
+	input.BindCommand(0, dae::GamePadButton::ButtonY, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer1.get()));
 
 	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
 	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(-1, 0)));
@@ -105,13 +110,13 @@ static void load()
 	scene.Add(std::move(pPlayer1LivesDisplay));
 	scene.Add(std::move(pPlayer1ScoreDisplay));
 
-	auto pBomb = std::make_unique<dae::GameObject>();
-	pBomb->AddComponent<dae::RenderComponent>();
-	pBomb->AddComponent<dae::AnimatedSpriteComponent>("Bomb.png", 4, 0.2f, 64.0f);
-	auto pTimer = pBomb->AddComponent<dae::TimerComponent>(3.0f);
-	pTimer->Start();
-	pBomb->SetLocalPosition(64, 416);
-	scene.Add(std::move(pBomb));
+	//auto pBomb = std::make_unique<dae::GameObject>();
+	//pBomb->AddComponent<dae::RenderComponent>();
+	//pBomb->AddComponent<dae::AnimatedSpriteComponent>("Bomb.png", 4, 0.2f, 64.0f);
+	//auto pTimer = pBomb->AddComponent<dae::TimerComponent>(3.0f);
+	//pTimer->Start();
+	//pBomb->SetLocalPosition(64, 416);
+	//scene.Add(std::move(pBomb));
 
 	auto pLevelTimer = std::make_unique<dae::GameObject>();
 	auto pLevelTimerComponent = pLevelTimer->AddComponent<dae::TimerComponent>(201.0f);

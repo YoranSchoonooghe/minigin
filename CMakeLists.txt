@@ -17,7 +17,9 @@ endif()
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/AnimatedSpriteComponent.cpp
   Minigin/CharacterControllerComponent.cpp
+  Minigin/Commands/Command.h
   Minigin/Component.cpp
+  Minigin/Components/BoxColliderComponent.cpp
   Minigin/Components/TimerComponent.cpp
   Minigin/Components/TimerDisplayComponent.cpp
   Minigin/Font.cpp
