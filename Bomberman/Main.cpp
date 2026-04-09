@@ -23,6 +23,8 @@
 #include "ScoreDisplayComponent.h"
 #include "Commands/ScoreCommand.h"
 #include "Renderer.h"
+#include "Components/TimerComponent.h"
+#include "Components/TimerDisplayComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -48,24 +50,24 @@ static void load()
 	pFPSCounter->SetLocalPosition(10, 10);
 	scene.Add(std::move(pFPSCounter));
 
-	auto inputFont = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 18);
+	auto inputFont = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24);
 	auto pGamepadText = std::make_unique<dae::GameObject>();
 	pGamepadText->AddComponent<dae::TextComponent>("Use the D-Pad to move Player 1. Press A to increase score and X to inflict damage.", inputFont);
 	pGamepadText->AddComponent<dae::RenderComponent>();
-	pGamepadText->SetLocalPosition(10, 120);
+	pGamepadText->SetLocalPosition(10, 80);
 	scene.Add(std::move(pGamepadText));
 
 	auto pKeyboardText = std::make_unique<dae::GameObject>();
 	pKeyboardText->AddComponent<dae::TextComponent>("Use WASD to move Player 2. Press Space to increase score and F to inflict damage.", inputFont);
 	pKeyboardText->AddComponent<dae::RenderComponent>();
-	pKeyboardText->SetLocalPosition(10, 140);
+	pKeyboardText->SetLocalPosition(10, 110);
 	scene.Add(std::move(pKeyboardText));
 
 	const float SPEED{ 200.0f };
 
 	auto pPlayer1 = std::make_unique<dae::GameObject>();
 	pPlayer1->AddComponent<dae::RenderComponent>();
-	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Bomberman64.png", 4, 0.1f, 64.0f);
+	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Bomberman.png", 4, 0.1f, 64.0f);
 	pPlayer1->AddComponent<dae::CharacterControllerComponent>(SPEED);
 	pPlayer1->AddComponent<dae::HealthComponent>(3);
 	pPlayer1->AddComponent<dae::ScoreComponent>();
@@ -79,53 +81,48 @@ static void load()
 	input.BindCommand(0, dae::GamePadButton::ButtonX, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer1.get()));
 	input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer1.get()));
 
+	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
+	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(-1, 0)));
+	input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, 1)));
+	input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(1, 0)));
+
+	input.BindCommand(SDL_SCANCODE_F, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer1.get()));
+	input.BindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer1.get()));
+
 	auto pPlayer1LivesDisplay = std::make_unique<dae::GameObject>();
 	pPlayer1LivesDisplay->AddComponent<dae::RenderComponent>();
-	pPlayer1LivesDisplay->AddComponent<dae::TextComponent>("Lives: 0", inputFont);
-	pPlayer1LivesDisplay->AddComponent<dae::HealthDisplayComponent>(pPlayer1.get());
-	pPlayer1LivesDisplay->SetLocalPosition(10, 180);
+	pPlayer1LivesDisplay->AddComponent<dae::TextComponent>("LEFT 0", inputFont);
+	pPlayer1LivesDisplay->AddComponent<dae::HealthDisplayComponent>(pPlayer1.get(), "LEFT ");
+	pPlayer1LivesDisplay->SetLocalPosition(900, 180);
 
 	auto pPlayer1ScoreDisplay = std::make_unique<dae::GameObject>();
 	pPlayer1ScoreDisplay->AddComponent<dae::RenderComponent>();
-	pPlayer1ScoreDisplay->AddComponent<dae::TextComponent>("Score: 0", inputFont);
-	pPlayer1ScoreDisplay->AddComponent<dae::ScoreDisplayComponent>(pPlayer1.get());
-	pPlayer1ScoreDisplay->SetLocalPosition(10, 200);
-
-	auto pPlayer2 = std::make_unique<dae::GameObject>();
-	pPlayer2->AddComponent<dae::RenderComponent>();
-	pPlayer2->AddComponent<dae::AnimatedSpriteComponent>("Bomberman64.png", 4, 0.1f, 64.0f);
-	pPlayer2->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
-	pPlayer2->AddComponent<dae::HealthComponent>(3);
-	pPlayer2->AddComponent<dae::ScoreComponent>();
-	pPlayer2->SetLocalPosition(192, 288);
-
-	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, -1)));
-	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(-1, 0)));
-	input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, 1)));
-	input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(1, 0)));
-
-	input.BindCommand(SDL_SCANCODE_F, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer2.get()));
-	input.BindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer2.get()));
-
-	auto pPlayer2LivesDisplay = std::make_unique<dae::GameObject>();
-	pPlayer2LivesDisplay->AddComponent<dae::RenderComponent>();
-	pPlayer2LivesDisplay->AddComponent<dae::TextComponent>("Lives: 0", inputFont);
-	pPlayer2LivesDisplay->AddComponent<dae::HealthDisplayComponent>(pPlayer2.get());
-	pPlayer2LivesDisplay->SetLocalPosition(920, 180);
-
-	auto pPlayer2ScoreDisplay = std::make_unique<dae::GameObject>();
-	pPlayer2ScoreDisplay->AddComponent<dae::RenderComponent>();
-	pPlayer2ScoreDisplay->AddComponent<dae::TextComponent>("Score: 0", inputFont);
-	pPlayer2ScoreDisplay->AddComponent<dae::ScoreDisplayComponent>(pPlayer2.get());
-	pPlayer2ScoreDisplay->SetLocalPosition(920, 200);
+	pPlayer1ScoreDisplay->AddComponent<dae::TextComponent>("00", inputFont);
+	pPlayer1ScoreDisplay->AddComponent<dae::ScoreDisplayComponent>(pPlayer1.get(), "");
+	pPlayer1ScoreDisplay->SetLocalPosition(500, 180);
 
 	scene.Add(std::move(pPlayer1));
 	scene.Add(std::move(pPlayer1LivesDisplay));
 	scene.Add(std::move(pPlayer1ScoreDisplay));
 
-	scene.Add(std::move(pPlayer2));
-	scene.Add(std::move(pPlayer2LivesDisplay));
-	scene.Add(std::move(pPlayer2ScoreDisplay));
+	auto pBomb = std::make_unique<dae::GameObject>();
+	pBomb->AddComponent<dae::RenderComponent>();
+	pBomb->AddComponent<dae::AnimatedSpriteComponent>("Bomb.png", 4, 0.2f, 64.0f);
+	auto pTimer = pBomb->AddComponent<dae::TimerComponent>(3.0f);
+	pTimer->Start();
+	pBomb->SetLocalPosition(64, 416);
+	scene.Add(std::move(pBomb));
+
+	auto pLevelTimer = std::make_unique<dae::GameObject>();
+	auto pLevelTimerComponent = pLevelTimer->AddComponent<dae::TimerComponent>(201.0f);
+	pLevelTimerComponent->Start();
+	auto pLevelTimerDisplay = std::make_unique<dae::GameObject>();
+	pLevelTimerDisplay->AddComponent<dae::RenderComponent>();
+	pLevelTimerDisplay->AddComponent<dae::TextComponent>("TIME 200", inputFont);
+	pLevelTimerDisplay->AddComponent<dae::TimerDisplayComponent>(pLevelTimer.get(), "TIME ");
+	pLevelTimerDisplay->SetLocalPosition(20, 180);
+	scene.Add(std::move(pLevelTimer));
+	scene.Add(std::move(pLevelTimerDisplay));
 }
 
 int main(int, char* []) {

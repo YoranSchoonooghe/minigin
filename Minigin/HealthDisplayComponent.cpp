@@ -4,8 +4,9 @@
 #include "Events/Subject.h"
 #include <string>
 
-dae::HealthDisplayComponent::HealthDisplayComponent(GameObject* pOwner, GameObject* pHealthOwner)
+dae::HealthDisplayComponent::HealthDisplayComponent(GameObject* pOwner, GameObject* pHealthOwner, const std::string& label)
 	: Component{ pOwner }
+	, m_label{ label }
 {
 	HealthComponent* pHealthComponent = pHealthOwner->GetComponent<HealthComponent>();
 	m_pHealthComponentSubject = pHealthComponent->OnHealthChanged();
@@ -47,5 +48,5 @@ void dae::HealthDisplayComponent::Notify(const Event& event, GameObject* pGameOb
 
 void dae::HealthDisplayComponent::UpdateDisplayText()
 {
-	m_pTextComponent->SetText("Lives: " + std::to_string(m_health));
+	m_pTextComponent->SetText(m_label + " " + std::to_string(m_health));
 }

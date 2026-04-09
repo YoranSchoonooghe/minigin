@@ -18,6 +18,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/AnimatedSpriteComponent.cpp
   Minigin/CharacterControllerComponent.cpp
   Minigin/Component.cpp
+  Minigin/Components/TimerComponent.cpp
+  Minigin/Components/TimerDisplayComponent.cpp
   Minigin/Font.cpp
   Minigin/FPSComponent.cpp
   Minigin/GameObject.cpp

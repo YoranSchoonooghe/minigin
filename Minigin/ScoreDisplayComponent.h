@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Events/Observer.h"
+#include <string>
 
 namespace dae
 {
@@ -10,7 +11,7 @@ namespace dae
 	class ScoreDisplayComponent final : public Component, public Observer
 	{
 	public:
-		explicit ScoreDisplayComponent(GameObject* pOwner, GameObject* pScoreOwner);
+		explicit ScoreDisplayComponent(GameObject* pOwner, GameObject* pScoreOwner, const std::string& label = "Score:");
 		~ScoreDisplayComponent();
 		ScoreDisplayComponent(const ScoreDisplayComponent& other) = delete;
 		ScoreDisplayComponent(ScoreDisplayComponent&& other) = delete;
@@ -26,5 +27,6 @@ namespace dae
 		TextComponent* m_pTextComponent = nullptr;
 		Subject* m_pScoreComponentSubject = nullptr;
 		int m_score = 0;
+		std::string m_label;
 	};
 }

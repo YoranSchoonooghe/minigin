@@ -4,8 +4,9 @@
 #include "Events/Subject.h"
 #include <string>
 
-dae::ScoreDisplayComponent::ScoreDisplayComponent(GameObject* pOwner, GameObject* pScoreOwner)
+dae::ScoreDisplayComponent::ScoreDisplayComponent(GameObject* pOwner, GameObject* pScoreOwner, const std::string& label)
 	: Component{ pOwner }
+	, m_label{ label }
 {
 	ScoreComponent* pScoreComponent = pScoreOwner->GetComponent<ScoreComponent>();
 	m_pScoreComponentSubject = pScoreComponent->OnScoreChanged();
@@ -47,5 +48,5 @@ void dae::ScoreDisplayComponent::Notify(const Event& event, GameObject* pGameObj
 
 void dae::ScoreDisplayComponent::UpdateDisplayText()
 {
-	m_pTextComponent->SetText("Score: " + std::to_string(m_score));
+	m_pTextComponent->SetText(m_label + " " + std::to_string(m_score));
 }
