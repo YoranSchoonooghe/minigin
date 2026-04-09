@@ -13,9 +13,7 @@
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "RenderComponent.h"
-#include "RotatorComponent.h"
 #include "AnimatedSpriteComponent.h"
-#include "ThrashCacheComponent.h"
 #include "Commands/MoveCommand.h"
 #include "CharacterControllerComponent.h"
 #include "HealthComponent.h"
@@ -24,7 +22,7 @@
 #include "ScoreComponent.h"
 #include "ScoreDisplayComponent.h"
 #include "Commands/ScoreCommand.h"
-#include "SteamAchievementComponent.h"
+#include "Renderer.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -34,21 +32,14 @@ static void load()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 	auto& input = dae::InputManager::GetInstance();
 
+	dae::Renderer::GetInstance().SetBackgroundColor({ 161, 161, 161, 255 });
+
 	auto pBackground = std::make_unique<dae::GameObject>();
-	pBackground->AddComponent<dae::RenderComponent>("background.png");
+	pBackground->AddComponent<dae::RenderComponent>("LevelBackground.png");
+	pBackground->SetLocalPosition(0.0f, 224.0f);
 	scene.Add(std::move(pBackground));
 
-	auto pLogo = std::make_unique<dae::GameObject>();
-	pLogo->AddComponent<dae::RenderComponent>("logo.png");
-	pLogo->SetLocalPosition(358, 180);
-	scene.Add(std::move(pLogo));
-
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto pTitle = std::make_unique<dae::GameObject>();
-	pTitle->AddComponent<dae::TextComponent>("Programming 4 Assignment", font);
-	pTitle->AddComponent<dae::RenderComponent>();
-	pTitle->SetLocalPosition(292, 20);
-	scene.Add(std::move(pTitle));
 
 	auto pFPSCounter = std::make_unique<dae::GameObject>();
 	pFPSCounter->AddComponent<dae::RenderComponent>();
@@ -70,15 +61,15 @@ static void load()
 	pKeyboardText->SetLocalPosition(10, 140);
 	scene.Add(std::move(pKeyboardText));
 
-	const float SPEED{ 100.0f };
+	const float SPEED{ 200.0f };
 
 	auto pPlayer1 = std::make_unique<dae::GameObject>();
 	pPlayer1->AddComponent<dae::RenderComponent>();
-	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("BombermanWalk32.png", 4, 0.1f, 32.0f);
+	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Bomberman64.png", 4, 0.1f, 64.0f);
 	pPlayer1->AddComponent<dae::CharacterControllerComponent>(SPEED);
 	pPlayer1->AddComponent<dae::HealthComponent>(3);
 	pPlayer1->AddComponent<dae::ScoreComponent>();
-	pPlayer1->SetLocalPosition(300, 380);
+	pPlayer1->SetLocalPosition(64, 288);
 
 	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
 	input.BindCommand(0, dae::GamePadButton::DPadLeft, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(-1, 0)));
@@ -102,11 +93,11 @@ static void load()
 
 	auto pPlayer2 = std::make_unique<dae::GameObject>();
 	pPlayer2->AddComponent<dae::RenderComponent>();
-	pPlayer2->AddComponent<dae::AnimatedSpriteComponent>("BombermanWalk32.png", 4, 0.1f, 32.0f);
+	pPlayer2->AddComponent<dae::AnimatedSpriteComponent>("Bomberman64.png", 4, 0.1f, 64.0f);
 	pPlayer2->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
 	pPlayer2->AddComponent<dae::HealthComponent>(3);
 	pPlayer2->AddComponent<dae::ScoreComponent>();
-	pPlayer2->SetLocalPosition(340, 420);
+	pPlayer2->SetLocalPosition(192, 288);
 
 	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, -1)));
 	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(-1, 0)));
@@ -128,13 +119,6 @@ static void load()
 	pPlayer2ScoreDisplay->AddComponent<dae::ScoreDisplayComponent>(pPlayer2.get());
 	pPlayer2ScoreDisplay->SetLocalPosition(920, 200);
 
-#if USE_STEAMWORKS
-	auto pSteamAchievement = std::make_unique<dae::GameObject>();
-	pSteamAchievement->AddComponent<dae::SteamAchievementComponent>(pPlayer1.get());
-	pSteamAchievement->AddComponent<dae::SteamAchievementComponent>(pPlayer2.get());
-	scene.Add(std::move(pSteamAchievement));
-#endif
-
 	scene.Add(std::move(pPlayer1));
 	scene.Add(std::move(pPlayer1LivesDisplay));
 	scene.Add(std::move(pPlayer1ScoreDisplay));
@@ -144,15 +128,15 @@ static void load()
 	scene.Add(std::move(pPlayer2ScoreDisplay));
 }
 
-//int main(int, char*[]) {
-//#if __EMSCRIPTEN__
-//	fs::path data_location = "";
-//#else
-//	fs::path data_location = "./Data/";
-//	if(!fs::exists(data_location))
-//		data_location = "../Data/";
-//#endif
-//	dae::Minigin engine(data_location);
-//	engine.Run(load);
-//    return 0;
-//}
+int main(int, char* []) {
+#if __EMSCRIPTEN__
+	fs::path data_location = "";
+#else
+	fs::path data_location = "./Data/";
+	if (!fs::exists(data_location))
+		data_location = "../Data/";
+#endif
+	dae::Minigin engine(data_location);
+	engine.Run(load);
+	return 0;
+}

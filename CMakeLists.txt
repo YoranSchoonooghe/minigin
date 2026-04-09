@@ -25,7 +25,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/HealthComponent.cpp
   Minigin/HealthDisplayComponent.cpp
   Minigin/InputManager.cpp
-  Minigin/Main.cpp
+  Bomberman/Main.cpp
   Minigin/Minigin.cpp
   Minigin/RenderComponent.cpp
   Minigin/Renderer.cpp

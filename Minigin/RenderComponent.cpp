@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "Texture2D.h"
+#include <SDL3/SDL_render.h>
 
 dae::RenderComponent::RenderComponent(GameObject* pOwner, const std::string& filename)
 	: Component(pOwner)
@@ -35,6 +36,7 @@ void dae::RenderComponent::SetTexture(std::shared_ptr<Texture2D> pTexture)
 {
 	m_pTexture = pTexture;
 	InitializeSrcRect();
+	SDL_SetTextureScaleMode(m_pTexture->GetSDLTexture(), SDL_SCALEMODE_PIXELART);
 }
 
 void dae::RenderComponent::SetSrcRect(int row, int col, float width, float height)
