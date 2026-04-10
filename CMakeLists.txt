@@ -6,7 +6,7 @@ if(EMSCRIPTEN)
 endif()
 
 if(EMSCRIPTEN)
-  set(TARGET_NAME Bomberman_web)
+  set(TARGET_NAME minigin_web)
   set(TARGET_PARAM )
 else()
   set(TARGET_NAME Bomberman)
