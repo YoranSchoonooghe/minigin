@@ -32,6 +32,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/InputManager.cpp
   Bomberman/Main.cpp
   Minigin/Minigin.cpp
+  Minigin/Properties.cpp
   Minigin/RenderComponent.cpp
   Minigin/Renderer.cpp
   Minigin/ResourceManager.cpp

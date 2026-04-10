@@ -113,6 +113,11 @@ void dae::GameObject::SetLocalPosition(const glm::vec3& pos)
 	SetPositionDirty();
 }
 
+const glm::vec3& dae::GameObject::GetLocalPosition()
+{
+	return m_transform.GetLocalPosition();
+}
+
 const glm::vec3& dae::GameObject::GetWorldPosition()
 {
 	return m_transform.GetWorldPosition();

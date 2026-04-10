@@ -1,6 +1,7 @@
 #include "SceneHierarchy.h"
 #include "SceneManager.h"
 #include "GameObject.h"
+#include "Editor.h"
 #include <imgui.h>
 
 dae::SceneHierarchy::SceneHierarchy()
@@ -43,6 +44,7 @@ void dae::SceneHierarchy::DrawGameObjectNode(GameObject* pGameObject)
     if (ImGui::IsItemClicked())
     {
         m_pSelectedGameObject = pGameObject;
+        Editor::GetInstance().SetSelectedGameObject(m_pSelectedGameObject);
     }
 
     if (opened && !(flags & ImGuiTreeNodeFlags_Leaf))
