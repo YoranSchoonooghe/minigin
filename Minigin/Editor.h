@@ -17,10 +17,15 @@ namespace dae
 		void SetSelectedGameObject(GameObject* pGameObject) { m_pSelectedGameObject = pGameObject; };
 		GameObject* GetSelectedGameObject() const { return m_pSelectedGameObject; };
 
+		bool IsDrawCollisionShapesEnabled() const { return m_drawCollisionShapes; };
+		void SetDrawCollisionShapes(bool enabled) { m_drawCollisionShapes = enabled; };
+
 	private:
 		std::unique_ptr<SceneHierarchy> m_pSceneHierarchy;
 		std::unique_ptr<Properties> m_pProperties;
 
-		GameObject* m_pSelectedGameObject;
+		GameObject* m_pSelectedGameObject = nullptr;
+
+		bool m_drawCollisionShapes = false;
 	};
 }

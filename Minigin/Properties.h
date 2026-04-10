@@ -14,7 +14,9 @@ namespace dae
 
 		void RenderUI();
 
+
 	private:
 		void RenderTransformProperties();
+		void RenderGlobalProperties();
 	};
 }

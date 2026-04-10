@@ -28,7 +28,7 @@ void dae::Properties::RenderUI()
 
         if (ImGui::BeginTabItem("Global"))
         {
-            ImGui::Text("Global view content");
+            RenderGlobalProperties();
             ImGui::EndTabItem();
         }
 
@@ -69,4 +69,12 @@ void dae::Properties::RenderTransformProperties()
 
         ImGui::PopItemWidth();
     }
+}
+
+void dae::Properties::RenderGlobalProperties()
+{
+    bool drawCollisioinShapes = Editor::GetInstance().IsDrawCollisionShapesEnabled();
+
+    if (ImGui::Checkbox("Draw Collision Shapes", &drawCollisioinShapes))
+        Editor::GetInstance().SetDrawCollisionShapes(drawCollisioinShapes);
 }
