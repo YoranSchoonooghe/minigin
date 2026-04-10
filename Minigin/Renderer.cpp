@@ -8,6 +8,7 @@
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_sdlrenderer3.h>
 #include <implot.h>
+#include "Editor.h"
 
 void dae::Renderer::Init(SDL_Window* window)
 {
@@ -31,6 +32,8 @@ void dae::Renderer::Init(SDL_Window* window)
 	ImGui::CreateContext();
 	ImPlot::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::GetStyle().ScaleAllSizes(1.5f);
+	io.FontGlobalScale = 1.5f;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 #if __EMSCRIPTEN__
@@ -50,6 +53,7 @@ void dae::Renderer::Render() const
 	ImGui::NewFrame();
 
 	SceneManager::GetInstance().RenderUI();
+	Editor::GetInstance().RenderUI();
 
 	ImGui::Render();
 	

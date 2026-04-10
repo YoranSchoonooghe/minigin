@@ -3,13 +3,14 @@
 #include <vector>
 #include "Transform.h"
 #include "Component.h"
+#include <string>
 
 namespace dae
 {
 	class GameObject final
 	{
 	public:
-		explicit GameObject();
+		explicit GameObject(const std::string& name = "GameObject");
 		~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -45,6 +46,8 @@ namespace dae
 		void Destroy();
 		bool IsDestroyed() const;
 
+		std::string GetName() const;
+
 	private:
 		void SetPositionDirty();
 		void AddChild(GameObject* pChild);
@@ -58,6 +61,8 @@ namespace dae
 
 		std::vector<std::unique_ptr<Component>> m_pComponents{};
 		bool m_markedForDestroy = false;
+
+		std::string m_name;
 	};
 
 #pragma region TemplateFunctions

@@ -71,3 +71,17 @@ void dae::Scene::CleanupDestroyedComponents()
 	);
 }
 
+std::vector<GameObject*> dae::Scene::GetGameObjects() const
+{
+	std::vector<GameObject*> pGameObjects{};
+
+	pGameObjects.reserve(m_pGameObjects.size());
+
+	for (int i = 0; i < m_pGameObjects.size(); ++i)
+	{
+		pGameObjects.emplace_back(m_pGameObjects[i].get());
+	}
+	
+	return pGameObjects;
+}
+

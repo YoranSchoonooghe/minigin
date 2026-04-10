@@ -1,8 +1,9 @@
 #include "GameObject.h"
 #include "Transform.h"
 
-dae::GameObject::GameObject()
+dae::GameObject::GameObject(const std::string& name)
 	: m_transform{ this }
+	, m_name{ name }
 {
 }
 
@@ -146,6 +147,11 @@ void dae::GameObject::Destroy()
 bool dae::GameObject::IsDestroyed() const
 {
 	return m_markedForDestroy;
+}
+
+std::string dae::GameObject::GetName() const
+{
+	return m_name;
 }
 
 void dae::GameObject::SetPositionDirty()

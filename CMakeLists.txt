@@ -22,6 +22,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Components/BoxColliderComponent.cpp
   Minigin/Components/TimerComponent.cpp
   Minigin/Components/TimerDisplayComponent.cpp
+  Minigin/Editor.cpp
   Minigin/Font.cpp
   Minigin/FPSComponent.cpp
   Minigin/GameObject.cpp
@@ -36,6 +37,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/ResourceManager.cpp
   Minigin/RotatorComponent.cpp
   Minigin/Scene.cpp
+  Minigin/SceneHierarchy.cpp
   Minigin/SceneManager.cpp
   Minigin/ScoreComponent.cpp
   Minigin/ScoreDisplayComponent.cpp

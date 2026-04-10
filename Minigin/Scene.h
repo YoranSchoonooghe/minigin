@@ -26,6 +26,8 @@ namespace dae
 
 		void CleanupDestroyedComponents();
 
+		std::vector<GameObject*> GetGameObjects() const;
+
 	private:
 		friend class SceneManager;
 		explicit Scene() = default;

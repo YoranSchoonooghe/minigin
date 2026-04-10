@@ -27,7 +27,7 @@ namespace dae
 			pTimer->Start();
 			pBomb->SetLocalPosition(position.x, position.y);
 
-			auto pScene = SceneManager::GetInstance().GetScene();
+			auto pScene = SceneManager::GetInstance().GetActiveScene();
 			pScene->Add(std::move(pBomb));
 		}
 
