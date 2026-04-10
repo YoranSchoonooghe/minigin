@@ -77,9 +77,9 @@ std::vector<GameObject*> dae::Scene::GetGameObjects() const
 
 	pGameObjects.reserve(m_pGameObjects.size());
 
-	for (int i = 0; i < m_pGameObjects.size(); ++i)
+	for (const auto& pGameObject : m_pGameObjects)
 	{
-		pGameObjects.emplace_back(m_pGameObjects[i].get());
+		pGameObjects.emplace_back(pGameObject.get());
 	}
 	
 	return pGameObjects;
