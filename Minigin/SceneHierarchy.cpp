@@ -38,7 +38,7 @@ void dae::SceneHierarchy::DrawGameObjectNode(GameObject* pGameObject)
         flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
     }
 
-    bool opened = ImGui::TreeNodeEx((void*)pGameObject, flags, pGameObject->GetName().c_str());
+    bool opened = ImGui::TreeNodeEx((void*)pGameObject, flags, "%s", pGameObject->GetName().c_str());
 
     if (ImGui::IsItemClicked())
     {
