@@ -27,7 +27,6 @@
 #include "Components/TimerDisplayComponent.h"
 #include "Components/BoxColliderComponent.h"
 #include "Commands/DropBombCommand.h"
-#include "SceneHierarchy.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;

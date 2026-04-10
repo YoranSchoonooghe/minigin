@@ -6,15 +6,15 @@ if(EMSCRIPTEN)
 endif()
 
 if(EMSCRIPTEN)
-  set(TARGET_NAME minigin_web)
+  set(TARGET_NAME Bomberman_web)
   set(TARGET_PARAM )
 else()
-  set(TARGET_NAME minigin)
+  set(TARGET_NAME Bomberman)
   set(TARGET_PARAM WIN32)
 endif()
 
 # list source files here
-add_executable(${TARGET_NAME} ${TARGET_PARAM}
+add_library(Minigin STATIC
   Minigin/AnimatedSpriteComponent.cpp
   Minigin/CharacterControllerComponent.cpp
   Minigin/Commands/Command.h
@@ -30,7 +30,6 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/HealthComponent.cpp
   Minigin/HealthDisplayComponent.cpp
   Minigin/InputManager.cpp
-  Bomberman/Main.cpp
   Minigin/Minigin.cpp
   Minigin/Properties.cpp
   Minigin/RenderComponent.cpp
@@ -47,10 +46,15 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/TextComponent.cpp
   Minigin/Texture2D.cpp
   Minigin/ThrashCacheComponent.cpp
-  Minigin/Transform.cpp)
+  Minigin/Transform.cpp
+)
+
+add_executable(${TARGET_NAME} ${TARGET_PARAM}
+    Bomberman/Main.cpp
+)
 
 # enable c++20 features
-target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+target_compile_features(Minigin PUBLIC cxx_std_20)
 
 include(FetchContent)
 # add glm
@@ -178,16 +182,16 @@ find_package(Steamworks QUIET)
 
 #Xinput
 if (WIN32)
-    target_link_libraries("${TARGET_NAME}" PUBLIC xinput)
+    target_link_libraries(Minigin PUBLIC xinput)
 endif()
 
-target_include_directories("${TARGET_NAME}" PUBLIC
+target_include_directories(Minigin PUBLIC
   ${CMAKE_SOURCE_DIR}/Minigin/
   ${imgui_SOURCE_DIR}
   ${VLD_INCLUDE_DIR}
 )
 
-target_link_libraries("${TARGET_NAME}" PUBLIC
+target_link_libraries(Minigin PUBLIC
   SDL3::SDL3
   SDL3_ttf::SDL3_ttf
   glm::glm
@@ -196,10 +200,15 @@ target_link_libraries("${TARGET_NAME}" PUBLIC
   ${VLD_LIBRARIES}
 )
 
+target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+target_link_libraries(${TARGET_NAME} PRIVATE Minigin)
+
 if(MSVC)
   # compile at warning level 4 + treat warnings as errors
+  target_compile_options(Minigin PRIVATE /W4 /WX)
   target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
 else()
+  target_compile_options(Minigin PRIVATE -Wall -Wextra -Werror)
   target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Werror)
 endif()
 
