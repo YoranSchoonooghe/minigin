@@ -2,9 +2,9 @@
 #include "Transform.h"
 
 dae::GameObject::GameObject(const std::string& name)
-	: m_transform{ this }
-	, m_name{ name }
+	: m_name{ name }
 {
+	m_pTransform = std::make_unique<Transform>(this);
 }
 
 dae::GameObject::~GameObject()
@@ -103,30 +103,30 @@ dae::GameObject* dae::GameObject::GetChildAt(int index) const
 
 void dae::GameObject::SetLocalPosition(float x, float y, float z)
 {
-	m_transform.SetLocalPosition(x, y, z);
+	m_pTransform->SetLocalPosition(x, y, z);
 	SetPositionDirty();
 }
 
 void dae::GameObject::SetLocalPosition(const glm::vec3& pos)
 {
-	m_transform.SetLocalPosition(pos);
+	m_pTransform->SetLocalPosition(pos);
 	SetPositionDirty();
 }
 
 const glm::vec3& dae::GameObject::GetLocalPosition()
 {
-	return m_transform.GetLocalPosition();
+	return m_pTransform->GetLocalPosition();
 }
 
 const glm::vec3& dae::GameObject::GetWorldPosition()
 {
-	return m_transform.GetWorldPosition();
+	return m_pTransform->GetWorldPosition();
 }
 
-const dae::Transform* dae::GameObject::GetTransform() const
-{
-	return &m_transform;
-}
+//dae::Transform* dae::GameObject::GetTransform() const
+//{
+//	return m_pTransform.get();
+//}
 
 void dae::GameObject::CleanupDestroyedComponents()
 {
@@ -161,7 +161,7 @@ std::string dae::GameObject::GetName() const
 
 void dae::GameObject::SetPositionDirty()
 {
-	m_transform.SetPositionDirty();
+	m_pTransform->SetPositionDirty();
 
 	for (auto& pChild : m_pChildren)
 	{

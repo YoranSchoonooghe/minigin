@@ -22,6 +22,7 @@ void dae::TimerComponent::Update(float deltaTime)
 
 		if (m_elapsedTime >= m_duration)
 		{
+			m_elapsedTime = m_duration;
 			m_isPlaying = false;
 
 			m_timerSubject->NotifyObservers(Event(make_sdbm_hash("OnTimerFinished")), GetOwner());
@@ -54,7 +55,7 @@ void dae::TimerComponent::Restart()
 
 float dae::TimerComponent::GetTimeLeft() const
 {
-	return (m_duration - m_elapsedTime);
+	return (std::max(m_duration - m_elapsedTime, 0.0f));
 }
 
 dae::Subject* dae::TimerComponent::GetTimerSubject() const

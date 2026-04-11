@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "GameObject.h"
+#include "CollisionSystem.h"
 
 namespace dae
 {
@@ -27,12 +28,14 @@ namespace dae
 		void CleanupDestroyedComponents();
 
 		std::vector<GameObject*> GetGameObjects() const;
+		CollisionSystem* GetCollisionSystem() const { return m_pCollisionSystem.get(); };
 
 	private:
 		friend class SceneManager;
-		explicit Scene() = default;
+		explicit Scene();
 
 		std::vector < std::unique_ptr<GameObject>> m_pGameObjects{};
+		std::unique_ptr<CollisionSystem> m_pCollisionSystem;
 	};
 
 }

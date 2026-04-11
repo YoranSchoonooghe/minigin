@@ -3,6 +3,11 @@
 
 using namespace dae;
 
+Scene::Scene()
+{
+	m_pCollisionSystem = std::make_unique<CollisionSystem>();
+}
+
 void Scene::Add(std::unique_ptr<GameObject> object)
 {
 	assert(object != nullptr && "Cannot add a null GameObject to the scene.");

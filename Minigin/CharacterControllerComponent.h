@@ -4,6 +4,8 @@
 
 namespace dae
 {
+	class BoxColliderComponent;
+
 	class CharacterControllerComponent final : public Component
 	{
 	public:
@@ -18,9 +20,13 @@ namespace dae
 
 		void SetSpeed(float speed);
 		void SetMoveDirection(const glm::vec2& direction);
+		void MoveAndSlide(const glm::vec2& displacement);
 
 	private:
 		float m_speed = 0;
 		glm::vec2 m_moveDirection = { 0, 0 };
+
+		BoxColliderComponent* m_pCollider = nullptr;
+		bool m_checkedForCollider = false;
 	};
 }

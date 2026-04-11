@@ -32,7 +32,7 @@ namespace dae
 		void SetLocalPosition(const glm::vec3& pos);
 		const glm::vec3& GetLocalPosition();
 		const glm::vec3& GetWorldPosition();
-		const Transform* GetTransform() const;
+		//Transform* GetTransform() const;
 
 		template<typename T, typename... Args>
 		T* AddComponent(Args&&... args);
@@ -58,7 +58,7 @@ namespace dae
 		GameObject* m_pParent = nullptr;
 		std::vector<GameObject*> m_pChildren{};
 
-		Transform m_transform;
+		std::unique_ptr<Transform> m_pTransform;
 
 		std::vector<std::unique_ptr<Component>> m_pComponents{};
 		bool m_markedForDestroy = false;

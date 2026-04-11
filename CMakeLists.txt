@@ -18,6 +18,7 @@ add_library(Minigin STATIC
   Minigin/AnimatedSpriteComponent.cpp
   Minigin/CharacterControllerComponent.cpp
   Minigin/Commands/Command.h
+  Minigin/CollisionSystem.cpp
   Minigin/Component.cpp
   Minigin/Components/BoxColliderComponent.cpp
   Minigin/Components/TimerComponent.cpp

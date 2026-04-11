@@ -74,7 +74,7 @@ static void load()
 	pPlayer1->AddComponent<dae::CharacterControllerComponent>(SPEED);
 	pPlayer1->AddComponent<dae::HealthComponent>(3);
 	pPlayer1->AddComponent<dae::ScoreComponent>();
-	pPlayer1->AddComponent<dae::BoxColliderComponent>(32.0f, 64.0f, glm::vec2{ 16.0f, 0.0f });
+	pPlayer1->AddComponent<dae::BoxColliderComponent>(32.0f, 62.0f, glm::vec2{ 16.0f, 1.0f });
 	pPlayer1->SetLocalPosition(64, 288);
 
 	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
@@ -136,9 +136,19 @@ static void load()
 
 	scene.Add(std::move(pUI));
 
-	//auto pSceneHierarchy = std::make_unique<dae::GameObject>("Hierarchy");
-	//pSceneHierarchy->AddComponent<dae::SceneHierarchy>();
-	//scene.Add(std::move(pSceneHierarchy));
+	auto pPillars = std::make_unique<dae::GameObject>("Pillars");
+
+	auto pPillar1 = std::make_unique<dae::GameObject>("Pillar");
+	pPillar1->AddComponent<dae::BoxColliderComponent>(64.0f, 64.0f);
+	pPillar1->SetLocalPosition(128.0f, 352.0f);
+	scene.Add(std::move(pPillar1));
+
+	auto pPillar2 = std::make_unique<dae::GameObject>("Pillar");
+	pPillar2->AddComponent<dae::BoxColliderComponent>(64.0f, 64.0f);
+	pPillar2->SetLocalPosition(128.0f, 480.0f);
+	scene.Add(std::move(pPillar2));
+
+	scene.Add(std::move(pPillars));
 }
 
 int main(int, char* []) {
