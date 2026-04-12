@@ -5,9 +5,10 @@
 #include "SceneManager.h"
 
 
-dae::BoxColliderComponent::BoxColliderComponent(GameObject* pOwner, float width, float height, const glm::vec2& offset, bool isTrigger)
+dae::BoxColliderComponent::BoxColliderComponent(GameObject* pOwner, float width, float height, const glm::vec2& offset, bool isTrigger, float pushThreshold, float pushValue)
 	: Component{ pOwner }
 	, m_width{ width }, m_height{ height }, m_offset{ offset }, m_isTrigger{ isTrigger }
+	, m_pushThreshold{ pushThreshold }, m_pushValue{ pushValue }
 {
 	SceneManager::GetInstance().GetActiveScene()->GetCollisionSystem()->Register(this);
 }
@@ -36,7 +37,7 @@ dae::Rect dae::BoxColliderComponent::GetCollider() const
 	Rect collider{};
 
 	collider.left = worldPosition.x + m_offset.x;
-	collider.bottom = worldPosition.y + m_offset.y;
+	collider.top = worldPosition.y + m_offset.y;
 	collider.width = m_width;
 	collider.height = m_height;
 

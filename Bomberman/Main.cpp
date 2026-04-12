@@ -74,7 +74,7 @@ static void load()
 	pPlayer1->AddComponent<dae::CharacterControllerComponent>(SPEED);
 	pPlayer1->AddComponent<dae::HealthComponent>(3);
 	pPlayer1->AddComponent<dae::ScoreComponent>();
-	pPlayer1->AddComponent<dae::BoxColliderComponent>(32.0f, 62.0f, glm::vec2{ 16.0f, 1.0f });
+	pPlayer1->AddComponent<dae::BoxColliderComponent>(32.0f, 62.0f, glm::vec2{ 16.0f, 1.0f }, false, 20.0f, 2.0f);
 	pPlayer1->SetLocalPosition(64, 288);
 
 	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
@@ -138,17 +138,42 @@ static void load()
 
 	auto pPillars = std::make_unique<dae::GameObject>("Pillars");
 
-	auto pPillar1 = std::make_unique<dae::GameObject>("Pillar");
-	pPillar1->AddComponent<dae::BoxColliderComponent>(64.0f, 64.0f);
-	pPillar1->SetLocalPosition(128.0f, 352.0f);
-	scene.Add(std::move(pPillar1));
-
-	auto pPillar2 = std::make_unique<dae::GameObject>("Pillar");
-	pPillar2->AddComponent<dae::BoxColliderComponent>(64.0f, 64.0f);
-	pPillar2->SetLocalPosition(128.0f, 480.0f);
-	scene.Add(std::move(pPillar2));
+	const float tileSize{ 64.0f };
+	for (int i = 0; i < 7; ++i)
+	{
+		for (int j = 0; j < 5; ++j)
+		{
+			auto pPillar = std::make_unique<dae::GameObject>("Pillar");
+			pPillar->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize);
+			pPillar->SetLocalPosition(128.0f + 2 * tileSize * i, 352.0f + 2 * tileSize * j);
+			pPillar->SetParent(pPillars.get());
+			scene.Add(std::move(pPillar));
+		}
+	}
 
 	scene.Add(std::move(pPillars));
+
+	auto pLevelBorder = std::make_unique<dae::GameObject>("LevelBorder");
+
+	auto pTopBorder = std::make_unique<dae::GameObject>("TopBorder");
+	pTopBorder->AddComponent<dae::BoxColliderComponent>(1024.0f, tileSize);
+	pTopBorder->SetLocalPosition(0.0f, 224.0f);
+	pTopBorder->SetParent(pLevelBorder.get());
+	scene.Add(std::move(pTopBorder));
+
+	auto pBottomBorder = std::make_unique<dae::GameObject>("BottomBorder");
+	pBottomBorder->AddComponent<dae::BoxColliderComponent>(1024.0f, tileSize);
+	pBottomBorder->SetLocalPosition(0.0f, 992.0f);
+	pBottomBorder->SetParent(pLevelBorder.get());
+	scene.Add(std::move(pBottomBorder));
+
+	auto pLeftBorder = std::make_unique<dae::GameObject>("LeftBorder");
+	pLeftBorder->AddComponent<dae::BoxColliderComponent>(tileSize, 704.0f);
+	pLeftBorder->SetLocalPosition(0.0f, 288.0f);
+	pLeftBorder->SetParent(pLevelBorder.get());
+	scene.Add(std::move(pLeftBorder));
+
+	scene.Add(std::move(pLevelBorder));
 }
 
 int main(int, char* []) {

@@ -9,7 +9,7 @@ namespace dae
 	struct Rect
 	{
 		float left;
-		float bottom;
+		float top;
 		float width;
 		float height;
 	};
@@ -17,7 +17,8 @@ namespace dae
 	class BoxColliderComponent final : public Component
 	{
 	public:
-		explicit BoxColliderComponent(GameObject* pOwner, float width, float height, const glm::vec2& offset = {0, 0}, bool isTrigger = false);
+		explicit BoxColliderComponent(GameObject* pOwner, float width, float height, const glm::vec2& offset = {0, 0}, bool isTrigger = false, 
+			float pushThreshold = 0.0f, float pushValue = 1.0f);
 		~BoxColliderComponent();
 		BoxColliderComponent(const BoxColliderComponent& other) = delete;
 		BoxColliderComponent(BoxColliderComponent&& other) = delete;
@@ -30,10 +31,16 @@ namespace dae
 		Rect GetCollider() const;
 		GameObject* GetGameObject() const { return GetOwner(); };
 
+		float GetPushThreshold() const { return m_pushThreshold; };
+		float GetPushValue() const { return m_pushValue; };
+
 	private:
 		float m_width;
 		float m_height;
 		glm::vec2 m_offset;
 		bool m_isTrigger = false;
+
+		float m_pushThreshold;
+		float m_pushValue;
 	};
 }

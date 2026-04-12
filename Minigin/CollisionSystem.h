@@ -18,12 +18,13 @@ namespace dae
 		void Register(BoxColliderComponent* pCollider);
 		void Unregister(BoxColliderComponent* pCollider);
 
-		void Sweep(BoxColliderComponent* pCollider);
 		void MoveAndSlide(BoxColliderComponent* pCollider, const glm::vec2& displacement);
-
 		bool IsOverlapping(const Rect& firstRect, const Rect& secondRect) const;
 
 	private:
+		void MoveOnAxis(BoxColliderComponent* pCollider, const glm::vec2& displacement);
+		void ApplyPush(BoxColliderComponent* pMovableCollider, BoxColliderComponent* pFixedCollider, const glm::vec2& displacement);
+
 		std::vector<BoxColliderComponent*> m_pColliders;
 
 	};
