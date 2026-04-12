@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 #include "glm/glm.hpp"
+#include <Events/Subject.h>
+#include <vector>
 
 namespace dae
 {
@@ -34,6 +36,10 @@ namespace dae
 		float GetPushThreshold() const { return m_pushThreshold; };
 		float GetPushValue() const { return m_pushValue; };
 
+		Subject* GetSubject() const { return m_pTriggerSubject.get(); };
+		void AddOverlappingGameObject(GameObject* pGameObject);
+		void RemoveOverlappingGameObject(GameObject* pGameObject);
+
 	private:
 		float m_width;
 		float m_height;
@@ -42,5 +48,8 @@ namespace dae
 
 		float m_pushThreshold;
 		float m_pushValue;
+
+		std::unique_ptr<Subject> m_pTriggerSubject;
+		std::vector<GameObject*> m_pOverlappingGameObjects;
 	};
 }

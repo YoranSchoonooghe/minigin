@@ -13,11 +13,11 @@ void dae::CollisionSystem::Unregister(BoxColliderComponent* pCollider)
 
 void dae::CollisionSystem::MoveAndSlide(BoxColliderComponent* pCollider, const glm::vec2& displacement)
 {
-	if (std::abs(displacement.x) > 0.0f)
+	if (displacement.x * displacement.x > FLT_EPSILON)
 	{
 		MoveOnAxis(pCollider, { displacement.x, 0.0f });
 	}
-	if (std::abs(displacement.y) > 0.0f)
+	if (displacement.y * displacement.y > FLT_EPSILON)
 	{
 		MoveOnAxis(pCollider, { 0.0f, displacement.y });
 	}
@@ -47,7 +47,20 @@ void dae::CollisionSystem::MoveOnAxis(BoxColliderComponent* pCollider, const glm
 	for (const auto& pCol : m_pColliders)
 	{
 		if (pCollider == pCol) continue;
-		if (pCol->IsTrigger()) continue;
+
+		if (pCol->IsTrigger())
+		{
+			if (IsOverlapping(predictedCollider, pCol->GetCollider()))
+			{
+				pCol->AddOverlappingGameObject(pCollider->GetGameObject());
+			}
+			else if (IsOverlapping(pCollider->GetCollider(), pCol->GetCollider()))
+			{
+				pCol->RemoveOverlappingGameObject(pCollider->GetGameObject());
+			}
+
+			continue;
+		}
 
 		if (IsOverlapping(predictedCollider, pCol->GetCollider()))
 		{

@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Editor.h"
 #include "SceneManager.h"
+#include <algorithm>
 
 
 dae::BoxColliderComponent::BoxColliderComponent(GameObject* pOwner, float width, float height, const glm::vec2& offset, bool isTrigger, float pushThreshold, float pushValue)
@@ -10,6 +11,8 @@ dae::BoxColliderComponent::BoxColliderComponent(GameObject* pOwner, float width,
 	, m_width{ width }, m_height{ height }, m_offset{ offset }, m_isTrigger{ isTrigger }
 	, m_pushThreshold{ pushThreshold }, m_pushValue{ pushValue }
 {
+	m_pTriggerSubject = std::make_unique<Subject>();
+
 	SceneManager::GetInstance().GetActiveScene()->GetCollisionSystem()->Register(this);
 }
 
@@ -42,4 +45,20 @@ dae::Rect dae::BoxColliderComponent::GetCollider() const
 	collider.height = m_height;
 
 	return collider;
+}
+
+void dae::BoxColliderComponent::AddOverlappingGameObject(GameObject* pGameObject)
+{
+	if (std::ranges::find(m_pOverlappingGameObjects, pGameObject) != m_pOverlappingGameObjects.end()) return;
+
+	m_pOverlappingGameObjects.push_back(pGameObject);
+
+	m_pTriggerSubject->NotifyObservers(Event(make_sdbm_hash("OnTriggerEnter")), pGameObject);
+}
+
+void dae::BoxColliderComponent::RemoveOverlappingGameObject(GameObject* pGameObject)
+{
+	std::erase(m_pOverlappingGameObjects, pGameObject);
+
+	m_pTriggerSubject->NotifyObservers(Event(make_sdbm_hash("OnTriggerExit")), pGameObject);
 }

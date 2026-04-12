@@ -174,6 +174,12 @@ static void load()
 	scene.Add(std::move(pLeftBorder));
 
 	scene.Add(std::move(pLevelBorder));
+
+	auto pExit = std::make_unique<dae::GameObject>("Exit");
+	pExit->AddComponent<dae::RenderComponent>("Exit.png");
+	pExit->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize, glm::vec2{0.0f, 0.0f}, true);
+	pExit->SetLocalPosition(256.0f, 288.0f);
+	scene.Add(std::move(pExit));
 }
 
 int main(int, char* []) {
