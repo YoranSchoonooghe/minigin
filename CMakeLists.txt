@@ -52,6 +52,7 @@ add_library(Minigin STATIC
 
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Bomberman/Main.cpp
+    Bomberman/Components/BombComponent.cpp
 )
 
 # enable c++20 features

@@ -2,7 +2,7 @@
 #include <Commands/Command.h>
 #include "GameObject.h"
 #include "Scene.h"
-#include <cassert>
+#include "Components/BombComponent.h"
 #include <cmath>
 
 namespace dae
@@ -23,7 +23,9 @@ namespace dae
 			auto pBomb = std::make_unique<dae::GameObject>();
 			pBomb->AddComponent<dae::RenderComponent>();
 			pBomb->AddComponent<dae::AnimatedSpriteComponent>("Bomb.png", 4, 0.2f, 64.0f);
+			pBomb->AddComponent<dae::BoxColliderComponent>(64.0f, 64.0f, glm::vec2{ 0.0f, 0.0f }, true);
 			auto pTimer = pBomb->AddComponent<dae::TimerComponent>(3.0f);
+			pBomb->AddComponent<dae::BombComponent>();
 			pTimer->Start();
 			pBomb->SetLocalPosition(position.x, position.y);
 

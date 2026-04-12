@@ -30,6 +30,8 @@ namespace dae
 		void Render() const override;
 
 		bool IsTrigger() const { return m_isTrigger; };
+		void SetTrigger(bool isTrigger) { m_isTrigger = isTrigger; };
+
 		Rect GetCollider() const;
 		GameObject* GetGameObject() const { return GetOwner(); };
 

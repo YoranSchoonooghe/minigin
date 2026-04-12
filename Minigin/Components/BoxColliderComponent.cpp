@@ -18,8 +18,17 @@ dae::BoxColliderComponent::BoxColliderComponent(GameObject* pOwner, float width,
 
 dae::BoxColliderComponent::~BoxColliderComponent()
 {
-	// STILL NEED TO FIX THIS
-	//SceneManager::GetInstance().GetActiveScene()->GetCollisionSystem()->Unregister(this);
+	auto pActiveScene = SceneManager::GetInstance().GetActiveScene();
+	if (pActiveScene)
+	{
+		auto pCollisionSystem = pActiveScene->GetCollisionSystem();
+		if (pCollisionSystem)
+		{
+			pCollisionSystem->Unregister(this);
+		}
+	}
+
+	m_pTriggerSubject->NotifyObservers(Event(make_sdbm_hash("OnSubjectDestroyed")), GetOwner());
 }
 
 void dae::BoxColliderComponent::Render() const

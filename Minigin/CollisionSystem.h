@@ -26,6 +26,5 @@ namespace dae
 		void ApplyPush(BoxColliderComponent* pMovableCollider, BoxColliderComponent* pFixedCollider, const glm::vec2& displacement);
 
 		std::vector<BoxColliderComponent*> m_pColliders;
-
 	};
 }

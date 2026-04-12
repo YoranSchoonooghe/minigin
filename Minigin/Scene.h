@@ -27,15 +27,15 @@ namespace dae
 
 		void CleanupDestroyedComponents();
 
-		std::vector<GameObject*> GetGameObjects() const;
 		CollisionSystem* GetCollisionSystem() const { return m_pCollisionSystem.get(); };
+		std::vector<GameObject*> GetGameObjects() const;
 
 	private:
 		friend class SceneManager;
 		explicit Scene();
 
-		std::vector < std::unique_ptr<GameObject>> m_pGameObjects{};
 		std::unique_ptr<CollisionSystem> m_pCollisionSystem;
+		std::vector < std::unique_ptr<GameObject>> m_pGameObjects{};
 	};
 
 }
