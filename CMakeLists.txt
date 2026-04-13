@@ -55,6 +55,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Bomberman/Components/BombComponent.cpp
 )
 
+target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman/)
+
 # enable c++20 features
 target_compile_features(Minigin PUBLIC cxx_std_20)
 
