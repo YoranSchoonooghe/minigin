@@ -4,9 +4,10 @@
 #include "RenderComponent.h"
 #include <cassert>
 
-dae::AnimatedSpriteComponent::AnimatedSpriteComponent(GameObject* pOwner, const std::string& filename, int cols, float frameTime, float tileSize)
+dae::AnimatedSpriteComponent::AnimatedSpriteComponent(GameObject* pOwner, const std::string& filename, 
+	int rows, int cols, float frameTime, float tileSize, bool autoPlay)
 	: Component{pOwner}
-	, m_cols{ cols }, m_frameTime{ frameTime }, m_tileSize{ tileSize }
+	, m_rows{ rows}, m_cols{ cols }, m_frameTime{ frameTime }, m_tileSize{ tileSize }, m_isPlaying{ autoPlay }
 {
 	m_pTexture = ResourceManager::GetInstance().LoadTexture(filename);
 }
@@ -18,6 +19,8 @@ void dae::AnimatedSpriteComponent::Update(float deltaTime)
 		InitializeRenderComponent();
 	}
 
+	if (!m_isPlaying) return;
+
 	m_accumulatedTime += deltaTime;
 
 	if (m_accumulatedTime >= m_frameTime)
@@ -27,8 +30,16 @@ void dae::AnimatedSpriteComponent::Update(float deltaTime)
 
 		m_accumulatedTime = 0.0f;
 
-		m_pRenderComponent->SetSrcRect(0, m_currentCol, m_tileSize, m_tileSize);
+		m_pRenderComponent->SetSrcRect(m_currentRow, m_currentCol, m_tileSize, m_tileSize);
 	}
+}
+
+void dae::AnimatedSpriteComponent::SetRow(int rowIdx)
+{
+	if (rowIdx < 0 || rowIdx > m_rows) return;
+
+	m_currentRow = rowIdx;
+	m_pRenderComponent->SetSrcRect(m_currentRow, m_currentCol, m_tileSize, m_tileSize);
 }
 
 void dae::AnimatedSpriteComponent::InitializeRenderComponent()

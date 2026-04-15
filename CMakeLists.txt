@@ -53,6 +53,7 @@ add_library(Minigin STATIC
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Bomberman/Main.cpp
     Bomberman/Components/BombComponent.cpp
+    Bomberman/Components/AnimationControllerComponent.cpp
 )
 
 target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman/)

@@ -1,5 +1,4 @@
 #include "CharacterControllerComponent.h"
-#include "CharacterControllerComponent.h"
 #include "GameObject.h"
 #include "SceneManager.h"
 #include "Components/BoxColliderComponent.h"
@@ -8,6 +7,12 @@ dae::CharacterControllerComponent::CharacterControllerComponent(GameObject* pOwn
 	: Component{ pOwner }
     , m_speed{ speed }
 {
+    m_pSubject = std::make_unique<Subject>();
+}
+
+dae::CharacterControllerComponent::~CharacterControllerComponent()
+{
+    m_pSubject->NotifyObservers(Event(make_sdbm_hash("OnSubjectDestroyed")), GetOwner());
 }
 
 void dae::CharacterControllerComponent::Update(float deltaTime)
@@ -18,9 +23,13 @@ void dae::CharacterControllerComponent::Update(float deltaTime)
         m_checkedForCollider = true;
     }
 
-    float sqrLength = m_moveDirection.x * m_moveDirection.x + m_moveDirection.y * m_moveDirection.y;
-    
-    if (sqrLength > FLT_EPSILON)
+    bool isMoving{ IsMoving() };
+
+    SendEvents(isMoving);
+
+    m_wasMovingLastFrame = isMoving;
+
+    if (isMoving)
     {
         auto direction = glm::normalize(m_moveDirection);
 
@@ -59,4 +68,21 @@ void dae::CharacterControllerComponent::SetMoveDirection(const glm::vec2& direct
 void dae::CharacterControllerComponent::MoveAndSlide(const glm::vec2& displacement)
 {
     SceneManager::GetInstance().GetActiveScene()->GetCollisionSystem()->MoveAndSlide(m_pCollider, displacement);
+}
+
+bool dae::CharacterControllerComponent::IsMoving() const
+{
+    return (m_moveDirection.x * m_moveDirection.x + m_moveDirection.y * m_moveDirection.y > FLT_EPSILON);
+}
+
+void dae::CharacterControllerComponent::SendEvents(bool isMoving)
+{
+    if (!m_wasMovingLastFrame && isMoving)
+    {
+        m_pSubject->NotifyObservers(Event(make_sdbm_hash("OnStartedMoving")), GetOwner());
+    }
+    else if (m_wasMovingLastFrame && !isMoving)
+    {
+        m_pSubject->NotifyObservers(Event(make_sdbm_hash("OnStoppedMoving")), GetOwner());
+    }
 }

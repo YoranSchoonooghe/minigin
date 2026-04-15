@@ -27,6 +27,7 @@
 #include "Components/TimerDisplayComponent.h"
 #include "Components/BoxColliderComponent.h"
 #include "Commands/DropBombCommand.h"
+#include "Components/AnimationControllerComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -70,11 +71,12 @@ static void load()
 
 	auto pPlayer1 = std::make_unique<dae::GameObject>("Bomberman");
 	pPlayer1->AddComponent<dae::RenderComponent>();
-	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Bomberman.png", 4, 0.1f, 64.0f);
 	pPlayer1->AddComponent<dae::CharacterControllerComponent>(SPEED);
+	pPlayer1->AddComponent<dae::BoxColliderComponent>(48.0f, 62.0f, glm::vec2{ 8.0f, 1.0f }, false, 20.0f, 2.0f);
+	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Bomberman.png", 4, 4, 0.07f, 64.0f, false);
+	pPlayer1->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 2, 3, 1, 0 });
 	pPlayer1->AddComponent<dae::HealthComponent>(3);
 	pPlayer1->AddComponent<dae::ScoreComponent>();
-	pPlayer1->AddComponent<dae::BoxColliderComponent>(32.0f, 62.0f, glm::vec2{ 16.0f, 1.0f }, false, 20.0f, 2.0f);
 	pPlayer1->SetLocalPosition(64, 288);
 
 	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
