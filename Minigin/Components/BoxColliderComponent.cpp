@@ -36,10 +36,17 @@ void dae::BoxColliderComponent::Render() const
 	if (!Editor::GetInstance().IsDrawCollisionShapesEnabled()) return;
 
 	const auto& worldPosition = GetOwner()->GetWorldPosition();
+	const auto& cameraPosition = SceneManager::GetInstance().GetActiveScene()->GetActiveCamera()->GetWorldPosition();
 
 	SDL_Color debugColor = { 0, 255, 255, 150 };
 
-	Renderer::GetInstance().RenderRect(worldPosition.x + m_offset.x, worldPosition.y + m_offset.y, m_width, m_height, debugColor);
+	Renderer::GetInstance().RenderRect(
+		worldPosition.x + m_offset.x - cameraPosition.x,
+		worldPosition.y + m_offset.y - cameraPosition.y,
+		m_width,
+		m_height,
+		debugColor
+	);
 }
 
 dae::Rect dae::BoxColliderComponent::GetCollider() const

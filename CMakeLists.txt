@@ -21,6 +21,7 @@ add_library(Minigin STATIC
   Minigin/CollisionSystem.cpp
   Minigin/Component.cpp
   Minigin/Components/BoxColliderComponent.cpp
+  Minigin/Components/CameraComponent.cpp
   Minigin/Components/TimerComponent.cpp
   Minigin/Components/TimerDisplayComponent.cpp
   Minigin/Editor.cpp

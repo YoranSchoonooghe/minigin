@@ -11,7 +11,7 @@ namespace dae
 	class RenderComponent final : public Component
 	{
 	public:
-		explicit RenderComponent(GameObject* pOwner, const std::string& filename = "");
+		explicit RenderComponent(GameObject* pOwner, const std::string& filename = "", bool isInScreenSpace = false);
 		~RenderComponent() = default;
 		RenderComponent(const RenderComponent& other) = delete;
 		RenderComponent(RenderComponent&& other) = delete;
@@ -28,5 +28,7 @@ namespace dae
 
 		std::shared_ptr<Texture2D> m_pTexture = nullptr;
 		SDL_FRect m_srcRect{};
+
+		bool m_isInScreenSpace;
 	};
 }

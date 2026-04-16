@@ -28,6 +28,7 @@
 #include "Components/BoxColliderComponent.h"
 #include "Commands/DropBombCommand.h"
 #include "Components/AnimationControllerComponent.h"
+#include "Components/CameraComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -48,7 +49,7 @@ static void load()
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
 	auto pFPSCounter = std::make_unique<dae::GameObject>("FPSCounter");
-	pFPSCounter->AddComponent<dae::RenderComponent>();
+	pFPSCounter->AddComponent<dae::RenderComponent>("", true);
 	pFPSCounter->AddComponent<dae::TextComponent>("60.0 FPS", font);
 	pFPSCounter->AddComponent<dae::FPSComponent>();
 	pFPSCounter->SetLocalPosition(10, 10);
@@ -57,13 +58,13 @@ static void load()
 	auto inputFont = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24);
 	auto pGamepadText = std::make_unique<dae::GameObject>("Player1Text");
 	pGamepadText->AddComponent<dae::TextComponent>("Use the D-Pad to move Player 1. Press A to increase score and X to inflict damage.", inputFont);
-	pGamepadText->AddComponent<dae::RenderComponent>();
+	pGamepadText->AddComponent<dae::RenderComponent>("", true);
 	pGamepadText->SetLocalPosition(10, 80);
 	scene.Add(std::move(pGamepadText));
 
 	auto pKeyboardText = std::make_unique<dae::GameObject>("Player2Text");
 	pKeyboardText->AddComponent<dae::TextComponent>("Use WASD to move Player 2. Press Space to increase score and F to inflict damage.", inputFont);
-	pKeyboardText->AddComponent<dae::RenderComponent>();
+	pKeyboardText->AddComponent<dae::RenderComponent>("", true);
 	pKeyboardText->SetLocalPosition(10, 110);
 	scene.Add(std::move(pKeyboardText));
 
@@ -73,7 +74,7 @@ static void load()
 	pPlayer1->AddComponent<dae::RenderComponent>();
 	pPlayer1->AddComponent<dae::CharacterControllerComponent>(SPEED);
 	pPlayer1->AddComponent<dae::BoxColliderComponent>(48.0f, 62.0f, glm::vec2{ 8.0f, 1.0f }, false, 20.0f, 2.0f);
-	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Bomberman.png", 4, 4, 0.07f, 64.0f, false);
+	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Characters/Bomberman.png", 4, 4, 0.07f, 64.0f, false);
 	pPlayer1->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 2, 3, 1, 0 });
 	pPlayer1->AddComponent<dae::HealthComponent>(3);
 	pPlayer1->AddComponent<dae::ScoreComponent>();
@@ -99,18 +100,24 @@ static void load()
 	auto pUI = std::make_unique<dae::GameObject>("UI");
 
 	auto pPlayer1LivesDisplay = std::make_unique<dae::GameObject>("Player1HP");
-	pPlayer1LivesDisplay->AddComponent<dae::RenderComponent>();
+	pPlayer1LivesDisplay->AddComponent<dae::RenderComponent>("", true);
 	pPlayer1LivesDisplay->AddComponent<dae::TextComponent>("LEFT 0", inputFont);
 	pPlayer1LivesDisplay->AddComponent<dae::HealthDisplayComponent>(pPlayer1.get(), "LEFT ");
 	pPlayer1LivesDisplay->SetLocalPosition(900, 180);
 	pPlayer1LivesDisplay->SetParent(pUI.get());
 
 	auto pPlayer1ScoreDisplay = std::make_unique<dae::GameObject>("Player1Score");
-	pPlayer1ScoreDisplay->AddComponent<dae::RenderComponent>();
+	pPlayer1ScoreDisplay->AddComponent<dae::RenderComponent>("", true);
 	pPlayer1ScoreDisplay->AddComponent<dae::TextComponent>("00", inputFont);
 	pPlayer1ScoreDisplay->AddComponent<dae::ScoreDisplayComponent>(pPlayer1.get(), "");
 	pPlayer1ScoreDisplay->SetLocalPosition(500, 180);
 	pPlayer1ScoreDisplay->SetParent(pUI.get());
+
+	auto pCamera = std::make_unique<dae::GameObject>("Camera");
+	pCamera->AddComponent<dae::CameraComponent>(pPlayer1.get(), SDL_FRect(0.0f, 0.0f, 1984.0f, 1024.0f), glm::vec2(32.0f, 32.0f));
+	//pCamera->SetParent(pPlayer1.get());
+	scene.SetCamera(pCamera.get());
+	scene.Add(std::move(pCamera));
 
 	scene.Add(std::move(pPlayer1));
 	scene.Add(std::move(pPlayer1LivesDisplay));
@@ -128,7 +135,7 @@ static void load()
 	auto pLevelTimerComponent = pLevelTimer->AddComponent<dae::TimerComponent>(201.0f);
 	pLevelTimerComponent->Start();
 	auto pLevelTimerDisplay = std::make_unique<dae::GameObject>("LevelTimerDisplay");
-	pLevelTimerDisplay->AddComponent<dae::RenderComponent>();
+	pLevelTimerDisplay->AddComponent<dae::RenderComponent>("", true);
 	pLevelTimerDisplay->AddComponent<dae::TextComponent>("TIME 200", inputFont);
 	pLevelTimerDisplay->AddComponent<dae::TimerDisplayComponent>(pLevelTimer.get(), "TIME ");
 	pLevelTimerDisplay->SetLocalPosition(20, 180);
@@ -141,7 +148,7 @@ static void load()
 	auto pPillars = std::make_unique<dae::GameObject>("Pillars");
 
 	const float tileSize{ 64.0f };
-	for (int i = 0; i < 7; ++i)
+	for (int i = 0; i < 14; ++i)
 	{
 		for (int j = 0; j < 5; ++j)
 		{
@@ -158,13 +165,13 @@ static void load()
 	auto pLevelBorder = std::make_unique<dae::GameObject>("LevelBorder");
 
 	auto pTopBorder = std::make_unique<dae::GameObject>("TopBorder");
-	pTopBorder->AddComponent<dae::BoxColliderComponent>(1024.0f, tileSize);
+	pTopBorder->AddComponent<dae::BoxColliderComponent>(1984.0f, tileSize);
 	pTopBorder->SetLocalPosition(0.0f, 224.0f);
 	pTopBorder->SetParent(pLevelBorder.get());
 	scene.Add(std::move(pTopBorder));
 
 	auto pBottomBorder = std::make_unique<dae::GameObject>("BottomBorder");
-	pBottomBorder->AddComponent<dae::BoxColliderComponent>(1024.0f, tileSize);
+	pBottomBorder->AddComponent<dae::BoxColliderComponent>(1984.0f, tileSize);
 	pBottomBorder->SetLocalPosition(0.0f, 992.0f);
 	pBottomBorder->SetParent(pLevelBorder.get());
 	scene.Add(std::move(pBottomBorder));
@@ -175,13 +182,34 @@ static void load()
 	pLeftBorder->SetParent(pLevelBorder.get());
 	scene.Add(std::move(pLeftBorder));
 
+	auto pRightBorder = std::make_unique<dae::GameObject>("LeftBorder");
+	pRightBorder->AddComponent<dae::BoxColliderComponent>(tileSize, 704.0f);
+	pRightBorder->SetLocalPosition(1920.0f, 288.0f);
+	pRightBorder->SetParent(pLevelBorder.get());
+	scene.Add(std::move(pRightBorder));
+
 	scene.Add(std::move(pLevelBorder));
 
 	auto pExit = std::make_unique<dae::GameObject>("Exit");
-	pExit->AddComponent<dae::RenderComponent>("Exit.png");
+	pExit->AddComponent<dae::RenderComponent>("Interactables/Exit.png");
 	pExit->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize, glm::vec2{0.0f, 0.0f}, true);
 	pExit->SetLocalPosition(256.0f, 288.0f);
 	scene.Add(std::move(pExit));
+
+	auto pBalloom = std::make_unique<dae::GameObject>("Balloom");
+	pBalloom->AddComponent<dae::RenderComponent>();
+	pBalloom->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
+	pBalloom->AddComponent<dae::BoxColliderComponent>(48.0f, 62.0f, glm::vec2{ 8.0f, 1.0f }, false, 20.0f, 2.0f);
+	pBalloom->AddComponent<dae::AnimatedSpriteComponent>("Characters/Balloom.png", 4, 4, 0.1f, 64.0f, false);
+	pBalloom->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 1, 0 });
+	pBalloom->SetLocalPosition(448.0f, 608.0f);
+
+	input.BindCommand(1, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(0, -1)));
+	input.BindCommand(1, dae::GamePadButton::DPadLeft, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(-1, 0)));
+	input.BindCommand(1, dae::GamePadButton::DPadDown, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(0, 1)));
+	input.BindCommand(1, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(1, 0)));
+
+	scene.Add(std::move(pBalloom));
 }
 
 int main(int, char* []) {

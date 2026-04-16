@@ -4,10 +4,12 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "Texture2D.h"
+#include "SceneManager.h"
 #include <SDL3/SDL_render.h>
 
-dae::RenderComponent::RenderComponent(GameObject* pOwner, const std::string& filename)
+dae::RenderComponent::RenderComponent(GameObject* pOwner, const std::string& filename, bool isInScreenSpace)
 	: Component(pOwner)
+	, m_isInScreenSpace{ isInScreenSpace }
 {
 	if (filename != "")
 	{
@@ -26,6 +28,14 @@ void dae::RenderComponent::Render() const
 	dstRect.w = m_srcRect.w;
 	dstRect.h = m_srcRect.h;
 
+	if (!m_isInScreenSpace)
+	{
+		const auto& cameraPosition = SceneManager::GetInstance().GetActiveScene()->GetActiveCamera()->GetWorldPosition();
+
+		dstRect.x -= cameraPosition.x;
+		dstRect.y -= cameraPosition.y;
+	}
+
 	if (m_pTexture != nullptr)
 	{
 		Renderer::GetInstance().RenderTexture(*m_pTexture, m_srcRect, dstRect);
@@ -36,7 +46,7 @@ void dae::RenderComponent::SetTexture(std::shared_ptr<Texture2D> pTexture)
 {
 	m_pTexture = pTexture;
 	InitializeSrcRect();
-	SDL_SetTextureScaleMode(m_pTexture->GetSDLTexture(), SDL_SCALEMODE_PIXELART);
+	SDL_SetTextureScaleMode(m_pTexture->GetSDLTexture(), SDL_SCALEMODE_NEAREST);
 }
 
 void dae::RenderComponent::SetSrcRect(int row, int col, float width, float height)

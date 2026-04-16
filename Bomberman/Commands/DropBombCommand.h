@@ -22,7 +22,7 @@ namespace dae
 
 			auto pBomb = std::make_unique<dae::GameObject>();
 			pBomb->AddComponent<dae::RenderComponent>();
-			pBomb->AddComponent<dae::AnimatedSpriteComponent>("Bomb.png", 1, 4, 0.2f, 64.0f);
+			pBomb->AddComponent<dae::AnimatedSpriteComponent>("Interactables/Bomb.png", 1, 4, 0.2f, 64.0f);
 			pBomb->AddComponent<dae::BoxColliderComponent>(64.0f, 64.0f, glm::vec2{ 0.0f, 0.0f }, true);
 			auto pTimer = pBomb->AddComponent<dae::TimerComponent>(3.0f);
 			pBomb->AddComponent<dae::BombComponent>();
