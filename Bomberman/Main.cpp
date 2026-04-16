@@ -29,6 +29,7 @@
 #include "Commands/DropBombCommand.h"
 #include "Components/AnimationControllerComponent.h"
 #include "Components/CameraComponent.h"
+#include "Components/PowerUpComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -182,7 +183,7 @@ static void load()
 	pLeftBorder->SetParent(pLevelBorder.get());
 	scene.Add(std::move(pLeftBorder));
 
-	auto pRightBorder = std::make_unique<dae::GameObject>("LeftBorder");
+	auto pRightBorder = std::make_unique<dae::GameObject>("RightBorder");
 	pRightBorder->AddComponent<dae::BoxColliderComponent>(tileSize, 704.0f);
 	pRightBorder->SetLocalPosition(1920.0f, 288.0f);
 	pRightBorder->SetParent(pLevelBorder.get());
@@ -193,8 +194,21 @@ static void load()
 	auto pExit = std::make_unique<dae::GameObject>("Exit");
 	pExit->AddComponent<dae::RenderComponent>("Interactables/Exit.png");
 	pExit->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize, glm::vec2{0.0f, 0.0f}, true);
-	pExit->SetLocalPosition(256.0f, 288.0f);
+	pExit->SetLocalPosition(384.0f, 288.0f);
 	scene.Add(std::move(pExit));
+
+	auto pBrick = std::make_unique<dae::GameObject>("Brick");
+	pBrick->AddComponent<dae::RenderComponent>("Interactables/Brick.png");
+	pBrick->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize);
+	pBrick->SetLocalPosition(256.0f, 288.0f);
+	scene.Add(std::move(pBrick));
+
+	auto pPowerUp = std::make_unique<dae::GameObject>("PowerUp");
+	pPowerUp->AddComponent<dae::RenderComponent>("Interactables/PowerUps.png");
+	pPowerUp->AddComponent<dae::BoxColliderComponent>(40.0f, 40.0f, glm::vec2{ 12.0f, 12.0f }, true);
+	pPowerUp->AddComponent<dae::PowerUpComponent>(dae::PowerUpComponent::Type::ExtraBomb);
+	pPowerUp->SetLocalPosition(256.0f, 416.0f);
+	scene.Add(std::move(pPowerUp));
 
 	auto pBalloom = std::make_unique<dae::GameObject>("Balloom");
 	pBalloom->AddComponent<dae::RenderComponent>();
