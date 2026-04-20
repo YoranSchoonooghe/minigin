@@ -34,6 +34,8 @@ namespace dae
 		const glm::vec3& GetWorldPosition();
 		//Transform* GetTransform() const;
 
+		std::vector<Component*> GetComponents() const;
+
 		template<typename T, typename... Args>
 		T* AddComponent(Args&&... args);
 		template<typename T>

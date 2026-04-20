@@ -2,6 +2,8 @@
 
 namespace dae
 {
+	class GameObject;
+
 	class Properties final
 	{
 	public:
@@ -18,5 +20,7 @@ namespace dae
 	private:
 		void RenderTransformProperties();
 		void RenderGlobalProperties();
+
+		GameObject* m_pSelectedGameObject{ nullptr };
 	};
 }

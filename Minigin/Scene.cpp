@@ -57,14 +57,6 @@ void Scene::Render() const
 	}
 }
 
-void dae::Scene::RenderUI()
-{
-	for (const auto& object : m_pGameObjects)
-	{
-		object->RenderUI();
-	}
-}
-
 void dae::Scene::CleanupDestroyedComponents()
 {
 	m_pGameObjects.erase(std::remove_if(m_pGameObjects.begin(), m_pGameObjects.end(),

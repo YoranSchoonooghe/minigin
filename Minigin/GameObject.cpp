@@ -44,6 +44,8 @@ void dae::GameObject::Render() const
 
 void dae::GameObject::RenderUI()
 {
+	//m_pTransform->RenderUI();
+
 	for (auto& pComponent : m_pComponents)
 	{
 		pComponent->RenderUI();
@@ -121,6 +123,18 @@ const glm::vec3& dae::GameObject::GetLocalPosition()
 const glm::vec3& dae::GameObject::GetWorldPosition()
 {
 	return m_pTransform->GetWorldPosition();
+}
+
+std::vector<dae::Component*> dae::GameObject::GetComponents() const
+{
+	std::vector<Component*> pComponents{};
+	pComponents.reserve(m_pComponents.size());
+	for (const auto& pComponent : m_pComponents)
+	{
+		pComponents.emplace_back(pComponent.get());
+	}
+
+	return pComponents;
 }
 
 //dae::Transform* dae::GameObject::GetTransform() const

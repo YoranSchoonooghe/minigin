@@ -16,6 +16,7 @@ namespace dae
 		CameraComponent& operator=(CameraComponent&& other) = delete;
 
 		void Update(float deltaTime) override;
+		void RenderUI() override;
 
 	private:
 		GameObject* m_pTarget;

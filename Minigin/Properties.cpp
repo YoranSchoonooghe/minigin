@@ -16,7 +16,14 @@ void dae::Properties::RenderUI()
         if (ImGui::BeginTabItem("GameObject"))
         {
             //ImGui::Text("Object view content");
-            RenderTransformProperties();
+            m_pSelectedGameObject = Editor::GetInstance().GetSelectedGameObject();
+            if (m_pSelectedGameObject)
+            {
+                RenderTransformProperties();
+
+                m_pSelectedGameObject->RenderUI();
+            }
+
             ImGui::EndTabItem();
         }
 
@@ -40,12 +47,9 @@ void dae::Properties::RenderUI()
 
 void dae::Properties::RenderTransformProperties()
 {
-    auto pSelectedGameObject{ Editor::GetInstance().GetSelectedGameObject() };
-    if (!pSelectedGameObject) return;
-
     if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        auto position = pSelectedGameObject->GetLocalPosition();
+        auto position = m_pSelectedGameObject->GetLocalPosition();
         float pos[3] = { position.x, position.y, position.z };
 
         ImGui::Text("Position");
@@ -55,17 +59,17 @@ void dae::Properties::RenderTransformProperties()
 
         ImGui::Text("X"); ImGui::SameLine();
         if (ImGui::DragFloat("##X", &pos[0], 1.0f, 0.0f, 0.0f, "%.1f"))
-            pSelectedGameObject->SetLocalPosition({ pos[0], pos[1], pos[2] });
+            m_pSelectedGameObject->SetLocalPosition({ pos[0], pos[1], pos[2] });
 
         ImGui::SameLine();
         ImGui::Text("Y"); ImGui::SameLine();
         if (ImGui::DragFloat("##Y", &pos[1], 1.0f, 0.0f, 0.0f, "%.1f"))
-            pSelectedGameObject->SetLocalPosition({ pos[0], pos[1], pos[2] });
+            m_pSelectedGameObject->SetLocalPosition({ pos[0], pos[1], pos[2] });
 
         ImGui::SameLine();
         ImGui::Text("Z"); ImGui::SameLine();
         if (ImGui::DragFloat("##Z", &pos[2], 1.0f, 0.0f, 0.0f, "%.1f"))
-            pSelectedGameObject->SetLocalPosition({ pos[0], pos[1], pos[2] });
+            m_pSelectedGameObject->SetLocalPosition({ pos[0], pos[1], pos[2] });
 
         ImGui::PopItemWidth();
     }

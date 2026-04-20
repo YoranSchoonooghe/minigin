@@ -28,6 +28,7 @@ namespace dae
 		BoxColliderComponent& operator=(BoxColliderComponent&& other) = delete;
 
 		void Render() const override;
+		void RenderUI() override;
 
 		bool IsTrigger() const { return m_isTrigger; };
 		void SetTrigger(bool isTrigger) { m_isTrigger = isTrigger; };

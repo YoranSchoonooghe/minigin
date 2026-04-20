@@ -4,6 +4,7 @@
 #include "Editor.h"
 #include "SceneManager.h"
 #include <algorithm>
+#include "imgui.h"
 
 
 dae::BoxColliderComponent::BoxColliderComponent(GameObject* pOwner, float width, float height, const glm::vec2& offset, bool isTrigger, float pushThreshold, float pushValue)
@@ -47,6 +48,48 @@ void dae::BoxColliderComponent::Render() const
 		m_height,
 		debugColor
 	);
+}
+
+void dae::BoxColliderComponent::RenderUI()
+{
+	if (ImGui::CollapsingHeader("Box Collider", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::PushItemWidth(80);
+
+		ImGui::Text("Width"); ImGui::SameLine();
+		ImGui::DragFloat("##Width", &m_width, 1.0f, 0.0f, 0.0f, "%.1f");
+		ImGui::SameLine();
+		ImGui::Text("Height"); ImGui::SameLine();
+		ImGui::DragFloat("##Height", &m_height, 1.0f, 0.0f, 0.0f, "%.1f");
+
+
+		ImGui::Text("Offset"); ImGui::SameLine();
+
+		ImGui::Text("X"); ImGui::SameLine();
+		ImGui::DragFloat("##OffsetX", &m_offset.x, 1.0f, 0.0f, 0.0f, "%.1f");
+		ImGui::SameLine();
+		ImGui::Text("Y"); ImGui::SameLine();
+		ImGui::DragFloat("##OffsetY", &m_offset.y, 1.0f, 0.0f, 0.0f, "%.1f");
+
+		ImGui::PopItemWidth();
+
+		ImGui::Separator();
+
+		ImGui::Text("Trigger"); ImGui::SameLine();
+		ImGui::Checkbox("##Trigger", &m_isTrigger);
+
+		ImGui::Separator();
+
+		ImGui::PushItemWidth(80);
+
+		ImGui::Text("Push Threshold"); ImGui::SameLine();
+		ImGui::DragFloat("##PushThreshold", &m_pushThreshold, 1.0f, 0.0f, 0.0f, "%.1f");
+
+		ImGui::Text("Push Value"); ImGui::SameLine();
+		ImGui::DragFloat("##PushValue", &m_pushValue, 1.0f, 0.0f, 0.0f, "%.1f");
+
+		ImGui::PopItemWidth();
+	}
 }
 
 dae::Rect dae::BoxColliderComponent::GetCollider() const

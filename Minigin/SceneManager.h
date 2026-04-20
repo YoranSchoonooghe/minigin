@@ -16,7 +16,6 @@ namespace dae
 		void FixedUpdate(float fixedDeltaTime);
 		void Update(float deltaTime);
 		void Render();
-		void RenderUI();
 
 		Scene* GetActiveScene() const { return m_scenes.front().get(); };
 
