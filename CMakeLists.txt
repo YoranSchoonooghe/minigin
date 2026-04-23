@@ -55,6 +55,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Bomberman/Main.cpp
     Bomberman/Components/AnimationControllerComponent.cpp
     Bomberman/Components/BombComponent.cpp
+    Bomberman/Components/BombermanComponent.cpp
+    Bomberman/Components/EnemyBehaviourComponent.cpp
     Bomberman/Components/PowerUpComponent.cpp
 )
 

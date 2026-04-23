@@ -30,6 +30,8 @@
 #include "Components/AnimationControllerComponent.h"
 #include "Components/CameraComponent.h"
 #include "Components/PowerUpComponent.h"
+#include "Components/BombermanComponent.h"
+#include "Components/EnemyBehaviourComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -79,6 +81,7 @@ static void load()
 	pPlayer1->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 2, 3, 1, 0 });
 	pPlayer1->AddComponent<dae::HealthComponent>(3);
 	pPlayer1->AddComponent<dae::ScoreComponent>();
+	pPlayer1->AddComponent<dae::BombermanComponent>();
 	pPlayer1->SetLocalPosition(64, 288);
 
 	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
@@ -216,6 +219,7 @@ static void load()
 	pBalloom->AddComponent<dae::BoxColliderComponent>(48.0f, 62.0f, glm::vec2{ 8.0f, 1.0f }, true, 20.0f, 2.0f);
 	pBalloom->AddComponent<dae::AnimatedSpriteComponent>("Characters/Balloom.png", 4, 4, 0.1f, 64.0f, false);
 	pBalloom->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 1, 0 });
+	pBalloom->AddComponent<dae::EnemyBehaviourComponent>();
 	pBalloom->SetLocalPosition(448.0f, 608.0f);
 
 	input.BindCommand(1, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(0, -1)));
