@@ -29,9 +29,6 @@
 #include "ResourceManager.h"
 
 SDL_Window* g_window{};
-// Temp globals to test SDL_mixer
-MIX_Mixer* g_mixer{};
-MIX_Track* g_track{};
 
 void LogSDLVersion(const std::string& message, int major, int minor, int patch)
 {
@@ -102,32 +99,11 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	// Temp code to test SDL_mixer
 	if (!MIX_Init())
 	{
 		SDL_Log("Mixer error: %s", SDL_GetError());
 		throw std::runtime_error(std::string("Mix_Init Error: ") + SDL_GetError());
 	}
-	g_mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
-	if (!g_mixer)
-	{
-		SDL_Log("MIX_CreateMixerDevice error: %s", SDL_GetError());
-	}
-
-	auto audio = MIX_LoadAudio(g_mixer, "Data/Audio/StageStart.wav", false);
-	if (!audio)
-	{
-		SDL_Log("MIX_LoadAudio error: %s", SDL_GetError());
-	}
-
-	g_track = MIX_CreateTrack(g_mixer);
-	if (!g_track)
-	{
-		SDL_Log("MIX_CreateTrack error: %s", SDL_GetError());
-	}
-
-	MIX_SetTrackAudio(g_track, audio);
-	MIX_PlayTrack(g_track, 0);
 
 	Renderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);

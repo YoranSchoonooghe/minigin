@@ -32,6 +32,8 @@
 #include "Components/PowerUpComponent.h"
 #include "Components/BombermanComponent.h"
 #include "Components/EnemyBehaviourComponent.h"
+#include "Audio/ServiceLocator.h"
+#include "Audio/SDLSoundSystem.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -228,6 +230,10 @@ static void load()
 	input.BindCommand(1, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pBalloom.get(), glm::vec2(1, 0)));
 
 	scene.Add(std::move(pBalloom));
+
+	dae::ServiceLocator::RegisterSoundSystem(std::make_unique<dae::SDLSoundSystem>());
+	dae::ServiceLocator::GetSoundSystem().Play(0, 0);
+
 }
 
 int main(int, char* []) {

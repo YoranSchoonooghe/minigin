@@ -1,3 +1,5 @@
+#pragma once
+
 namespace dae
 {
 	using soundId = unsigned short;

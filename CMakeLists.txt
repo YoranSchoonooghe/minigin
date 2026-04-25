@@ -16,6 +16,7 @@ endif()
 # list source files here
 add_library(Minigin STATIC
   Minigin/Audio/ServiceLocator.cpp
+  Minigin/Audio/SDLSoundSystem.cpp
   Minigin/AnimatedSpriteComponent.cpp
   Minigin/CharacterControllerComponent.cpp
   Minigin/Commands/Command.h
