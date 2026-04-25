@@ -15,13 +15,16 @@ void dae::Properties::RenderUI()
     {
         if (ImGui::BeginTabItem("GameObject"))
         {
-            //ImGui::Text("Object view content");
             m_pSelectedGameObject = Editor::GetInstance().GetSelectedGameObject();
             if (m_pSelectedGameObject)
             {
                 RenderTransformProperties();
 
                 m_pSelectedGameObject->RenderUI();
+            }
+            else
+            {
+                ImGui::Text("No GameObject selected");
             }
 
             ImGui::EndTabItem();
