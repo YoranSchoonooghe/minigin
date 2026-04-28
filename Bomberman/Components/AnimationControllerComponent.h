@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "Components/Component.h"
 #include <glm/fwd.hpp>
 #include "Events/Observer.h"
 

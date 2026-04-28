@@ -1,7 +1,7 @@
 #pragma once
 #include "Command.h"
 #include "GameObject.h"
-#include "CharacterControllerComponent.h"
+#include "Components/CharacterControllerComponent.h"
 #include "Components/AnimationControllerComponent.h"
 #include <glm/glm.hpp>
 #include <cassert>

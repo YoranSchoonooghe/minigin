@@ -2,7 +2,7 @@
 #include <memory>
 #include <vector>
 #include "Transform.h"
-#include "Component.h"
+#include "Components/Component.h"
 #include <string>
 
 namespace dae

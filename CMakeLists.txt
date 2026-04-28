@@ -17,39 +17,33 @@ endif()
 add_library(Minigin STATIC
   Minigin/Audio/ServiceLocator.cpp
   Minigin/Audio/SDLSoundSystem.cpp
-  Minigin/AnimatedSpriteComponent.cpp
-  Minigin/CharacterControllerComponent.cpp
-  Minigin/Commands/Command.h
-  Minigin/CollisionSystem.cpp
-  Minigin/Component.cpp
+  Minigin/Components/Component.cpp
+  Minigin/Components/AnimatedSpriteComponent.cpp
   Minigin/Components/BoxColliderComponent.cpp
   Minigin/Components/CameraComponent.cpp
-  Minigin/Components/TimerComponent.cpp
-  Minigin/Components/TimerDisplayComponent.cpp
+  Minigin/Components/CharacterControllerComponent.cpp
+  Minigin/Components/FPSComponent.cpp
+  Minigin/Components/RenderComponent.cpp
+  Minigin/Components/RotatorComponent.cpp
+  Minigin/Components/SteamAchievementComponent.cpp
+  Minigin/Components/ThrashCacheComponent.cpp
+  Minigin/Commands/Command.h
+  Minigin/CollisionSystem.cpp
   Minigin/Editor.cpp
   Minigin/Font.cpp
-  Minigin/FPSComponent.cpp
   Minigin/GameObject.cpp
   Minigin/GamePad.cpp
-  Minigin/HealthComponent.cpp
-  Minigin/HealthDisplayComponent.cpp
   Minigin/InputManager.cpp
   Minigin/Minigin.cpp
   Minigin/Properties.cpp
-  Minigin/RenderComponent.cpp
   Minigin/Renderer.cpp
   Minigin/ResourceManager.cpp
-  Minigin/RotatorComponent.cpp
   Minigin/Scene.cpp
   Minigin/SceneHierarchy.cpp
   Minigin/SceneManager.cpp
-  Minigin/ScoreComponent.cpp
-  Minigin/ScoreDisplayComponent.cpp
   Minigin/StatsAndAchievements.cpp
-  Minigin/SteamAchievementComponent.cpp
   Minigin/TextComponent.cpp
   Minigin/Texture2D.cpp
-  Minigin/ThrashCacheComponent.cpp
   Minigin/Transform.cpp
 )
 
@@ -59,7 +53,13 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Bomberman/Components/BombComponent.cpp
     Bomberman/Components/BombermanComponent.cpp
     Bomberman/Components/EnemyBehaviourComponent.cpp
+    Bomberman/Components/HealthComponent.cpp
+    Bomberman/Components/HealthDisplayComponent.cpp
     Bomberman/Components/PowerUpComponent.cpp
+    Bomberman/Components/ScoreComponent.cpp
+    Bomberman/Components/ScoreDisplayComponent.cpp
+    Bomberman/Components/TimerComponent.cpp
+    Bomberman/Components/TimerDisplayComponent.cpp
 )
 
 target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman/)

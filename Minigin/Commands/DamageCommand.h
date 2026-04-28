@@ -1,7 +1,7 @@
 #pragma once
 #include "Command.h"
 #include "GameObject.h"
-#include "HealthComponent.h"
+#include "Components/HealthComponent.h"
 #include <cassert>
 
 namespace dae

@@ -1,6 +1,6 @@
 #if USE_STEAMWORKS
-#include "SteamAchievementComponent.h"
-#include "ScoreComponent.h"
+#include "Components/SteamAchievementComponent.h"
+#include "Components/ScoreComponent.h"
 #include "SpacewarAchievements.h"
 
 dae::SteamAchievementComponent::SteamAchievementComponent(GameObject* pOwner, GameObject* pScoreOwner)

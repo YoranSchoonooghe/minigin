@@ -6,7 +6,7 @@
 #include "Texture2D.h"
 #include "Transform.h"
 #include "GameObject.h"
-#include "RenderComponent.h"
+#include "Components/RenderComponent.h"
 
 dae::TextComponent::TextComponent(GameObject* pOwner, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color)
 	: Component(pOwner)

@@ -2,7 +2,7 @@
 #include <SDL3/SDL_pixels.h>
 #include <string>
 #include <memory>
-#include "Component.h"
+#include "Components/Component.h"
 
 namespace dae
 {

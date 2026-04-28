@@ -1,6 +1,6 @@
 #include "PowerUpComponent.h"
 #include "Components/BoxColliderComponent.h"
-#include "RenderComponent.h"
+#include "Components/RenderComponent.h"
 #include <cassert>
 
 dae::PowerUpComponent::PowerUpComponent(GameObject* pOwner, Type type)

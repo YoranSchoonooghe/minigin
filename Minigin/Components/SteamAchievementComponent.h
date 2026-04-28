@@ -1,6 +1,6 @@
 #pragma once
 #if USE_STEAMWORKS
-#include "Component.h"
+#include "Components/Component.h"
 #include "Events/Observer.h"
 
 namespace dae

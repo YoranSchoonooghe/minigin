@@ -1,6 +1,6 @@
 #include "AnimationControllerComponent.h"
-#include "AnimatedSpriteComponent.h"
-#include "CharacterControllerComponent.h"
+#include "Components/AnimatedSpriteComponent.h"
+#include "Components/CharacterControllerComponent.h"
 #include "GameObject.h"
 #include <cassert>
 

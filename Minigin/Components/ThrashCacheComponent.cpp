@@ -1,4 +1,4 @@
-#include "ThrashCacheComponent.h"
+#include "Components/ThrashCacheComponent.h"
 #include <chrono>
 #include <imgui.h>
 #include <implot.h>
