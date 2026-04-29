@@ -3,6 +3,8 @@
 #include <cassert>
 #include "GameObject.h"
 #include "EnemyBehaviourComponent.h"
+#include "Audio/ServiceLocator.h"
+#include "HealthComponent.h"
 
 dae::BombermanComponent::BombermanComponent(GameObject* pOwner)
 	: Component{ pOwner }
@@ -13,6 +15,8 @@ dae::BombermanComponent::BombermanComponent(GameObject* pOwner)
 
 	m_pBoxColliderComponentSubject = pBoxCollider->GetSubject();
 	m_pBoxColliderComponentSubject->AddObserver(this);
+
+	m_pHealthComponent = GetOwner()->GetComponent<HealthComponent>();
 }
 
 dae::BombermanComponent::~BombermanComponent()
@@ -30,10 +34,17 @@ void dae::BombermanComponent::Notify(const Event& event, GameObject* pGameObject
 	case make_sdbm_hash("OnTriggerEnter"):
 		if (pGameObject->GetComponent<EnemyBehaviourComponent>())
 		{
+			ServiceLocator::GetSoundSystem().Play(1, 1);
+
 			GetOwner()->SetLocalPosition(64, 288);
 
 			auto pBoxCollider = GetOwner()->GetComponent<BoxColliderComponent>();
 			pBoxCollider->RemoveOverlappingGameObject(pGameObject);
+
+			if (m_pHealthComponent)
+			{
+				m_pHealthComponent->DoDamage(1);
+			}
 		}
 		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):

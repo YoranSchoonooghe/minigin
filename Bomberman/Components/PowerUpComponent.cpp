@@ -2,6 +2,7 @@
 #include "Components/BoxColliderComponent.h"
 #include "Components/RenderComponent.h"
 #include <cassert>
+#include "Audio/ServiceLocator.h"
 
 dae::PowerUpComponent::PowerUpComponent(GameObject* pOwner, Type type)
 	: Component{ pOwner }
@@ -34,6 +35,7 @@ void dae::PowerUpComponent::Notify(const Event& event, GameObject*)
 	switch (event.id)
 	{
 	case make_sdbm_hash("OnTriggerEnter"):
+		ServiceLocator::GetSoundSystem().Play(4, 1);
 		GetOwner()->Destroy();
 		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):

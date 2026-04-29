@@ -4,11 +4,6 @@
 
 namespace dae
 {
-	class NullSoundSystem final : public SoundSystem
-	{
-		void Play(const soundId, const float) override {}
-	};
-
 	class ServiceLocator final
 	{
 	public:

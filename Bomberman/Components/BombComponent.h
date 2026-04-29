@@ -18,6 +18,8 @@ namespace dae
 
 		void Notify(const Event& event, GameObject* pGameObject) override;
 
+		void Explode();
+
 	private:
 		Subject* m_pColliderComponentSubject = nullptr;
 		Subject* m_pTimerComponentSubject = nullptr;

@@ -3,6 +3,7 @@
 #include "Components/BoxColliderComponent.h"
 #include "Components/TimerComponent.h"
 #include <cassert>
+#include "Audio/ServiceLocator.h"
 
 dae::BombComponent::BombComponent(GameObject* pOwner)
 	: Component{ pOwner }
@@ -20,6 +21,8 @@ dae::BombComponent::BombComponent(GameObject* pOwner)
 
 	m_pTimerComponentSubject = pTimer->GetTimerSubject();
 	m_pTimerComponentSubject->AddObserver(this);
+
+	ServiceLocator::GetSoundSystem().Play(2, 1);
 }
 
 dae::BombComponent::~BombComponent()
@@ -45,11 +48,17 @@ void dae::BombComponent::Notify(const Event& event, GameObject*)
 	}
 		break;
 	case make_sdbm_hash("OnTimerFinished"):
-		GetOwner()->Destroy();
+		Explode();
 		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):
 		m_pColliderComponentSubject = nullptr;
 		m_pTimerComponentSubject = nullptr;
 		break;
 	}
+}
+
+void dae::BombComponent::Explode()
+{
+	ServiceLocator::GetSoundSystem().Play(3, 1);
+	GetOwner()->Destroy();
 }

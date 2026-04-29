@@ -91,8 +91,8 @@ static void load()
 	input.BindCommand(0, dae::GamePadButton::DPadDown, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, 1)));
 	input.BindCommand(0, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(1, 0)));
 
-	input.BindCommand(0, dae::GamePadButton::ButtonX, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer1.get()));
-	input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer1.get()));
+	//input.BindCommand(0, dae::GamePadButton::ButtonX, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer1.get()));
+	//input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer1.get()));
 	input.BindCommand(0, dae::GamePadButton::ButtonY, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer1.get()));
 
 	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
@@ -100,8 +100,9 @@ static void load()
 	input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, 1)));
 	input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(1, 0)));
 
-	input.BindCommand(SDL_SCANCODE_F, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer1.get()));
-	input.BindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer1.get()));
+	//input.BindCommand(SDL_SCANCODE_F, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer1.get()));
+	//input.BindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer1.get()));
+	input.BindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer1.get()));
 
 	auto pUI = std::make_unique<dae::GameObject>("UI");
 
@@ -231,8 +232,13 @@ static void load()
 
 	scene.Add(std::move(pBalloom));
 
-	dae::ServiceLocator::RegisterSoundSystem(std::make_unique<dae::SDLSoundSystem>());
-	dae::ServiceLocator::GetSoundSystem().Play(0, 0);
+	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(0, "Data/Audio/StageStart.wav"));
+	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(1, "Data/Audio/GameOver.wav"));
+	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(2, "Data/Audio/DropBomb.wav"));
+	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(3, "Data/Audio/BombExplode.wav"));
+	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(4, "Data/Audio/PowerUp.wav"));
+
+	dae::ServiceLocator::GetSoundSystem().Play(0, 1);
 
 }
 

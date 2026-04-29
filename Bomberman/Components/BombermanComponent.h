@@ -5,6 +5,7 @@
 namespace dae
 {
 	class Subject;
+	class HealthComponent;
 
 	class BombermanComponent final : public Component, public Observer
 	{
@@ -20,6 +21,6 @@ namespace dae
 
 	private:
 		Subject* m_pBoxColliderComponentSubject = nullptr;
-
+		HealthComponent* m_pHealthComponent = nullptr;
 	};
 }
