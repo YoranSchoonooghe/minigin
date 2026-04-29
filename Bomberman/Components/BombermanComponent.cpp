@@ -34,7 +34,7 @@ void dae::BombermanComponent::Notify(const Event& event, GameObject* pGameObject
 	case make_sdbm_hash("OnTriggerEnter"):
 		if (pGameObject->GetComponent<EnemyBehaviourComponent>())
 		{
-			ServiceLocator::GetSoundSystem().Play(1, 1);
+			ServiceLocator::GetSoundSystem().Play(1);
 
 			GetOwner()->SetLocalPosition(64, 288);
 

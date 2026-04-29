@@ -238,7 +238,7 @@ static void load()
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(3, "Data/Audio/BombExplode.wav"));
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(4, "Data/Audio/PowerUp.wav"));
 
-	dae::ServiceLocator::GetSoundSystem().Play(0, 1);
+	dae::ServiceLocator::GetSoundSystem().Play(0);
 
 }
 

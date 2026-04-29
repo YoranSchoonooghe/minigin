@@ -55,11 +55,11 @@ namespace dae
 			//MIX_Quit();
 		}
 
-		void Play(const SoundId id, const float)
+		void Play(const SoundId id, const float volume)
 		{
 			{
 				std::lock_guard<std::mutex> lockGuard(m_mutex);
-				m_eventQueue.push(id);
+				m_eventQueue.push(SoundRequest(id, volume));
 			}
 
 			m_conditionVariable.notify_one();
@@ -82,11 +82,17 @@ namespace dae
 		}
 
 	private:
+		struct SoundRequest
+		{
+			SoundId id;
+			float volume = 1.0f;
+		};
+
 		void Process()
 		{
 			while (!m_quit)
 			{
-				SoundId id{};
+				SoundRequest soundRequest{};
 
 				{
 					std::unique_lock<std::mutex> lockGuard(m_mutex);
@@ -97,11 +103,11 @@ namespace dae
 
 					if (m_eventQueue.empty() && m_quit) break;
 
-					id = m_eventQueue.front();
+					soundRequest = m_eventQueue.front();
 					m_eventQueue.pop();
 				}
 
-				auto* pAudio = GetAudio(id);
+				auto* pAudio = GetAudio(soundRequest.id);
 				if (!pAudio) continue;
 
 				MIX_Track* pTrack = GetAvailableTrack();
@@ -110,8 +116,9 @@ namespace dae
 					SDL_Log("No available Track.");
 					continue;
 				}
-
+				
 				MIX_SetTrackAudio(pTrack, pAudio);
+				MIX_SetTrackGain(pTrack, soundRequest.volume);
 				MIX_PlayTrack(pTrack, 0);
 			}
 		}
@@ -166,7 +173,7 @@ namespace dae
 		MIX_Mixer* m_pMixer{};
 		std::vector<MIX_Track*> m_pTracks{};
 
-		std::queue<SoundId> m_eventQueue{};
+		std::queue<SoundRequest> m_eventQueue{};
 
 		std::atomic<bool> m_quit{ false };
 #ifndef __EMSCRIPTEN__

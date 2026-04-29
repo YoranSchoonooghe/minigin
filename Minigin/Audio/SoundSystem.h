@@ -16,7 +16,7 @@ namespace dae
 	{
 	public:
 		virtual ~SoundSystem() = default;
-		virtual void Play(const SoundId id, const float volume) = 0;
+		virtual void Play(const SoundId id, const float volume = 1.0f) = 0;
 		virtual void Preload(const SoundId id) = 0;
 		virtual void AddAudioSource(const AudioSource& audioSource) = 0;
 		virtual void RemoveAudioSource(SoundId id) = 0;

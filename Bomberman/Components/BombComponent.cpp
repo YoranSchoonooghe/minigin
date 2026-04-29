@@ -22,7 +22,7 @@ dae::BombComponent::BombComponent(GameObject* pOwner)
 	m_pTimerComponentSubject = pTimer->GetTimerSubject();
 	m_pTimerComponentSubject->AddObserver(this);
 
-	ServiceLocator::GetSoundSystem().Play(2, 1);
+	ServiceLocator::GetSoundSystem().Play(2);
 }
 
 dae::BombComponent::~BombComponent()
@@ -59,6 +59,6 @@ void dae::BombComponent::Notify(const Event& event, GameObject*)
 
 void dae::BombComponent::Explode()
 {
-	ServiceLocator::GetSoundSystem().Play(3, 1);
+	ServiceLocator::GetSoundSystem().Play(3, 2.0f);
 	GetOwner()->Destroy();
 }

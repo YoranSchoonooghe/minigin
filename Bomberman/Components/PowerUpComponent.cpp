@@ -35,7 +35,7 @@ void dae::PowerUpComponent::Notify(const Event& event, GameObject*)
 	switch (event.id)
 	{
 	case make_sdbm_hash("OnTriggerEnter"):
-		ServiceLocator::GetSoundSystem().Play(4, 1);
+		ServiceLocator::GetSoundSystem().Play(4);
 		GetOwner()->Destroy();
 		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):
