@@ -55,11 +55,12 @@ namespace dae
 			//MIX_Quit();
 		}
 
-		void Play(const SoundId id, const float volume)
+		void Play(const SoundId id, const float volume, const bool loop)
 		{
 			{
 				std::lock_guard<std::mutex> lockGuard(m_mutex);
-				m_eventQueue.push(SoundRequest(id, volume));
+				int loops = loop ? -1 : 0;
+				m_eventQueue.push(SoundRequest(id, volume, loops));
 			}
 
 			m_conditionVariable.notify_one();
@@ -86,6 +87,7 @@ namespace dae
 		{
 			SoundId id;
 			float volume = 1.0f;
+			int loops = -1;
 		};
 
 		void Process()
@@ -119,7 +121,11 @@ namespace dae
 				
 				MIX_SetTrackAudio(pTrack, pAudio);
 				MIX_SetTrackGain(pTrack, soundRequest.volume);
-				MIX_PlayTrack(pTrack, 0);
+
+				SDL_PropertiesID properties = SDL_CreateProperties();
+				SDL_SetNumberProperty(properties, MIX_PROP_PLAY_LOOPS_NUMBER, soundRequest.loops);
+
+				MIX_PlayTrack(pTrack, properties);
 			}
 		}
 
@@ -190,9 +196,9 @@ namespace dae
 
 	SDLSoundSystem::~SDLSoundSystem() = default;
 
-	void SDLSoundSystem::Play(const SoundId id, const float volume)
+	void SDLSoundSystem::Play(const SoundId id, const float volume, const bool loop)
 	{
-		return m_pImpl->Play(id, volume);
+		return m_pImpl->Play(id, volume, loop);
 	}
 
 	void SDLSoundSystem::Preload(const SoundId id)

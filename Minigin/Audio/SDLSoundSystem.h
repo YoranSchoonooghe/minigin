@@ -11,7 +11,7 @@ namespace dae
 		explicit SDLSoundSystem(const uint16_t tracks = 8);
 		~SDLSoundSystem();
 
-		void Play(const SoundId id, const float volume) override;
+		void Play(const SoundId id, const float volume, const bool loop) override;
 		void Preload(const SoundId id) override;
 		void AddAudioSource(const AudioSource& audioSource) override;
 		void RemoveAudioSource(const SoundId id) override;
