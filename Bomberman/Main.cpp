@@ -62,16 +62,16 @@ static void load()
 
 	auto inputFont = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 24);
 	auto pGamepadText = std::make_unique<dae::GameObject>("Player1Text");
-	pGamepadText->AddComponent<dae::TextComponent>("Use the D-Pad to move Player 1. Press A to increase score and X to inflict damage.", inputFont);
+	pGamepadText->AddComponent<dae::TextComponent>("Use the D-Pad/WASD to move. Press A/SPACE to drop a bomb.", inputFont);
 	pGamepadText->AddComponent<dae::RenderComponent>("", true);
 	pGamepadText->SetLocalPosition(10, 80);
 	scene.Add(std::move(pGamepadText));
 
-	auto pKeyboardText = std::make_unique<dae::GameObject>("Player2Text");
-	pKeyboardText->AddComponent<dae::TextComponent>("Use WASD to move Player 2. Press Space to increase score and F to inflict damage.", inputFont);
-	pKeyboardText->AddComponent<dae::RenderComponent>("", true);
-	pKeyboardText->SetLocalPosition(10, 110);
-	scene.Add(std::move(pKeyboardText));
+	//auto pKeyboardText = std::make_unique<dae::GameObject>("Player2Text");
+	//pKeyboardText->AddComponent<dae::TextComponent>("Use WASD to move Player 2. Press Space to increase score and F to inflict damage.", inputFont);
+	//pKeyboardText->AddComponent<dae::RenderComponent>("", true);
+	//pKeyboardText->SetLocalPosition(10, 110);
+	//scene.Add(std::move(pKeyboardText));
 
 	const float SPEED{ 200.0f };
 
@@ -93,7 +93,7 @@ static void load()
 
 	//input.BindCommand(0, dae::GamePadButton::ButtonX, dae::KeyState::Pressed, std::make_unique<dae::DamageCommand>(pPlayer1.get()));
 	//input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::ScoreCommand>(pPlayer1.get()));
-	input.BindCommand(0, dae::GamePadButton::ButtonY, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer1.get()));
+	input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer1.get()));
 
 	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
 	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(-1, 0)));

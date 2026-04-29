@@ -65,6 +65,12 @@ namespace dae
 			m_conditionVariable.notify_one();
 		}
 
+		void Preload(const SoundId id)
+		{
+			std::lock_guard<std::mutex> lockGuard(m_mutex);
+			Load(id);
+		}
+
 		void AddAudioSource(const AudioSource& audioSource)
 		{
 			m_audioSources.insert({ audioSource.id, audioSource });
@@ -75,6 +81,7 @@ namespace dae
 			m_audioSources.erase(id);
 		}
 
+	private:
 		void Process()
 		{
 			while (!m_quit)
@@ -94,14 +101,8 @@ namespace dae
 					m_eventQueue.pop();
 				}
 
-				auto it = m_audioSources.find(id);
-				if (it == m_audioSources.end()) continue;
-
-				auto audio = MIX_LoadAudio(m_pMixer, it->second.filePath.c_str(), false);
-				if (!audio)
-				{
-					SDL_Log("MIX_LoadAudio error: %s", SDL_GetError());
-				}
+				auto* pAudio = GetAudio(id);
+				if (!pAudio) continue;
 
 				MIX_Track* pTrack = GetAvailableTrack();
 				if (!pTrack)
@@ -110,9 +111,40 @@ namespace dae
 					continue;
 				}
 
-				MIX_SetTrackAudio(pTrack, audio);
+				MIX_SetTrackAudio(pTrack, pAudio);
 				MIX_PlayTrack(pTrack, 0);
 			}
+		}
+
+		MIX_Audio* Load(const SoundId id)
+		{
+			auto it = m_audioSources.find(id);
+			if (it == m_audioSources.end())
+			{
+				return nullptr;
+			}
+
+			auto* pAudio = MIX_LoadAudio(m_pMixer, it->second.filePath.c_str(), false);
+			if (!pAudio)
+			{
+				SDL_Log("MIX_LoadAudio error: %s", SDL_GetError());
+			}
+
+			m_loadedSounds[id] = pAudio;
+
+			return pAudio;
+		}
+
+		MIX_Audio* GetAudio(SoundId id)
+		{
+			auto it = m_loadedSounds.find(id);
+
+			if (it != m_loadedSounds.end())
+			{
+				return it->second;
+			}
+
+			return Load(id);
 		}
 
 		MIX_Track* GetAvailableTrack()
@@ -128,8 +160,8 @@ namespace dae
 			return nullptr;
 		}
 
-	private:
 		std::unordered_map<SoundId, AudioSource> m_audioSources{};
+		std::unordered_map<SoundId, MIX_Audio*> m_loadedSounds{};
 
 		MIX_Mixer* m_pMixer{};
 		std::vector<MIX_Track*> m_pTracks{};
@@ -155,10 +187,17 @@ namespace dae
 	{
 		return m_pImpl->Play(id, volume);
 	}
+
+	void SDLSoundSystem::Preload(const SoundId id)
+	{
+		return m_pImpl->Preload(id);
+	}
+
 	void dae::SDLSoundSystem::AddAudioSource(const AudioSource& audioSource)
 	{
 		return m_pImpl->AddAudioSource(audioSource);
 	}
+
 	void dae::SDLSoundSystem::RemoveAudioSource(const SoundId id)
 	{
 		return m_pImpl->RemoveAudioSource(id);

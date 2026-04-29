@@ -17,6 +17,7 @@ namespace dae
 	public:
 		virtual ~SoundSystem() = default;
 		virtual void Play(const SoundId id, const float volume) = 0;
+		virtual void Preload(const SoundId id) = 0;
 		virtual void AddAudioSource(const AudioSource& audioSource) = 0;
 		virtual void RemoveAudioSource(SoundId id) = 0;
 	};
@@ -24,7 +25,8 @@ namespace dae
 	class NullSoundSystem final : public SoundSystem
 	{
 		void Play(const SoundId, const float) override {}
-		void AddAudioSource(const AudioSource&) override {};
-		void RemoveAudioSource(SoundId) override {};
+		void Preload(const SoundId) override {}
+		void AddAudioSource(const AudioSource&) override {}
+		void RemoveAudioSource(SoundId) override {}
 	};
 }
