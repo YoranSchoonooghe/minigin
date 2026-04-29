@@ -31,6 +31,9 @@ void dae::BombermanComponent::Notify(const Event& event, GameObject* pGameObject
 		if (pGameObject->GetComponent<EnemyBehaviourComponent>())
 		{
 			GetOwner()->SetLocalPosition(64, 288);
+
+			auto pBoxCollider = GetOwner()->GetComponent<BoxColliderComponent>();
+			pBoxCollider->RemoveOverlappingGameObject(pGameObject);
 		}
 		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):

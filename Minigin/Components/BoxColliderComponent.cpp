@@ -1,4 +1,5 @@
 #include "BoxColliderComponent.h"
+#include "BoxColliderComponent.h"
 #include "Renderer.h"
 #include "GameObject.h"
 #include "Editor.h"
@@ -120,4 +121,9 @@ void dae::BoxColliderComponent::RemoveOverlappingGameObject(GameObject* pGameObj
 	std::erase(m_pOverlappingGameObjects, pGameObject);
 
 	m_pTriggerSubject->NotifyObservers(Event(make_sdbm_hash("OnTriggerExit")), pGameObject);
+}
+
+void dae::BoxColliderComponent::Hit(GameObject* pGameObject)
+{
+	m_pTriggerSubject->NotifyObservers(Event(make_sdbm_hash("OnColliderHit")), pGameObject);
 }

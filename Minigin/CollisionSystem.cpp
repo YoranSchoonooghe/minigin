@@ -65,6 +65,8 @@ void dae::CollisionSystem::MoveOnAxis(BoxColliderComponent* pCollider, const glm
 		if (IsOverlapping(predictedCollider, pCol->GetCollider()))
 		{
 			pHitCollider = pCol;
+			pCollider->Hit(pCol->GetGameObject());
+
 			break;
 		}
 	}

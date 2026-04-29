@@ -42,6 +42,7 @@ namespace dae
 		Subject* GetSubject() const { return m_pTriggerSubject.get(); };
 		void AddOverlappingGameObject(GameObject* pGameObject);
 		void RemoveOverlappingGameObject(GameObject* pGameObject);
+		void Hit(GameObject* pGameObject);
 
 	private:
 		float m_width;
