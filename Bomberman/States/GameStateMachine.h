@@ -12,6 +12,7 @@ namespace dae
 		void Update(float deltaTime);
 
 		void Play();
+		void StartStage();
 
 	private:
 		void ChangeState(std::unique_ptr<GameState> state);

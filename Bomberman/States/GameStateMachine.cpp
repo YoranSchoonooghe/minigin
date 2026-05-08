@@ -1,6 +1,7 @@
 #include "GameStateMachine.h"
 #include "MainMenuState.h"
 #include "PlayState.h"
+#include "StageStartState.h"
 
 void dae::GameStateMachine::Init()
 {
@@ -20,6 +21,11 @@ void dae::GameStateMachine::Update(float deltaTime)
 void dae::GameStateMachine::Play()
 {
 	ChangeState(std::make_unique<PlayState>());
+}
+
+void dae::GameStateMachine::StartStage()
+{
+	ChangeState(std::make_unique<StageStartState>(1));
 }
 
 void dae::GameStateMachine::ChangeState(std::unique_ptr<GameState> state)

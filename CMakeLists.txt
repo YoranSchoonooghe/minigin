@@ -63,6 +63,7 @@ add_executable(${TARGET_NAME}
     Bomberman/States/GameStateMachine.cpp
     Bomberman/States/MainMenuState.cpp
     Bomberman/States/PlayState.cpp
+    Bomberman/States/StageStartState.cpp
 )
 
 set_target_properties(${TARGET_NAME} PROPERTIES

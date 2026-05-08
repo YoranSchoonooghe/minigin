@@ -11,7 +11,7 @@ namespace dae
 
 		void Execute() override
 		{
-			GameStateMachine::GetInstance().Play();
+			GameStateMachine::GetInstance().StartStage();
 		}
 
 	};

@@ -206,14 +206,12 @@ void dae::PlayState::LoadScene()
 
 	scene.Add(std::move(pBalloom));
 
-	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(0, "Data/Audio/StageStart.wav"));
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(1, "Data/Audio/GameOver.wav"));
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(2, "Data/Audio/DropBomb.wav"));
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(3, "Data/Audio/BombExplode.wav"));
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(4, "Data/Audio/PowerUp.wav"));
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(5, "Data/Audio/MainMusic.mp3"));
 
-	dae::ServiceLocator::GetSoundSystem().Play(0);
 	dae::ServiceLocator::GetSoundSystem().Play(5, 1.0f, true);
 }
 

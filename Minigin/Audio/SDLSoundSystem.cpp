@@ -1,4 +1,5 @@
 #include "SDLSoundSystem.h"
+#include "SDLSoundSystem.h"
 #include <SDL3_mixer/SDL_mixer.h>
 #include <queue>
 #include <unordered_map>
@@ -64,6 +65,11 @@ namespace dae
 			}
 
 			m_conditionVariable.notify_one();
+		}
+
+		void StopAll()
+		{
+			MIX_StopAllTracks(m_pMixer, 0);
 		}
 
 		void Preload(const SoundId id)
@@ -199,6 +205,11 @@ namespace dae
 	void SDLSoundSystem::Play(const SoundId id, const float volume, const bool loop)
 	{
 		return m_pImpl->Play(id, volume, loop);
+	}
+
+	void SDLSoundSystem::StopAll()
+	{
+		return m_pImpl->StopAll();
 	}
 
 	void SDLSoundSystem::Preload(const SoundId id)
