@@ -17,11 +17,14 @@ namespace dae
 		void Update(float deltaTime);
 		void Render();
 
-		Scene* GetActiveScene() const { return m_scenes.front().get(); };
+		Scene* GetActiveScene() const { return m_scenes.back().get(); };
+		void SetActiveScene(size_t sceneIndex);
 
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;
 		std::vector<std::unique_ptr<Scene>> m_scenes{};
+
+		Scene* m_pActiveScene{ nullptr };
 	};
 }

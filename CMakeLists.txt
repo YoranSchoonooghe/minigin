@@ -10,7 +10,7 @@ if(EMSCRIPTEN)
   set(TARGET_PARAM )
 else()
   set(TARGET_NAME Bomberman)
-  set(TARGET_PARAM WIN32)
+  set(TARGET_PARAM)
 endif()
 
 # list source files here
@@ -47,7 +47,7 @@ add_library(Minigin STATIC
   Minigin/Transform.cpp
 )
 
-add_executable(${TARGET_NAME} ${TARGET_PARAM}
+add_executable(${TARGET_NAME}
     Bomberman/Main.cpp
     Bomberman/Components/AnimationControllerComponent.cpp
     Bomberman/Components/BombComponent.cpp
@@ -60,6 +60,13 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
     Bomberman/Components/ScoreDisplayComponent.cpp
     Bomberman/Components/TimerComponent.cpp
     Bomberman/Components/TimerDisplayComponent.cpp
+    Bomberman/States/GameStateMachine.cpp
+    Bomberman/States/MainMenuState.cpp
+    Bomberman/States/PlayState.cpp
+)
+
+set_target_properties(${TARGET_NAME} PROPERTIES
+    WIN32_EXECUTABLE $<NOT:$<CONFIG:Debug>>
 )
 
 target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/Bomberman/)
