@@ -1,5 +1,6 @@
 #include "SDLSoundSystem.h"
 #include "SDLSoundSystem.h"
+#include "SDLSoundSystem.h"
 #include <SDL3_mixer/SDL_mixer.h>
 #include <queue>
 #include <unordered_map>
@@ -40,20 +41,25 @@ namespace dae
 #endif
 		}
 
-		~SDLSoundSystemImpl()
+		void Destroy()
 		{
 			m_quit = true;
 			m_conditionVariable.notify_all();
 
-			//MIX_StopAllTracks(m_pMixer, 0);
-			//for (auto* pTrack : m_pTracks)
-			//{
-			//	MIX_DestroyTrack(pTrack);
-			//}
+			MIX_StopAllTracks(m_pMixer, 0);
+			for (auto* pTrack : m_pTracks)
+			{
+				if (!pTrack) continue;
 
-			//MIX_DestroyMixer(m_pMixer);
+				MIX_DestroyTrack(pTrack);
+			}
 
-			//MIX_Quit();
+			if (m_pMixer)
+			{
+				MIX_DestroyMixer(m_pMixer);
+			}
+
+			MIX_Quit();
 		}
 
 		void Play(const SoundId id, const float volume, const bool loop)
@@ -201,6 +207,11 @@ namespace dae
 	}
 
 	SDLSoundSystem::~SDLSoundSystem() = default;
+
+	void SDLSoundSystem::Destroy()
+	{
+		return m_pImpl->Destroy();
+	}
 
 	void SDLSoundSystem::Play(const SoundId id, const float volume, const bool loop)
 	{

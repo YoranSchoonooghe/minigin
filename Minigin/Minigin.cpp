@@ -114,6 +114,7 @@ dae::Minigin::~Minigin()
 #endif
 
 	Renderer::GetInstance().Destroy();
+	ServiceLocator::GetSoundSystem().Destroy();
 
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
