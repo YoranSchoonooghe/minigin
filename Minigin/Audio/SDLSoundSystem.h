@@ -2,13 +2,14 @@
 #include "SoundSystem.h"
 #include <memory>
 #include <string>
+#include <filesystem>
 
 namespace dae
 {
 	class SDLSoundSystem final : public SoundSystem
 	{
 	public:
-		explicit SDLSoundSystem(const uint16_t tracks = 8);
+		explicit SDLSoundSystem(const std::filesystem::path& dataPath, const uint16_t tracks = 8);
 		~SDLSoundSystem();
 		void Destroy() override;
 

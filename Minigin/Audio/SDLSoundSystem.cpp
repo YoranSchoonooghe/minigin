@@ -1,6 +1,4 @@
 #include "SDLSoundSystem.h"
-#include "SDLSoundSystem.h"
-#include "SDLSoundSystem.h"
 #include <SDL3_mixer/SDL_mixer.h>
 #include <queue>
 #include <unordered_map>
@@ -11,7 +9,7 @@ namespace dae
 	class SDLSoundSystem::SDLSoundSystemImpl
 	{
 	public:
-		explicit SDLSoundSystemImpl(const uint16_t tracks)
+		explicit SDLSoundSystemImpl(const std::filesystem::path& dataPath, const uint16_t tracks)
 		{
 			if (!MIX_Init())
 			{
@@ -39,6 +37,8 @@ namespace dae
 #ifndef __EMSCRIPTEN__
 			m_soundThread = std::jthread(&SDLSoundSystemImpl::Process, this);
 #endif
+
+			m_dataPath = dataPath;
 		}
 
 		void Destroy()
@@ -149,7 +149,9 @@ namespace dae
 				return nullptr;
 			}
 
-			auto* pAudio = MIX_LoadAudio(m_pMixer, it->second.filePath.c_str(), false);
+			const auto fullPath = m_dataPath/it->second.filePath;
+			const auto filename = std::filesystem::path(fullPath).string();
+			auto* pAudio = MIX_LoadAudio(m_pMixer, filename.c_str(), false);
 			if (!pAudio)
 			{
 				SDL_Log("MIX_LoadAudio error: %s", SDL_GetError());
@@ -185,6 +187,7 @@ namespace dae
 			return nullptr;
 		}
 
+		std::filesystem::path m_dataPath;
 		std::unordered_map<SoundId, AudioSource> m_audioSources{};
 		std::unordered_map<SoundId, MIX_Audio*> m_loadedSounds{};
 
@@ -201,8 +204,8 @@ namespace dae
 		std::condition_variable m_conditionVariable{};
 	};
 
-	SDLSoundSystem::SDLSoundSystem(const uint16_t tracks)
-		: m_pImpl(std::make_unique<SDLSoundSystemImpl>(tracks))
+	SDLSoundSystem::SDLSoundSystem(const std::filesystem::path& dataPath, const uint16_t tracks)
+		: m_pImpl(std::make_unique<SDLSoundSystemImpl>(dataPath, tracks))
 	{
 	}
 

@@ -33,7 +33,7 @@ void dae::MainMenuState::LoadScene()
 	input.BindCommand(SDL_SCANCODE_RETURN, dae::KeyState::Pressed, std::make_unique<dae::StartGameCommand>());
 	input.BindCommand(0, dae::GamePadButton::Start, dae::KeyState::Pressed, std::make_unique<dae::StartGameCommand>());
 
-	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(6, "Data/Audio/MainMenuMusic.mp3"));
+	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(6, "Audio/MainMenuMusic.mp3"));
 	dae::ServiceLocator::GetSoundSystem().Play(6);
 }
 

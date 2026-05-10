@@ -67,6 +67,6 @@ void dae::StageStartState::LoadScene()
 	pTimerComponent->Start();
 	scene.Add(std::move(pTimer));
 
-	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(0, "Data/Audio/StageStart.wav"));
+	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(0, "Audio/StageStart.wav"));
 	dae::ServiceLocator::GetSoundSystem().Play(0);
 }
