@@ -10,15 +10,12 @@ dae::AnimatedSpriteComponent::AnimatedSpriteComponent(GameObject* pOwner, const 
 	, m_rows{ rows}, m_cols{ cols }, m_frameTime{ frameTime }, m_tileSize{ tileSize }, m_isPlaying{ autoPlay }
 {
 	m_pTexture = ResourceManager::GetInstance().LoadTexture(filename);
+
+	InitializeRenderComponent();
 }
 
 void dae::AnimatedSpriteComponent::Update(float deltaTime)
 {
-	if (!m_pRenderComponent)
-	{
-		InitializeRenderComponent();
-	}
-
 	if (!m_isPlaying) return;
 
 	m_accumulatedTime += deltaTime;
