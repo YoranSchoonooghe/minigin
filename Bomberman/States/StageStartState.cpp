@@ -8,7 +8,7 @@
 #include "ResourceManager.h"
 #include <string>
 #include "Components//TimerComponent.h"
-#include "States/GameStateMachine.h"
+#include "GameManager.h"
 #include "Audio/ServiceLocator.h"
 
 dae::StageStartState::StageStartState(int stageNumber)
@@ -38,7 +38,7 @@ void dae::StageStartState::Notify(const Event& event, GameObject*)
 	switch (event.id)
 	{
 	case make_sdbm_hash("OnTimerFinished"):
-		GameStateMachine::GetInstance().Play();
+		GameManager::GetInstance().Play();
 		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):
 		m_pTimerComponentSubject = nullptr;

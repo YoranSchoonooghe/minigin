@@ -1,6 +1,6 @@
 #pragma once
 #include "Commands/Command.h"
-#include "States/GameStateMachine.h"
+#include "GameManager.h"
 
 namespace dae
 {
@@ -11,7 +11,7 @@ namespace dae
 
 		void Execute() override
 		{
-			GameStateMachine::GetInstance().StartStage();
+			GameManager::GetInstance().StartStage();
 		}
 
 	};

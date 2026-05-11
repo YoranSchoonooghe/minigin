@@ -1,8 +1,46 @@
 #include "GameManager.h"
-#include "States/GameStateMachine.h"
+#include "States/MainMenuState.h"
+#include "States/PlayState.h"
+#include "States/StageStartState.h"
+
+void dae::GameManager::Init()
+{
+	m_pCurrentGameState = std::make_unique<MainMenuState>();
+	m_pCurrentGameState->Enter();
+}
+
+void dae::GameManager::Update(float deltaTime)
+{
+	auto pState = m_pCurrentGameState->Update(deltaTime);
+	if (pState)
+	{
+		ChangeState(std::move(pState));
+	}
+}
+
+void dae::GameManager::Play()
+{
+	ChangeState(std::make_unique<PlayState>());
+}
+
+void dae::GameManager::StartStage()
+{
+	ChangeState(std::make_unique<StageStartState>(GetStageNumber()));
+}
 
 void dae::GameManager::ExitStage()
 {
 	++m_stageNumber;
-	GameStateMachine::GetInstance().StartStage();
+	StartStage();
+}
+
+void dae::GameManager::ChangeState(std::unique_ptr<GameState> state)
+{
+	if (m_pCurrentGameState)
+	{
+		m_pCurrentGameState->Exit();
+	}
+
+	m_pCurrentGameState = std::move(state);
+	m_pCurrentGameState->Enter();
 }
