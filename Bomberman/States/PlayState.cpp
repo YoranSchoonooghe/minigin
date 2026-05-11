@@ -198,11 +198,11 @@ void dae::PlayState::LoadScene()
 	auto pBalloom = std::make_unique<dae::GameObject>("Balloom");
 	pBalloom->AddComponent<dae::RenderComponent>();
 	pBalloom->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
-	pBalloom->AddComponent<dae::BoxColliderComponent>(48.0f, 62.0f, glm::vec2{ 8.0f, 1.0f }, true, 20.0f, 2.0f);
+	pBalloom->AddComponent<dae::BoxColliderComponent>(56.0f, 62.0f, glm::vec2{ 4.0f, 1.0f }, true, 20.0f, 2.0f);
 	pBalloom->AddComponent<dae::AnimatedSpriteComponent>("Characters/Balloom.png", 4, 4, 0.1f, 64.0f, false);
-	pBalloom->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 1, 0 });
+	pBalloom->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 0, 1 });
 	pBalloom->AddComponent<dae::EnemyBehaviourComponent>();
-	pBalloom->SetLocalPosition(448.0f, 608.0f);
+	pBalloom->SetLocalPosition(448.0f, 672.0f);
 
 	scene.Add(std::move(pBalloom));
 

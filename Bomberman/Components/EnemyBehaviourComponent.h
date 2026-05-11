@@ -5,6 +5,7 @@
 namespace dae
 {
 	class CharacterControllerComponent;
+	class AnimationControllerComponent;
 	class Subject;
 
 	class EnemyBehaviourComponent final : public Component, public Observer
@@ -22,9 +23,12 @@ namespace dae
 		void Notify(const Event& event, GameObject* pGameObject) override;
 
 	private:
+		void RandomizeMoveDirection();
+
 		CharacterControllerComponent* m_pCharacterController{};
+		AnimationControllerComponent* m_pAnimationController{};
 		Subject* m_pBoxColliderComponentSubject{};
 
-		glm::vec2 m_moveDirection{ 0, -1 };
+		glm::vec2 m_moveDirection{ -1, 0 };
 	};
 }

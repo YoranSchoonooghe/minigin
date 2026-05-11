@@ -41,6 +41,7 @@ namespace fs = std::filesystem;
 
 static void load()
 {
+	SDL_SetRenderDrawBlendMode(dae::Renderer::GetInstance().GetSDLRenderer(), SDL_BLENDMODE_BLEND);
 	dae::GameStateMachine::GetInstance().Init();
 }
 
