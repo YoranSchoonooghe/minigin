@@ -2,6 +2,7 @@
 #include "MainMenuState.h"
 #include "PlayState.h"
 #include "StageStartState.h"
+#include "GameManager.h"
 
 void dae::GameStateMachine::Init()
 {
@@ -25,7 +26,7 @@ void dae::GameStateMachine::Play()
 
 void dae::GameStateMachine::StartStage()
 {
-	ChangeState(std::make_unique<StageStartState>(1));
+	ChangeState(std::make_unique<StageStartState>(GameManager::GetInstance().GetStageNumber()));
 }
 
 void dae::GameStateMachine::ChangeState(std::unique_ptr<GameState> state)

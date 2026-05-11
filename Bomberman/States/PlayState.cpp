@@ -25,6 +25,7 @@
 #include "Components/PowerUpComponent.h"
 #include "Components/BombermanComponent.h"
 #include "Components/EnemyBehaviourComponent.h"
+#include "Components/ExitComponent.h"
 #include "Audio/ServiceLocator.h"
 
 void dae::PlayState::Enter()
@@ -34,6 +35,7 @@ void dae::PlayState::Enter()
 
 void dae::PlayState::Exit()
 {
+	ServiceLocator::GetSoundSystem().StopAll();
 	UnbindCommands();
 }
 
@@ -179,6 +181,7 @@ void dae::PlayState::LoadScene()
 	auto pExit = std::make_unique<dae::GameObject>("Exit");
 	pExit->AddComponent<dae::RenderComponent>("Interactables/Exit.png");
 	pExit->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize, glm::vec2{ 0.0f, 0.0f }, true);
+	pExit->AddComponent<dae::ExitComponent>();
 	pExit->SetLocalPosition(384.0f, 288.0f);
 	scene.Add(std::move(pExit));
 

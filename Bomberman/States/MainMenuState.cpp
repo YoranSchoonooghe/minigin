@@ -15,7 +15,7 @@ void dae::MainMenuState::Enter()
 
 void dae::MainMenuState::Exit()
 {
-	dae::ServiceLocator::GetSoundSystem().StopAll();
+	ServiceLocator::GetSoundSystem().StopAll();
 	UnbindCommands();
 }
 

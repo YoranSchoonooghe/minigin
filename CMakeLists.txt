@@ -53,6 +53,7 @@ add_executable(${TARGET_NAME}
     Bomberman/Components/BombComponent.cpp
     Bomberman/Components/BombermanComponent.cpp
     Bomberman/Components/EnemyBehaviourComponent.cpp
+    Bomberman/Components/ExitComponent.cpp
     Bomberman/Components/HealthComponent.cpp
     Bomberman/Components/HealthDisplayComponent.cpp
     Bomberman/Components/PowerUpComponent.cpp
@@ -64,6 +65,7 @@ add_executable(${TARGET_NAME}
     Bomberman/States/MainMenuState.cpp
     Bomberman/States/PlayState.cpp
     Bomberman/States/StageStartState.cpp
+    Bomberman/GameManager.cpp
 )
 
 set_target_properties(${TARGET_NAME} PROPERTIES
