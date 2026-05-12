@@ -2,6 +2,7 @@
 #include "Singleton.h"
 #include <memory>
 #include "States/GameState.h"
+#include "Grid.h"
 
 namespace dae
 {
@@ -15,14 +16,17 @@ namespace dae
 		void StartStage();
 		void ExitStage();
 
-		int GetStageNumber() const { return m_stageNumber; }
+		Grid GetGrid() const { return m_grid; }
 
 	private:
+		void ChangeState(std::unique_ptr<GameState> state);
+
+		std::unique_ptr<GameState> m_pCurrentGameState;
+
+		Grid m_grid{};
 		int m_stageNumber{ 1 };
 		//int m_lives{ 3 };
 		//int m_score{ 0 };
 
-		void ChangeState(std::unique_ptr<GameState> state);
-		std::unique_ptr<GameState> m_pCurrentGameState;
 	};
 }

@@ -27,6 +27,10 @@
 #include "Components/EnemyBehaviourComponent.h"
 #include "Components/ExitComponent.h"
 #include "Audio/ServiceLocator.h"
+#include "GameManager.h"
+#include "Utils.h"
+#include <random>
+#include <algorithm>
 
 void dae::PlayState::Enter()
 {
@@ -135,7 +139,7 @@ void dae::PlayState::LoadScene()
 
 	auto pPillars = std::make_unique<dae::GameObject>("Pillars");
 
-	const float tileSize{ 64.0f };
+	const float tileSize{ GameManager::GetInstance().GetGrid().cellSize };
 	for (int i = 0; i < 14; ++i)
 	{
 		for (int j = 0; j < 5; ++j)
@@ -185,11 +189,30 @@ void dae::PlayState::LoadScene()
 	pExit->SetLocalPosition(384.0f, 288.0f);
 	scene.Add(std::move(pExit));
 
-	auto pBrick = std::make_unique<dae::GameObject>("Brick");
-	pBrick->AddComponent<dae::RenderComponent>("Interactables/Brick.png");
-	pBrick->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize);
-	pBrick->SetLocalPosition(256.0f, 288.0f);
-	scene.Add(std::move(pBrick));
+	auto validGridCells = LevelUtils::GetValidBrickCells(GameManager::GetInstance().GetGrid());
+
+	std::random_device rd;
+	std::mt19937 g(rd());
+
+	std::ranges::shuffle(validGridCells, g);
+
+	auto pBricks = std::make_unique<dae::GameObject>("Bricks");
+	for (int index{ 0 }; index < 30; ++index)
+	{
+		auto position = GridUtils::GetPositionFromCell(
+			GameManager::GetInstance().GetGrid(), 
+			validGridCells[index].row, 
+			validGridCells[index].col
+		);
+
+		auto pBrick = std::make_unique<dae::GameObject>("Brick");
+		pBrick->AddComponent<dae::RenderComponent>("Interactables/Brick.png");
+		pBrick->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize);
+		pBrick->SetLocalPosition(position.x, position.y);
+		pBrick->SetParent(pBricks.get());
+		scene.Add(std::move(pBrick));
+	}
+	scene.Add(std::move(pBricks));
 
 	auto pPowerUp = std::make_unique<dae::GameObject>("PowerUp");
 	pPowerUp->AddComponent<dae::RenderComponent>("Interactables/PowerUps.png");
@@ -233,4 +256,6 @@ void dae::PlayState::UnbindCommands()
 	input.UnbindCommand(SDL_SCANCODE_A, dae::KeyState::Down);
 	input.UnbindCommand(SDL_SCANCODE_S, dae::KeyState::Down);
 	input.UnbindCommand(SDL_SCANCODE_D, dae::KeyState::Down);
+
+	input.UnbindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed);
 }
