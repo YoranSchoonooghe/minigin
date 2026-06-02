@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Components/BombComponent.h"
 #include <cmath>
+#include "Utils.h"
 
 namespace dae
 {
@@ -23,7 +24,8 @@ namespace dae
 			auto pBomb = std::make_unique<dae::GameObject>();
 			pBomb->AddComponent<dae::RenderComponent>();
 			pBomb->AddComponent<dae::AnimatedSpriteComponent>("Interactables/Bomb.png", 1, 4, 0.2f, 64.0f);
-			pBomb->AddComponent<dae::BoxColliderComponent>(64.0f, 64.0f, glm::vec2{ 0.0f, 0.0f }, true);
+			auto* pBombCollider = pBomb->AddComponent<dae::BoxColliderComponent>(64.0f, 64.0f, glm::vec2{ 0.0f, 0.0f }, true);
+			pBombCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Bomb));
 			auto pTimer = pBomb->AddComponent<dae::TimerComponent>(3.0f);
 			pBomb->AddComponent<dae::BombComponent>();
 			pTimer->Start();

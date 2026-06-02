@@ -1,5 +1,7 @@
 #include "BoxColliderComponent.h"
 #include "BoxColliderComponent.h"
+#include "BoxColliderComponent.h"
+#include "BoxColliderComponent.h"
 #include "Renderer.h"
 #include "GameObject.h"
 #include "Editor.h"
@@ -8,9 +10,11 @@
 #include "imgui.h"
 
 
-dae::BoxColliderComponent::BoxColliderComponent(GameObject* pOwner, float width, float height, const glm::vec2& offset, bool isTrigger, float pushThreshold, float pushValue)
+dae::BoxColliderComponent::BoxColliderComponent(GameObject* pOwner, float width, float height, const glm::vec2& offset, bool isTrigger, 
+	float pushThreshold, float pushValue, uint8_t layer, uint8_t mask)
 	: Component{ pOwner }
 	, m_width{ width }, m_height{ height }, m_offset{ offset }, m_isTrigger{ isTrigger }
+	, m_collisionLayer{ layer }, m_collisionMask{ mask }
 	, m_pushThreshold{ pushThreshold }, m_pushValue{ pushValue }
 {
 	m_pTriggerSubject = std::make_unique<Subject>();
@@ -63,7 +67,6 @@ void dae::BoxColliderComponent::RenderUI()
 		ImGui::Text("Height"); ImGui::SameLine();
 		ImGui::DragFloat("##Height", &m_height, 1.0f, 0.0f, 0.0f, "%.1f");
 
-
 		ImGui::Text("Offset"); ImGui::SameLine();
 
 		ImGui::Text("X"); ImGui::SameLine();
@@ -74,6 +77,9 @@ void dae::BoxColliderComponent::RenderUI()
 
 		ImGui::PopItemWidth();
 
+		ImGui::Separator();
+		RenderLayerUI();
+		RenderMaskUI();
 		ImGui::Separator();
 
 		ImGui::Text("Trigger"); ImGui::SameLine();
@@ -126,4 +132,75 @@ void dae::BoxColliderComponent::RemoveOverlappingGameObject(GameObject* pGameObj
 void dae::BoxColliderComponent::Hit(GameObject* pGameObject)
 {
 	m_pTriggerSubject->NotifyObservers(Event(make_sdbm_hash("OnColliderHit")), pGameObject);
+}
+
+void dae::BoxColliderComponent::RenderLayerUI()
+{
+	int const layersNr{ 8 };
+	int const buttonSize{ 25 };
+
+	ImGui::Text("Layer");
+
+	for (int i = 0; i < layersNr; ++i)
+	{
+		bool selected = m_collisionLayer == (1 << i);
+
+		if (selected)
+		{
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.8f, 0.2f, 1.0f));
+		}
+
+		std::string id = "##Layer" + std::to_string(i);
+
+		if (ImGui::Button(id.c_str(), ImVec2(buttonSize, buttonSize)))
+		{
+			m_collisionLayer = static_cast<uint8_t>(1 << i);
+		}
+
+		if (selected)
+		{
+			ImGui::PopStyleColor();
+		}
+
+		if (i < (layersNr - 1))
+		{
+			ImGui::SameLine();
+		}
+	}
+}
+
+void dae::BoxColliderComponent::RenderMaskUI()
+{
+	int const layersNr{ 8 };
+	int const buttonSize{ 25 };
+
+	ImGui::Text("Mask");
+
+	for (int i = 0; i < layersNr; ++i)
+	{
+		bool enabled = (m_collisionMask & (1 << i)) != 0;
+
+		if (enabled)
+		{
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.8f, 0.2f, 1.0f));
+		}
+
+		std::string id = "##Mask" + std::to_string(i);
+
+
+		if (ImGui::Button(id.c_str(), ImVec2(buttonSize, buttonSize)))
+		{
+			m_collisionMask ^= static_cast<uint8_t>(1 << i);
+		}
+
+		if (enabled)
+		{
+			ImGui::PopStyleColor();
+		}
+
+		if (i < (layersNr - 1))
+		{
+			ImGui::SameLine();
+		}
+	}
 }

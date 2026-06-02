@@ -20,9 +20,9 @@ namespace dae
 
 		void NotifyObservers(const Event& event, GameObject* pGameObject)
 		{
-			for (size_t index = 0; index < m_pObservers.size(); ++index)
+			for (auto* pObserver : m_pObservers)
 			{
-				m_pObservers[index]->Notify(event, pGameObject);
+				pObserver->Notify(event, pGameObject);
 			}
 		}
 

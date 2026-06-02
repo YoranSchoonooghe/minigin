@@ -115,6 +115,8 @@ namespace dae
 	template<typename T>
 	inline T* GameObject::GetComponent()
 	{
+		static_assert(std::is_base_of<Component, T>::value, "T must derive from Component");
+
 		for (auto& pComponent : m_pComponents)
 		{
 			if (auto casted = dynamic_cast<T*>(pComponent.get()))

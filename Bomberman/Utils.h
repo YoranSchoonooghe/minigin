@@ -46,4 +46,18 @@ namespace dae
 		}
 
 	}
+
+	namespace CollisionUtils
+	{
+		enum class Layer : uint8_t
+		{
+			Level = 0b0000'0001,
+			Player = 0b0000'0010,
+			Enemy = 0b0000'0100,
+			Brick = 0b0000'1000,
+			Bomb = 0b0001'0000,
+			Exit = 0b0010'0000,
+			PowerUp = 0b0100'0000
+		};
+	}
 }

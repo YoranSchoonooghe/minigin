@@ -46,6 +46,7 @@ void dae::CollisionSystem::MoveOnAxis(BoxColliderComponent* pCollider, const glm
 	BoxColliderComponent* pHitCollider{ nullptr };
 	for (const auto& pCol : m_pColliders)
 	{
+		if (!(pCollider->GetMask() & pCol->GetLayer()) || !(pCollider->GetLayer() & pCol->GetMask())) continue;
 		if (pCollider == pCol) continue;
 
 		if (pCol->IsTrigger())
