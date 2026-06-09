@@ -32,7 +32,7 @@ namespace dae
 		std::unique_ptr<GameObject> CreateEnemy(const std::string& enemyType)
 		{
 			if (enemyType == "balloom")
-				return std::move(CreateBalloom());
+				return CreateBalloom();
 			else
 			{
 				std::cout << "Failed to create enemy, unknown enemy type: " << enemyType << std::endl;
