@@ -1,4 +1,5 @@
 #include "CollisionSystem.h"
+#include "CollisionSystem.h"
 #include "GameObject.h"
 
 void dae::CollisionSystem::Register(BoxColliderComponent* pCollider)
@@ -9,6 +10,24 @@ void dae::CollisionSystem::Register(BoxColliderComponent* pCollider)
 void dae::CollisionSystem::Unregister(BoxColliderComponent* pCollider)
 {
 	std::erase(m_pColliders, pCollider);
+}
+
+std::vector<dae::GameObject*> dae::CollisionSystem::GetOverlappingColliders(BoxColliderComponent* pCollider)
+{
+	std::vector<GameObject*> pOverlappingGameObjects{};
+
+	for (const auto& pCol : m_pColliders)
+	{
+		if (!(pCollider->GetMask() & pCol->GetLayer()) || !(pCollider->GetLayer() & pCol->GetMask())) continue;
+		if (pCollider == pCol) continue;
+
+		if (IsOverlapping(pCollider->GetCollider(), pCol->GetCollider()))
+		{
+			pOverlappingGameObjects.push_back(pCol->GetGameObject());
+		}
+	}
+
+	return pOverlappingGameObjects;
 }
 
 void dae::CollisionSystem::MoveAndSlide(BoxColliderComponent* pCollider, const glm::vec2& displacement)

@@ -13,5 +13,7 @@ namespace dae
 	private:
 		void LoadScene();
 		void UnbindCommands();
+
+		int m_enemiesCount{ 0 };
 	};
 }

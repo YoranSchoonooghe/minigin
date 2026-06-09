@@ -4,6 +4,14 @@
 #include "Components/TimerComponent.h"
 #include <cassert>
 #include "Audio/ServiceLocator.h"
+// TEMP
+#include "GameObject.h"
+#include "Components/RenderComponent.h"
+#include "Components/AnimatedSpriteComponent.h"
+#include "Components/ExplosionComponent.h"
+#include "Utils.h"
+#include "Scene.h"
+#include "SceneManager.h"
 
 dae::BombComponent::BombComponent(GameObject* pOwner)
 	: Component{ pOwner }
@@ -60,5 +68,20 @@ void dae::BombComponent::Notify(const Event& event, GameObject*)
 void dae::BombComponent::Explode()
 {
 	ServiceLocator::GetSoundSystem().Play(3, 2.0f);
+
+	auto pExplosion = std::make_unique<dae::GameObject>("Explosion");
+	pExplosion->SetLocalPosition(GetOwner()->GetWorldPosition().x + 64.0f, GetOwner()->GetWorldPosition().y);
+	pExplosion->AddComponent<dae::RenderComponent>();
+	pExplosion->AddComponent<dae::AnimatedSpriteComponent>("Interactables/Bomb.png", 1, 4, 0.2f, 64.0f);
+	auto* pExplosionCollider = pExplosion->AddComponent<dae::BoxColliderComponent>(60.0f, 60.0f, glm::vec2{ 2.0f, 2.0f }, true);
+	pExplosionCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Explosion));
+	pExplosionCollider->SetMask(0b0001'1111);
+	auto pTimer = pExplosion->AddComponent<dae::TimerComponent>(3.0f);
+	pExplosion->AddComponent<dae::ExplosionComponent>();
+	pTimer->Start();
+
+	auto* pScene = SceneManager::GetInstance().GetActiveScene();
+	pScene->Add(std::move(pExplosion));
+
 	GetOwner()->Destroy();
 }

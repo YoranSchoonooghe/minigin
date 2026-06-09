@@ -6,6 +6,8 @@
 #include "Texture2D.h"
 #include "SceneManager.h"
 #include <SDL3/SDL_render.h>
+#include "imgui.h"
+
 
 dae::RenderComponent::RenderComponent(GameObject* pOwner, const std::string& filename, bool isInScreenSpace)
 	: Component(pOwner)
@@ -39,6 +41,20 @@ void dae::RenderComponent::Render() const
 	if (m_pTexture != nullptr)
 	{
 		Renderer::GetInstance().RenderTexture(*m_pTexture, m_srcRect, dstRect);
+	}
+}
+
+void dae::RenderComponent::RenderUI()
+{
+	if (ImGui::CollapsingHeader("Render", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text("Z-Order");
+
+		ImGui::SameLine();
+
+		ImGui::PushItemWidth(80);
+		ImGui::DragInt("##zOrder", &m_zOrder, 0.5f, 0, 7);
+		ImGui::PopItemWidth();
 	}
 }
 

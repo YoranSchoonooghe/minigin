@@ -19,6 +19,7 @@ namespace dae
 		RenderComponent& operator=(RenderComponent&& other) = delete;
 
 		void Render() const override;
+		void RenderUI() override;
 
 		void SetTexture(std::shared_ptr<Texture2D> pTexture);
 		void SetSrcRect(int row, int col, float width, float height);
@@ -30,5 +31,6 @@ namespace dae
 		SDL_FRect m_srcRect{};
 
 		bool m_isInScreenSpace;
+		int m_zOrder{ 0 };
 	};
 }

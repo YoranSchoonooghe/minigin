@@ -31,6 +31,8 @@
 #include "Utils.h"
 #include <random>
 #include <algorithm>
+#include "StageLoader.h"
+#include "Factory.h"
 
 void dae::PlayState::Enter()
 {
@@ -47,6 +49,13 @@ void dae::PlayState::LoadScene()
 {
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 	auto& input = dae::InputManager::GetInstance();
+
+	auto stageData = StageLoader::LoadStage(ResourceManager::GetInstance().GetDataPath()/"StageData/stage01.json");
+
+	for (const auto& [type, count] : stageData.enemies)
+	{
+		m_enemiesCount += count;
+	}
 
 	dae::Renderer::GetInstance().SetBackgroundColor({ 161, 161, 161, 255 });
 
@@ -77,7 +86,9 @@ void dae::PlayState::LoadScene()
 	pPlayer1->AddComponent<dae::RenderComponent>();
 	pPlayer1->AddComponent<dae::CharacterControllerComponent>(SPEED);
 	auto* pPlayerCollider = pPlayer1->AddComponent<dae::BoxColliderComponent>(48.0f, 62.0f, glm::vec2{ 8.0f, 1.0f }, true, 20.0f, 2.0f);
-	pPlayerCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Player));
+	constexpr uint8_t playerLayer = static_cast<uint8_t>(CollisionUtils::Layer::Player);
+	pPlayerCollider->SetLayer(playerLayer);
+	pPlayerCollider->SetMask(static_cast<uint8_t>(~playerLayer));
 	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Characters/Bomberman.png", 4, 4, 0.07f, 64.0f, false);
 	pPlayer1->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 2, 3, 1, 0 });
 	pPlayer1->AddComponent<dae::HealthComponent>(3);
@@ -201,7 +212,7 @@ void dae::PlayState::LoadScene()
 	std::ranges::shuffle(validGridCells, g);
 
 	auto pBricks = std::make_unique<dae::GameObject>("Bricks");
-	for (int index{ 0 }; index < 54; ++index)
+	for (int index{ 0 }; index < stageData.bricks; ++index)
 	{
 		auto position = GridUtils::GetPositionFromCell(
 			GameManager::GetInstance().GetGrid(), 
@@ -219,27 +230,47 @@ void dae::PlayState::LoadScene()
 	}
 	scene.Add(std::move(pBricks));
 
-	for (int index{ 54 }; index < 62; ++index)
+	int startIndex{ stageData.bricks };
+	for (const auto& [type, count] : stageData.enemies)
 	{
-		auto position = GridUtils::GetPositionFromCell(
-			GameManager::GetInstance().GetGrid(),
-			validGridCells[index].row,
-			validGridCells[index].col
-		);
+		for (int index{ startIndex }; index < (startIndex + count); ++index)
+		{
+			auto position = GridUtils::GetPositionFromCell(
+				GameManager::GetInstance().GetGrid(),
+				validGridCells[index].row,
+				validGridCells[index].col
+			);
 
-		auto pBalloom = std::make_unique<dae::GameObject>("Balloom");
-		pBalloom->AddComponent<dae::RenderComponent>();
-		pBalloom->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
-		auto* pBalloomCollider = pBalloom->AddComponent<dae::BoxColliderComponent>(56.0f, 62.0f, glm::vec2{ 4.0f, 1.0f }, true, 20.0f, 2.0f);
-		pBalloomCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Enemy));
-		pBalloomCollider->SetMask(0b0001'1011);
-		pBalloom->AddComponent<dae::AnimatedSpriteComponent>("Characters/Balloom.png", 4, 4, 0.1f, 64.0f, false);
-		pBalloom->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 0, 1 });
-		pBalloom->AddComponent<dae::EnemyBehaviourComponent>();
-		pBalloom->SetLocalPosition(position.x, position.y);
+			auto pEnemy{ EnemyFactory::CreateEnemy(type) };
+			pEnemy->SetLocalPosition(position.x, position.y);
 
-		scene.Add(std::move(pBalloom));
+			scene.Add(std::move(pEnemy));
+		}
+
+		startIndex += count;
 	}
+
+	//for (int index{ stageData.bricks }; index < (stageData.bricks + totalEnemies) ; ++index)
+	//{
+	//	auto position = GridUtils::GetPositionFromCell(
+	//		GameManager::GetInstance().GetGrid(),
+	//		validGridCells[index].row,
+	//		validGridCells[index].col
+	//	);
+
+	//	auto pBalloom = std::make_unique<dae::GameObject>("Balloom");
+	//	pBalloom->AddComponent<dae::RenderComponent>();
+	//	pBalloom->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
+	//	auto* pBalloomCollider = pBalloom->AddComponent<dae::BoxColliderComponent>(56.0f, 62.0f, glm::vec2{ 4.0f, 1.0f }, true, 20.0f, 2.0f);
+	//	pBalloomCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Enemy));
+	//	pBalloomCollider->SetMask(0b0011'1011);
+	//	pBalloom->AddComponent<dae::AnimatedSpriteComponent>("Characters/Balloom.png", 4, 4, 0.1f, 64.0f, false);
+	//	pBalloom->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 0, 1 });
+	//	pBalloom->AddComponent<dae::EnemyBehaviourComponent>();
+	//	pBalloom->SetLocalPosition(position.x, position.y);
+
+	//	scene.Add(std::move(pBalloom));
+	//}
 
 	auto pPowerUp = std::make_unique<dae::GameObject>("PowerUp");
 	pPowerUp->AddComponent<dae::RenderComponent>("Interactables/PowerUps.png");
@@ -249,17 +280,6 @@ void dae::PlayState::LoadScene()
 	pPowerUp->AddComponent<dae::PowerUpComponent>(dae::PowerUpComponent::Type::ExtraBomb);
 	pPowerUp->SetLocalPosition(256.0f, 416.0f);
 	scene.Add(std::move(pPowerUp));
-
-	//auto pBalloom = std::make_unique<dae::GameObject>("Balloom");
-	//pBalloom->AddComponent<dae::RenderComponent>();
-	//pBalloom->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
-	//pBalloom->AddComponent<dae::BoxColliderComponent>(56.0f, 62.0f, glm::vec2{ 4.0f, 1.0f }, true, 20.0f, 2.0f);
-	//pBalloom->AddComponent<dae::AnimatedSpriteComponent>("Characters/Balloom.png", 4, 4, 0.1f, 64.0f, false);
-	//pBalloom->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 0, 1 });
-	//pBalloom->AddComponent<dae::EnemyBehaviourComponent>();
-	//pBalloom->SetLocalPosition(448.0f, 672.0f);
-
-	//scene.Add(std::move(pBalloom));
 
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(1, "Audio/GameOver.wav"));
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(2, "Audio/DropBomb.wav"));

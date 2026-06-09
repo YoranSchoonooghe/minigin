@@ -56,8 +56,9 @@ namespace dae
 			Enemy = 0b0000'0100,
 			Brick = 0b0000'1000,
 			Bomb = 0b0001'0000,
-			Exit = 0b0010'0000,
-			PowerUp = 0b0100'0000
+			Explosion = 0b0010'0000,
+			Exit = 0b0100'0000,
+			PowerUp = 0b1000'0000
 		};
 	}
 }

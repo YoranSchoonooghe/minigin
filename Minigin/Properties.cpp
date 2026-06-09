@@ -69,11 +69,6 @@ void dae::Properties::RenderTransformProperties()
         if (ImGui::DragFloat("##Y", &pos[1], 1.0f, 0.0f, 0.0f, "%.1f"))
             m_pSelectedGameObject->SetLocalPosition({ pos[0], pos[1], pos[2] });
 
-        ImGui::SameLine();
-        ImGui::Text("Z"); ImGui::SameLine();
-        if (ImGui::DragFloat("##Z", &pos[2], 1.0f, 0.0f, 0.0f, "%.1f"))
-            m_pSelectedGameObject->SetLocalPosition({ pos[0], pos[1], pos[2] });
-
         ImGui::PopItemWidth();
     }
 }

@@ -54,6 +54,7 @@ add_executable(${TARGET_NAME}
     Bomberman/Components/BombermanComponent.cpp
     Bomberman/Components/EnemyBehaviourComponent.cpp
     Bomberman/Components/ExitComponent.cpp
+    Bomberman/Components/ExplosionComponent.cpp
     Bomberman/Components/HealthComponent.cpp
     Bomberman/Components/HealthDisplayComponent.cpp
     Bomberman/Components/PowerUpComponent.cpp
@@ -216,6 +217,15 @@ target_include_directories(implot PUBLIC ${implot_SOURCE_DIR})
 target_link_libraries(implot PUBLIC imgui)
 target_compile_features(implot PUBLIC cxx_std_20)
 
+# JSON
+FetchContent_Declare(
+  json
+  GIT_REPOSITORY https://github.com/nlohmann/json.git
+  GIT_TAG v3.11.3
+  GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(json)
+
 if (WIN32)
   # Add VLD (Visual Leak Detector) for memory leak detection on Windows
   find_package(VLD CONFIG)
@@ -243,6 +253,7 @@ target_link_libraries(Minigin PUBLIC
   glm::glm
   imgui
   implot
+  nlohmann_json::nlohmann_json
   ${VLD_LIBRARIES}
 )
 

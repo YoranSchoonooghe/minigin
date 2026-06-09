@@ -18,6 +18,7 @@ namespace dae
 		void Register(BoxColliderComponent* pCollider);
 		void Unregister(BoxColliderComponent* pCollider);
 
+		std::vector<GameObject*> GetOverlappingColliders(BoxColliderComponent* pCollider);
 		void MoveAndSlide(BoxColliderComponent* pCollider, const glm::vec2& displacement);
 		bool IsOverlapping(const Rect& firstRect, const Rect& secondRect) const;
 
