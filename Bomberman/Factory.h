@@ -26,7 +26,7 @@ namespace dae
 			pBalloom->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 0, 1 });
 			pBalloom->AddComponent<dae::EnemyBehaviourComponent>();
 
-			return std::move(pBalloom);
+			return pBalloom;
 		}
 
 		std::unique_ptr<GameObject> CreateEnemy(const std::string& enemyType)
