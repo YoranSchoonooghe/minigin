@@ -26,6 +26,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "Editor.h"
 #include "Audio/ServiceLocator.h"
 #include "Audio/SDLSoundSystem.h"
 
@@ -102,6 +103,7 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 
 	Renderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
+	Editor::GetInstance().Init();
 	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>(dataPath));
 }
 

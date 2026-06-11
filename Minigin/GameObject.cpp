@@ -1,5 +1,7 @@
 #include "GameObject.h"
 #include "Transform.h"
+#include <imgui.h>
+#include "Editor.h"
 
 dae::GameObject::GameObject(const std::string& name)
 	: m_name{ name }
@@ -45,6 +47,9 @@ void dae::GameObject::Render() const
 void dae::GameObject::RenderUI()
 {
 	//m_pTransform->RenderUI();
+
+	if (ImGui::Checkbox("Active", &m_isActive))
+		SetActive(m_isActive);
 
 	for (auto& pComponent : m_pComponents)
 	{
@@ -161,6 +166,9 @@ void dae::GameObject::Destroy()
 	{
 		pChild->Destroy();
 	}
+
+	if (Editor::GetInstance().GetSelectedGameObject() == this)
+		Editor::GetInstance().SetSelectedGameObject(nullptr);
 }
 
 bool dae::GameObject::IsDestroyed() const
@@ -171,6 +179,16 @@ bool dae::GameObject::IsDestroyed() const
 std::string dae::GameObject::GetName() const
 {
 	return m_name;
+}
+
+void dae::GameObject::SetActive(bool active)
+{
+	m_isActive = active;
+
+	for (auto& pChild : m_pChildren)
+	{
+		pChild->SetActive(active);
+	}
 }
 
 void dae::GameObject::SetPositionDirty()

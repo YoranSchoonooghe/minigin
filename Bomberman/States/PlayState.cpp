@@ -26,6 +26,7 @@
 #include "Components/BombermanComponent.h"
 #include "Components/EnemyBehaviourComponent.h"
 #include "Components/ExitComponent.h"
+#include "Components/RespawnComponent.h"
 #include "Audio/ServiceLocator.h"
 #include "GameManager.h"
 #include "Utils.h"
@@ -91,7 +92,7 @@ void dae::PlayState::LoadScene()
 	pPlayerCollider->SetMask(static_cast<uint8_t>(~playerLayer));
 	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Characters/Bomberman.png", 4, 4, 0.07f, 64.0f, false);
 	pPlayer1->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 2, 3, 1, 0 });
-	pPlayer1->AddComponent<dae::HealthComponent>(3);
+	auto* pPlayerHealth = pPlayer1->AddComponent<dae::HealthComponent>(1);
 	pPlayer1->AddComponent<dae::ScoreComponent>();
 	pPlayer1->AddComponent<dae::BombermanComponent>();
 	auto playerPos{ GridUtils::GetPositionFromCell(GameManager::GetInstance().GetGrid(), 1, 1) };
@@ -111,12 +112,23 @@ void dae::PlayState::LoadScene()
 
 	input.BindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer1.get()));
 
+	auto pRestartTimer = std::make_unique<dae::GameObject>("RestartTimer");
+	pRestartTimer->AddComponent<dae::TimerComponent>(3.0f);
+	pRestartTimer->AddComponent<RespawnComponent>(pPlayerHealth);
+	scene.Add(std::move(pRestartTimer));
+
 	auto pUI = std::make_unique<dae::GameObject>("UI");
+
+	//auto pPlayer1LivesDisplay = std::make_unique<dae::GameObject>("Player1HP");
+	//pPlayer1LivesDisplay->AddComponent<dae::RenderComponent>("", true);
+	//pPlayer1LivesDisplay->AddComponent<dae::TextComponent>("LEFT 0", inputFont);
+	//pPlayer1LivesDisplay->AddComponent<dae::HealthDisplayComponent>(pPlayer1.get(), "LEFT ");
+	//pPlayer1LivesDisplay->SetLocalPosition(900, 180);
+	//pPlayer1LivesDisplay->SetParent(pUI.get());
 
 	auto pPlayer1LivesDisplay = std::make_unique<dae::GameObject>("Player1HP");
 	pPlayer1LivesDisplay->AddComponent<dae::RenderComponent>("", true);
-	pPlayer1LivesDisplay->AddComponent<dae::TextComponent>("LEFT 0", inputFont);
-	pPlayer1LivesDisplay->AddComponent<dae::HealthDisplayComponent>(pPlayer1.get(), "LEFT ");
+	pPlayer1LivesDisplay->AddComponent<dae::TextComponent>("LEFT " + std::to_string(GameManager::GetInstance().GetLives()), inputFont);
 	pPlayer1LivesDisplay->SetLocalPosition(900, 180);
 	pPlayer1LivesDisplay->SetParent(pUI.get());
 
@@ -230,6 +242,7 @@ void dae::PlayState::LoadScene()
 	}
 	scene.Add(std::move(pBricks));
 
+	auto pEnemies = std::make_unique<dae::GameObject>("Enemies");
 	int startIndex{ stageData.bricks };
 	for (const auto& [type, count] : stageData.enemies)
 	{
@@ -243,12 +256,14 @@ void dae::PlayState::LoadScene()
 
 			auto pEnemy{ EnemyFactory::CreateEnemy(type) };
 			pEnemy->SetLocalPosition(position.x, position.y);
+			pEnemy->SetParent(pEnemies.get());
 
 			scene.Add(std::move(pEnemy));
 		}
 
 		startIndex += count;
 	}
+	scene.Add(std::move(pEnemies));
 
 	//for (int index{ stageData.bricks }; index < (stageData.bricks + totalEnemies) ; ++index)
 	//{

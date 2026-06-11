@@ -15,8 +15,10 @@ namespace dae
 		void Play();
 		void StartStage();
 		void ExitStage();
+		void RestartStage();
 
 		Grid GetGrid() const { return m_grid; }
+		int GetLives() const { return m_lives; }
 
 	private:
 		void ChangeState(std::unique_ptr<GameState> state);
@@ -25,7 +27,7 @@ namespace dae
 
 		Grid m_grid{};
 		int m_stageNumber{ 1 };
-		//int m_lives{ 3 };
+		int m_lives{ 3 };
 		//int m_score{ 0 };
 
 	};

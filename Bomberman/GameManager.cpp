@@ -5,7 +5,7 @@
 
 void dae::GameManager::Init()
 {
-	m_pCurrentGameState = std::make_unique<MainMenuState>();
+	m_pCurrentGameState = std::make_unique<StageStartState>(m_stageNumber);
 	m_pCurrentGameState->Enter();
 
 	m_grid = Grid(64.0f, 13, 31, glm::vec2(0.0f, 224.0f));
@@ -33,6 +33,12 @@ void dae::GameManager::StartStage()
 void dae::GameManager::ExitStage()
 {
 	++m_stageNumber;
+	StartStage();
+}
+
+void dae::GameManager::RestartStage()
+{
+	--m_lives;
 	StartStage();
 }
 

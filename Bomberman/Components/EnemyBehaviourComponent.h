@@ -28,6 +28,7 @@ namespace dae
 		CharacterControllerComponent* m_pCharacterController{};
 		AnimationControllerComponent* m_pAnimationController{};
 		Subject* m_pBoxColliderComponentSubject{};
+		Subject* m_pHealthComponentSubject{};
 
 		glm::vec2 m_moveDirection{ -1, 0 };
 	};

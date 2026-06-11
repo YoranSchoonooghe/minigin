@@ -3,6 +3,7 @@
 #include "Components/CharacterControllerComponent.h"
 #include "Components/BoxColliderComponent.h"
 #include "Components/AnimationControllerComponent.h"
+#include "Components/HealthComponent.h"
 #include <cassert>
 #include <cstdlib>
 
@@ -10,7 +11,7 @@ dae::EnemyBehaviourComponent::EnemyBehaviourComponent(GameObject* pOwner)
 	: Component{ pOwner }
 {
 	m_pCharacterController = GetOwner()->GetComponent<CharacterControllerComponent>();
-	assert(m_pCharacterController != nullptr && "EnemyBehaviourComponent: GameObject is missing a CharacterControllerComponent");
+	assert(m_pCharacterController != nullptr && "EnemyBehaviourComponent: GameObject is missing a CharacterControllerComponent!");
 
 	auto pBoxCollider = GetOwner()->GetComponent<BoxColliderComponent>();
 	assert(pBoxCollider != nullptr && "BombermanComponent: GameObject is missing a BoxColliderComponent!");
@@ -19,7 +20,13 @@ dae::EnemyBehaviourComponent::EnemyBehaviourComponent(GameObject* pOwner)
 	m_pBoxColliderComponentSubject->AddObserver(this);
 
 	m_pAnimationController = GetOwner()->GetComponent<AnimationControllerComponent>();
-	assert(m_pCharacterController != nullptr && "EnemyBehaviourComponent: GameObject is missing an AnimationControllerComponent");
+	assert(m_pCharacterController != nullptr && "EnemyBehaviourComponent: GameObject is missing an AnimationControllerComponent!");
+
+	auto* pHealthComponent = GetOwner()->GetComponent<HealthComponent>();
+	assert(pHealthComponent != nullptr && "EnemyBehaviourComponent: GameObject is missing a HealthComponent!");
+
+	m_pHealthComponentSubject = pHealthComponent->GetSubject();
+	m_pHealthComponentSubject->AddObserver(this);
 }
 
 dae::EnemyBehaviourComponent::~EnemyBehaviourComponent()
@@ -27,6 +34,11 @@ dae::EnemyBehaviourComponent::~EnemyBehaviourComponent()
 	if (m_pBoxColliderComponentSubject)
 	{
 		m_pBoxColliderComponentSubject->RemoveObserver(this);
+	}
+
+	if (m_pHealthComponentSubject)
+	{
+		m_pHealthComponentSubject->RemoveObserver(this);
 	}
 }
 
@@ -67,8 +79,12 @@ void dae::EnemyBehaviourComponent::Notify(const Event& event, GameObject*)
 	case make_sdbm_hash("OnColliderHit"):
 		RandomizeMoveDirection();
 		break;
+	case make_sdbm_hash("OnDied"):
+		GetOwner()->Destroy();
+		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):
 		m_pBoxColliderComponentSubject = nullptr;
+		m_pHealthComponentSubject = nullptr;
 		break;
 	}
 }
@@ -92,8 +108,8 @@ void dae::EnemyBehaviourComponent::RandomizeMoveDirection()
 		m_moveDirection = glm::vec2(1, 0);
 	}
 
-	auto randomNumber2{ rand() % 2 };
-	if (randomNumber2 == 1)
+	randomNumber = rand() % 2 ;
+	if (randomNumber == 1)
 	{
 		m_moveDirection *= -1;
 	}

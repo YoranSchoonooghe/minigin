@@ -18,6 +18,7 @@ std::vector<dae::GameObject*> dae::CollisionSystem::GetOverlappingColliders(BoxC
 
 	for (const auto& pCol : m_pColliders)
 	{
+		if (!pCol->GetGameObject()->IsActive()) continue;
 		if (!(pCollider->GetMask() & pCol->GetLayer()) || !(pCollider->GetLayer() & pCol->GetMask())) continue;
 		if (pCollider == pCol) continue;
 
@@ -65,6 +66,7 @@ void dae::CollisionSystem::MoveOnAxis(BoxColliderComponent* pCollider, const glm
 	BoxColliderComponent* pHitCollider{ nullptr };
 	for (const auto& pCol : m_pColliders)
 	{
+		if (!pCol->GetGameObject()->IsActive()) continue;
 		if (!(pCollider->GetMask() & pCol->GetLayer()) || !(pCollider->GetLayer() & pCol->GetMask())) continue;
 		if (pCollider == pCol) continue;
 

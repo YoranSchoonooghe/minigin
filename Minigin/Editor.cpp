@@ -1,6 +1,6 @@
 #include "Editor.h"
 
-dae::Editor::Editor()
+void dae::Editor::Init()
 {
 	m_pSceneHierarchy = std::make_unique<SceneHierarchy>();
 	m_pProperties = std::make_unique<Properties>();

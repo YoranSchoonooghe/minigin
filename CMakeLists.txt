@@ -58,10 +58,12 @@ add_executable(${TARGET_NAME}
     Bomberman/Components/HealthComponent.cpp
     Bomberman/Components/HealthDisplayComponent.cpp
     Bomberman/Components/PowerUpComponent.cpp
+    Bomberman/Components/RespawnComponent.cpp
     Bomberman/Components/ScoreComponent.cpp
     Bomberman/Components/ScoreDisplayComponent.cpp
     Bomberman/Components/TimerComponent.cpp
     Bomberman/Components/TimerDisplayComponent.cpp
+    Bomberman/Factory.cpp
     Bomberman/States/MainMenuState.cpp
     Bomberman/States/PlayState.cpp
     Bomberman/States/StageStartState.cpp

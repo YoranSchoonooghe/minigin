@@ -21,6 +21,7 @@ namespace dae
 
 	private:
 		Subject* m_pBoxColliderComponentSubject = nullptr;
+		Subject* m_pHealthComponentSubject = nullptr;
 		HealthComponent* m_pHealthComponent = nullptr;
 	};
 }

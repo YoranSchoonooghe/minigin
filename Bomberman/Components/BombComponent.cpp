@@ -4,14 +4,13 @@
 #include "Components/TimerComponent.h"
 #include <cassert>
 #include "Audio/ServiceLocator.h"
-// TEMP
 #include "GameObject.h"
-#include "Components/RenderComponent.h"
-#include "Components/AnimatedSpriteComponent.h"
 #include "Components/ExplosionComponent.h"
 #include "Utils.h"
 #include "Scene.h"
 #include "SceneManager.h"
+#include "GameManager.h"
+#include "Factory.h"
 
 dae::BombComponent::BombComponent(GameObject* pOwner)
 	: Component{ pOwner }
@@ -69,19 +68,26 @@ void dae::BombComponent::Explode()
 {
 	ServiceLocator::GetSoundSystem().Play(3, 2.0f);
 
-	auto pExplosion = std::make_unique<dae::GameObject>("Explosion");
-	pExplosion->SetLocalPosition(GetOwner()->GetWorldPosition().x + 64.0f, GetOwner()->GetWorldPosition().y);
-	pExplosion->AddComponent<dae::RenderComponent>();
-	pExplosion->AddComponent<dae::AnimatedSpriteComponent>("Interactables/Bomb.png", 1, 4, 0.2f, 64.0f);
-	auto* pExplosionCollider = pExplosion->AddComponent<dae::BoxColliderComponent>(60.0f, 60.0f, glm::vec2{ 2.0f, 2.0f }, true);
-	pExplosionCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Explosion));
-	pExplosionCollider->SetMask(0b0001'1111);
-	auto pTimer = pExplosion->AddComponent<dae::TimerComponent>(3.0f);
-	pExplosion->AddComponent<dae::ExplosionComponent>();
-	pTimer->Start();
+	auto grid = GameManager::GetInstance().GetGrid();
+	auto bombCell = GridUtils::GetCellFromPosition(grid, GetOwner()->GetWorldPosition());
 
-	auto* pScene = SceneManager::GetInstance().GetActiveScene();
-	pScene->Add(std::move(pExplosion));
+	auto directions{ DirectionUtils::GetAllDirections() };
+	directions.push_back(glm::vec2(0, 0));
+
+	for (auto direction : directions)
+	{
+		Cell neighborCell{ bombCell.row + static_cast<int>(direction.x), bombCell.col + static_cast<int>(direction.y) };
+
+		if (LevelUtils::IsPillarOrBorder(grid, neighborCell)) continue;
+		
+		auto pExplosion{ BombFactory::CreateExplosion() };
+		auto position = GridUtils::GetPositionFromCell(grid, neighborCell);
+		pExplosion->SetLocalPosition(position.x, position.y);
+		pExplosion->AddComponent<dae::ExplosionComponent>();
+
+		auto* pScene = SceneManager::GetInstance().GetActiveScene();
+		pScene->Add(std::move(pExplosion));
+	}
 
 	GetOwner()->Destroy();
 }

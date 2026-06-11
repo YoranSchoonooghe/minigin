@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "Scene.h"
+#include "GameObject.h"
 
 using namespace dae;
 
@@ -35,6 +36,7 @@ void dae::Scene::FixedUpdate(float fixedDeltaTime)
 {
 	for (auto& object : m_pGameObjects)
 	{
+		if (!object->IsActive()) continue;
 		object->FixedUpdate(fixedDeltaTime);
 	}
 }
@@ -43,6 +45,7 @@ void Scene::Update(float deltaTime)
 {
 	for(auto& object : m_pGameObjects)
 	{
+		if (!object->IsActive()) continue;
 		object->Update(deltaTime);
 	}
 
@@ -53,6 +56,7 @@ void Scene::Render() const
 {
 	for (const auto& object : m_pGameObjects)
 	{
+		if (!object->IsActive()) continue;
 		object->Render();
 	}
 }

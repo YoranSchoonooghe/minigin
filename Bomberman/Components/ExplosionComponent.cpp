@@ -2,7 +2,9 @@
 #include "Components/BoxColliderComponent.h"
 #include "Components/TimerComponent.h"
 #include "Components/CharacterControllerComponent.h"
+#include "Components/HealthComponent.h"
 #include "SceneManager.h"
+#include "GameObject.h"
 #include "Utils.h"
 
 dae::ExplosionComponent::ExplosionComponent(GameObject* pOwner)
@@ -43,13 +45,13 @@ void dae::ExplosionComponent::Notify(const Event& event, GameObject* pGameObject
 	{
 	case make_sdbm_hash("OnTriggerEnter"):
 	{
-		if (pGameObject->GetComponent<dae::BoxColliderComponent>()->GetLayer() & static_cast<uint8_t>(CollisionUtils::Layer::Level))
-		{
-			GetOwner()->Destroy();
-			return;
-		}
+		auto* pHealthComponent = pGameObject->GetComponent<HealthComponent>();
 
-		pGameObject->Destroy();
+		if (pHealthComponent)
+		{
+			pHealthComponent->DoDamage(1);
+		}
+		//pGameObject->Destroy();
 	}
 	break;
 	case make_sdbm_hash("OnTimerFinished"):
@@ -71,17 +73,16 @@ void dae::ExplosionComponent::KillOverlappingActors() const
 
 	for (auto* pGameObject : pOverlappingGameObjects)
 	{
-		if (pGameObject->GetComponent<dae::BoxColliderComponent>()->GetLayer() & static_cast<uint8_t>(CollisionUtils::Layer::Level))
-		{
-			GetOwner()->Destroy();
-			return;
-		}
-
-		pGameObject->Destroy();
-
 		if (pGameObject->GetComponent<dae::BoxColliderComponent>()->GetLayer() & static_cast<uint8_t>(CollisionUtils::Layer::Brick))
 		{
+			pGameObject->Destroy();
 			GetOwner()->Destroy();
+		}
+
+		auto* pHealthComponent = pGameObject->GetComponent<HealthComponent>();
+		if (pHealthComponent)
+		{
+			pHealthComponent->DoDamage(1);
 		}
 	}
 }

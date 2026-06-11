@@ -9,7 +9,7 @@ dae::HealthDisplayComponent::HealthDisplayComponent(GameObject* pOwner, GameObje
 	, m_label{ label }
 {
 	HealthComponent* pHealthComponent = pHealthOwner->GetComponent<HealthComponent>();
-	m_pHealthComponentSubject = pHealthComponent->OnHealthChanged();
+	m_pHealthComponentSubject = pHealthComponent->GetSubject();
 	m_pHealthComponentSubject->AddObserver(this);
 
 	m_health = pHealthComponent->GetHealth();

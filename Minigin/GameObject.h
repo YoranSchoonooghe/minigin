@@ -50,6 +50,9 @@ namespace dae
 		bool IsDestroyed() const;
 
 		std::string GetName() const;
+		
+		bool IsActive() const { return m_isActive; }
+		void SetActive(bool active);
 
 	private:
 		void SetPositionDirty();
@@ -57,15 +60,16 @@ namespace dae
 		void RemoveChild(GameObject* pChild);
 		bool IsChild(GameObject* pChild);
 
-		GameObject* m_pParent = nullptr;
+		GameObject* m_pParent{ nullptr };
 		std::vector<GameObject*> m_pChildren{};
 
 		std::unique_ptr<Transform> m_pTransform;
 
 		std::vector<std::unique_ptr<Component>> m_pComponents{};
-		bool m_markedForDestroy = false;
+		bool m_markedForDestroy{ false };
 
 		std::string m_name;
+		bool m_isActive{ true };
 	};
 
 #pragma region TemplateFunctions

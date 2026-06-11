@@ -25,7 +25,7 @@ void dae::HealthComponent::DoDamage(int damage)
 
 	if (m_health == 0)
 	{
-		//dispatch event that GameObject died
+		m_onHealthChanged->NotifyObservers(Event(make_sdbm_hash("OnDied")), GetOwner());
 	}
 
 	m_onHealthChanged->NotifyObservers(Event(make_sdbm_hash("OnHealthChanged")), GetOwner());
@@ -41,9 +41,4 @@ void dae::HealthComponent::Heal(int healing)
 void dae::HealthComponent::SetMaxHealth(int maxHealth)
 {
 	m_maxHealth = maxHealth;
-}
-
-dae::Subject* dae::HealthComponent::OnHealthChanged()
-{
-	return m_onHealthChanged.get();
 }

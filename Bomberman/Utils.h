@@ -4,6 +4,21 @@
 
 namespace dae
 {
+	namespace DirectionUtils
+	{
+		inline std::vector<glm::vec2> GetAllDirections()
+		{
+			std::vector<glm::vec2> directions{};
+
+			directions.push_back(glm::vec2(1, 0));
+			directions.push_back(glm::vec2(-1, 0));
+			directions.push_back(glm::vec2(0, 1));
+			directions.push_back(glm::vec2(0, -1));
+
+			return directions;
+		}
+	}
+
 	namespace GridUtils
 	{
 		inline glm::vec2 GetPositionFromCell(const Grid& grid, int row, int col)
@@ -14,6 +29,32 @@ namespace dae
 			position.y = grid.offset.y + row * grid.cellSize;
 
 			return position;
+		}
+
+		inline glm::vec2 GetPositionFromCell(const Grid& grid, const Cell& cell)
+		{
+			return GetPositionFromCell(grid, cell.row, cell.col);
+		}
+
+		inline bool IsBorderCell(const Grid& grid, const Cell& cell)
+		{
+			if (cell.row == 0 || cell.row == grid.rows - 1)
+				return true;
+
+			if (cell.col == 0 || cell.col == grid.cols - 1)
+				return true;
+
+			return false;
+		}
+
+		inline Cell GetCellFromPosition(const Grid& grid, const glm::vec3& position)
+		{
+			Cell cell{};
+
+			cell.col = static_cast<int>((position.x - grid.offset.x) / grid.cellSize);
+			cell.row = static_cast<int>((position.y - grid.offset.y) / grid.cellSize);
+
+			return cell;
 		}
 	}
 
@@ -45,6 +86,17 @@ namespace dae
 			return validCells;
 		}
 
+
+		inline bool IsPillarOrBorder(const Grid& grid, const Cell& cell)
+		{
+			if (GridUtils::IsBorderCell(grid, cell))
+				return true;
+
+			if (cell.row % 2 == 0 && cell.col % 2 == 0)
+				return true;
+
+			return false;
+		}
 	}
 
 	namespace CollisionUtils

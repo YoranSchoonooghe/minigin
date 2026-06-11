@@ -11,7 +11,7 @@ namespace dae
 	class Editor final : public Singleton<Editor>
 	{
 	public:
-		explicit Editor();
+		void Init();
 		void RenderUI();
 
 		void SetSelectedGameObject(GameObject* pGameObject) { m_pSelectedGameObject = pGameObject; };

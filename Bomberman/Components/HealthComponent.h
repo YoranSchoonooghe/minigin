@@ -22,7 +22,7 @@ namespace dae
 
 		void SetMaxHealth(int maxHealth);
 
-		Subject* OnHealthChanged();
+		Subject* GetSubject() const { return m_onHealthChanged.get(); }
 
 	private:
 		int m_health;
