@@ -74,7 +74,7 @@ void dae::PlayState::LoadScene()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 	auto& input = dae::InputManager::GetInstance();
 
-	auto stageData = StageLoader::LoadStage(ResourceManager::GetInstance().GetDataPath()/"StageData/stage01.json");
+	auto stageData = StageLoader::LoadStage(ResourceManager::GetInstance().GetDataPath()/"StageData/stage03.json");
 
 	for (const auto& [type, count] : stageData.enemies)
 	{

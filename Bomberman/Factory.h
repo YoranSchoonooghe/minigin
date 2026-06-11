@@ -9,6 +9,9 @@ namespace dae
 	namespace EnemyFactory
 	{
 		std::unique_ptr<GameObject> CreateBalloom();
+		std::unique_ptr<GameObject> CreateOneal();
+		std::unique_ptr<GameObject> CreateDoll();
+		std::unique_ptr<GameObject> CreateMinvo();
 		std::unique_ptr<GameObject> CreateEnemy(const std::string& enemyType);
 	}
 

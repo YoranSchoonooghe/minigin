@@ -1,6 +1,6 @@
 {
     "bricks": 54,
     "enemies": [
-        { "type": "balloom", "count": 8 }
+        { "type": "balloom", "count": 6 }
     ]
 }

@@ -4,6 +4,7 @@
 #include "Components/BoxColliderComponent.h"
 #include "Components/AnimationControllerComponent.h"
 #include "Components/HealthComponent.h"
+#include "Components/TimerComponent.h"
 #include "Events/EventManager.h"
 #include <cassert>
 #include <cstdlib>
@@ -28,6 +29,12 @@ dae::EnemyBehaviourComponent::EnemyBehaviourComponent(GameObject* pOwner)
 
 	m_pHealthComponentSubject = pHealthComponent->GetSubject();
 	m_pHealthComponentSubject->AddObserver(this);
+
+	m_pDespawnTimer = GetOwner()->GetComponent<TimerComponent>();
+	assert(m_pDespawnTimer != nullptr && "EnemyBehaviourComponent: GameObject is missing a TimerComponent!");
+
+	m_pTimerComponentSubject = m_pDespawnTimer->GetTimerSubject();
+	m_pTimerComponentSubject->AddObserver(this);
 }
 
 dae::EnemyBehaviourComponent::~EnemyBehaviourComponent()
@@ -41,33 +48,41 @@ dae::EnemyBehaviourComponent::~EnemyBehaviourComponent()
 	{
 		m_pHealthComponentSubject->RemoveObserver(this);
 	}
+
+	if (m_pTimerComponentSubject)
+	{
+		m_pTimerComponentSubject->RemoveObserver(this);
+	}
 }
 
 void dae::EnemyBehaviourComponent::Update(float)
 {
-	//auto const worldPosition = GetOwner()->GetWorldPosition();
+	if (m_isDead) return;
 
-	//bool xIsEven{ false };
-	//if ((std::fmodf(worldPosition.x - 64.0f, 128.0f)) < 2.0f)
-	//{
-	//	xIsEven = true;
-	//}
+	auto const worldPosition = GetOwner()->GetWorldPosition();
 
-	//bool yIsEven{ false };
-	//if ((std::fmodf(worldPosition.y - 224.0f - 64.0f, 128.0f)) < 2.0f)
-	//{
-	//	yIsEven = true;
-	//}
+	bool xIsEven{ false };
+	if ((std::fmodf(worldPosition.x - 64.0f, 128.0f)) < 2.0f)
+	{
+		xIsEven = true;
+	}
 
-	//if (xIsEven && yIsEven)
-	//{
-	//	if (m_moveDirection.x == 0)
-	//	{
+	bool yIsEven{ false };
+	if ((std::fmodf(worldPosition.y - 224.0f - 64.0f, 128.0f)) < 2.0f)
+	{
+		yIsEven = true;
+	}
 
-	//	}
-	//	else if (m_moveDirection.y == 0)
-	//	m_moveDirection *= -1;
-	//}
+	if (xIsEven && yIsEven)
+	{
+		//if (m_moveDirection.x == 0)
+		//{
+
+		//}
+		//else if (m_moveDirection.y == 0)
+		//m_moveDirection *= -1;
+		RandomizeMoveDirection();
+	}
 
 	m_pCharacterController->SetMoveDirection(m_moveDirection);
 	m_pAnimationController->UpdateDirection(m_moveDirection);
@@ -82,11 +97,17 @@ void dae::EnemyBehaviourComponent::Notify(const Event& event, GameObject*)
 		break;
 	case make_sdbm_hash("OnDied"):
 		EventManager::GetInstance().SendEvent(Event(make_sdbm_hash("OnEnemyDied")), GetOwner());
-		GetOwner()->Destroy();
+		m_pDespawnTimer->Start();
+		m_isDead = true;
+		break;
+	case make_sdbm_hash("OnTimerFinished"):
+		GetOwner()->SetActive(false);
+		//GetOwner()->Destroy();
 		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):
 		m_pBoxColliderComponentSubject = nullptr;
 		m_pHealthComponentSubject = nullptr;
+		m_pTimerComponentSubject = nullptr;
 		break;
 	}
 }

@@ -6,6 +6,7 @@ namespace dae
 {
 	class CharacterControllerComponent;
 	class AnimationControllerComponent;
+	class TimerComponent;
 	class Subject;
 
 	class EnemyBehaviourComponent final : public Component, public Observer
@@ -27,9 +28,12 @@ namespace dae
 
 		CharacterControllerComponent* m_pCharacterController{};
 		AnimationControllerComponent* m_pAnimationController{};
+		TimerComponent* m_pDespawnTimer{};
 		Subject* m_pBoxColliderComponentSubject{};
 		Subject* m_pHealthComponentSubject{};
+		Subject* m_pTimerComponentSubject{};
 
 		glm::vec2 m_moveDirection{ -1, 0 };
+		bool m_isDead{ false };
 	};
 }
