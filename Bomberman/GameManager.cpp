@@ -39,7 +39,14 @@ void dae::GameManager::ExitStage()
 void dae::GameManager::RestartStage()
 {
 	--m_lives;
-	StartStage();
+	if (m_lives < 0)
+	{
+		
+	}
+	else
+	{
+		StartStage();
+	}
 }
 
 void dae::GameManager::ChangeState(std::unique_ptr<GameState> state)

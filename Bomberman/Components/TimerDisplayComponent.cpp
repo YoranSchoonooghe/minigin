@@ -1,6 +1,6 @@
 #include "TimerDisplayComponent.h"
 #include "TimerComponent.h"
-#include "TextComponent.h"
+#include "Components/TextComponent.h"
 
 dae::TimerDisplayComponent::TimerDisplayComponent(GameObject* pOwner, GameObject* pTimerOwner, const std::string& label)
 	: Component{ pOwner }

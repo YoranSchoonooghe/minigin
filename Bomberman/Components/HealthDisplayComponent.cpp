@@ -1,5 +1,5 @@
 #include "HealthDisplayComponent.h"
-#include "TextComponent.h"
+#include "Components/TextComponent.h"
 #include "HealthComponent.h"
 #include "Events/Subject.h"
 #include <string>

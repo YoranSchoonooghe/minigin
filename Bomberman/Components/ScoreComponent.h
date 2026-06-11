@@ -19,7 +19,6 @@ namespace dae
 
 		void Notify(const Event& event, GameObject* pGameObject) override;
 
-		void AddPoints(int points);
 		int GetScore() const;
 
 		Subject* GetSubject();

@@ -1,6 +1,7 @@
 #include "ScoreComponent.h"
 #include "Events/Event.h"
 #include "Events/EventManager.h"
+#include "GameManager.h"
 
 dae::ScoreComponent::ScoreComponent(GameObject* pOwner, int startScore)
 	: Component{ pOwner }
@@ -27,20 +28,17 @@ void dae::ScoreComponent::Notify(const Event& event, GameObject*)
 	switch (event.id)
 	{
 	case make_sdbm_hash("OnEnemyDied"):
+	{
 		m_score += 100;
+		GameManager::GetInstance().AddPoints(100);
+
 		m_onScoreChanged->NotifyObservers(Event(make_sdbm_hash("OnScoreChanged")), GetOwner());
+	}
 		break;
 	case make_sdbm_hash("OnEventManagerDestroyed"):
 		m_pEventManager = nullptr;
 		break;
 	}
-}
-
-void dae::ScoreComponent::AddPoints(int points)
-{
-	m_score += points;
-
-	m_onScoreChanged->NotifyObservers(Event(make_sdbm_hash("OnScoreChanged")), GetOwner());
 }
 
 int dae::ScoreComponent::GetScore() const

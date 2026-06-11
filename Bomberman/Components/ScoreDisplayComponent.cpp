@@ -1,5 +1,5 @@
 #include "ScoreDisplayComponent.h"
-#include "TextComponent.h"
+#include "Components/TextComponent.h"
 #include "ScoreComponent.h"
 #include "Events/Subject.h"
 #include <string>

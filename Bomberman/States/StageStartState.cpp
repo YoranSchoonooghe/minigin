@@ -3,7 +3,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "GameObject.h"
-#include "TextComponent.h"
+#include "Components/TextComponent.h"
 #include "Components/RenderComponent.h"
 #include "ResourceManager.h"
 #include <string>

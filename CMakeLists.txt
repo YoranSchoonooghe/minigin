@@ -42,7 +42,7 @@ add_library(Minigin STATIC
   Minigin/SceneHierarchy.cpp
   Minigin/SceneManager.cpp
   Minigin/StatsAndAchievements.cpp
-  Minigin/TextComponent.cpp
+  "Minigin/Components/TextComponent.cpp"
   Minigin/Texture2D.cpp
   Minigin/Transform.cpp
 )

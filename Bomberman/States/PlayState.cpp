@@ -5,7 +5,7 @@
 #include "ResourceManager.h"
 #include "Scene.h"
 #include "GameObject.h"
-#include "TextComponent.h"
+#include "Components/TextComponent.h"
 #include "Components/FPSComponent.h"
 #include "Components/RenderComponent.h"
 #include "Components/AnimatedSpriteComponent.h"
@@ -36,6 +36,7 @@
 #include "Factory.h"
 #include "Events/EventManager.h"
 #include "Events/Event.h"
+#include "Commands/SkipStageCommand.h"
 
 void dae::PlayState::Enter()
 {
@@ -115,7 +116,7 @@ void dae::PlayState::LoadScene()
 	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Characters/Bomberman.png", 4, 4, 0.07f, 64.0f, false);
 	pPlayer1->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 2, 3, 1, 0 });
 	auto* pPlayerHealth = pPlayer1->AddComponent<dae::HealthComponent>(1);
-	pPlayer1->AddComponent<dae::ScoreComponent>();
+	pPlayer1->AddComponent<dae::ScoreComponent>(GameManager::GetInstance().GetScore());
 	pPlayer1->AddComponent<dae::BombermanComponent>();
 	auto playerPos{ GridUtils::GetPositionFromCell(GameManager::GetInstance().GetGrid(), 1, 1) };
 	pPlayer1->SetLocalPosition(playerPos.x, playerPos.y);
@@ -318,6 +319,8 @@ void dae::PlayState::LoadScene()
 	pPowerUp->SetLocalPosition(256.0f, 416.0f);
 	scene.Add(std::move(pPowerUp));
 
+	input.BindCommand(SDL_SCANCODE_F1, KeyState::Pressed, std::make_unique<SkipStageCommand>());
+
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(1, "Audio/GameOver.wav"));
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(2, "Audio/DropBomb.wav"));
 	dae::ServiceLocator::GetSoundSystem().AddAudioSource(dae::AudioSource(3, "Audio/BombExplode.wav"));
@@ -344,4 +347,6 @@ void dae::PlayState::UnbindCommands()
 	input.UnbindCommand(SDL_SCANCODE_D, dae::KeyState::Down);
 
 	input.UnbindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed);
+
+	input.UnbindCommand(SDL_SCANCODE_F1, dae::KeyState::Pressed);
 }
