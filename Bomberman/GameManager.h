@@ -21,6 +21,9 @@ namespace dae
 		int GetLives() const { return m_lives; }
 
 	private:
+		friend class Singleton<GameManager>;
+		GameManager() = default;
+
 		void ChangeState(std::unique_ptr<GameState> state);
 
 		std::unique_ptr<GameState> m_pCurrentGameState;

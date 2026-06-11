@@ -34,16 +34,38 @@
 #include <algorithm>
 #include "StageLoader.h"
 #include "Factory.h"
+#include "Events/EventManager.h"
+#include "Events/Event.h"
 
 void dae::PlayState::Enter()
 {
 	LoadScene();
+
+	EventManager::GetInstance().AddObserver(this);
 }
 
 void dae::PlayState::Exit()
 {
 	ServiceLocator::GetSoundSystem().StopAll();
 	UnbindCommands();
+
+	EventManager::GetInstance().RemoveObserver(this);
+}
+
+void dae::PlayState::Notify(const Event& event, GameObject*)
+{
+	switch (event.id)
+	{
+	case make_sdbm_hash("OnEnemyDied"):
+	{
+		--m_enemiesCount;
+		if (m_enemiesCount == 0)
+		{
+			m_pExit->OpenSesame();
+		}
+	}
+		break;
+	}
 }
 
 void dae::PlayState::LoadScene()
@@ -212,7 +234,7 @@ void dae::PlayState::LoadScene()
 	auto* pExitCollider = pExit->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize, glm::vec2{ 0.0f, 0.0f }, true);
 	pExitCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Exit));
 	pExitCollider->SetMask(static_cast<uint8_t>(CollisionUtils::Layer::Player));
-	pExit->AddComponent<dae::ExitComponent>();
+	m_pExit = pExit->AddComponent<dae::ExitComponent>();
 	pExit->SetLocalPosition(384.0f, 288.0f);
 	scene.Add(std::move(pExit));
 

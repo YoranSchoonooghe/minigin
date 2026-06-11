@@ -23,12 +23,12 @@ dae::ExitComponent::~ExitComponent()
 	}
 }
 
-void dae::ExitComponent::Notify(const Event& event, GameObject* pGameObject)
+void dae::ExitComponent::Notify(const Event& event, GameObject*)
 {
 	switch (event.id)
 	{
 	case make_sdbm_hash("OnTriggerEnter"):
-		if (pGameObject->GetComponent<BombermanComponent>())
+		if (m_isOpen)
 		{
 			GameManager::GetInstance().ExitStage();
 		}

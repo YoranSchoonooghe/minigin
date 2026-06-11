@@ -21,6 +21,9 @@ namespace dae
 		void SetDrawCollisionShapes(bool enabled) { m_drawCollisionShapes = enabled; };
 
 	private:
+		friend class Singleton<Editor>;
+		Editor() = default;
+
 		std::unique_ptr<SceneHierarchy> m_pSceneHierarchy;
 		std::unique_ptr<Properties> m_pProperties;
 

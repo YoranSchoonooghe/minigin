@@ -5,7 +5,9 @@
 
 namespace dae
 {
-	class ScoreComponent final : public Component
+	class EventManager;
+
+	class ScoreComponent final : public Component, public Observer
 	{
 	public:
 		explicit ScoreComponent(GameObject* pOwner, int startScore = 0);
@@ -15,13 +17,17 @@ namespace dae
 		ScoreComponent& operator=(const ScoreComponent& other) = delete;
 		ScoreComponent& operator=(ScoreComponent&& other) = delete;
 
+		void Notify(const Event& event, GameObject* pGameObject) override;
+
 		void AddPoints(int points);
 		int GetScore() const;
 
-		Subject* OnScoreChanged();
+		Subject* GetSubject();
 
 	private:
 		std::unique_ptr<Subject> m_onScoreChanged;
 		int m_score;
+
+		EventManager* m_pEventManager{ nullptr };
 	};
 }

@@ -9,7 +9,7 @@ dae::ScoreDisplayComponent::ScoreDisplayComponent(GameObject* pOwner, GameObject
 	, m_label{ label }
 {
 	ScoreComponent* pScoreComponent = pScoreOwner->GetComponent<ScoreComponent>();
-	m_pScoreComponentSubject = pScoreComponent->OnScoreChanged();
+	m_pScoreComponentSubject = pScoreComponent->GetSubject();
 	m_pScoreComponentSubject->AddObserver(this);
 
 	m_score = pScoreComponent->GetScore();

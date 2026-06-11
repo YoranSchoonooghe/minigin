@@ -18,7 +18,11 @@ namespace dae
 
 		void Notify(const Event& event, GameObject* pGameObject) override;
 
+		void OpenSesame() { m_isOpen = true; }
+
 	private:
 		Subject* m_pBoxColliderComponentSubject{ nullptr };
+
+		bool m_isOpen{ false };
 	};
 }

@@ -4,6 +4,7 @@
 #include "Components/BoxColliderComponent.h"
 #include "Components/AnimationControllerComponent.h"
 #include "Components/HealthComponent.h"
+#include "Events/EventManager.h"
 #include <cassert>
 #include <cstdlib>
 
@@ -80,6 +81,7 @@ void dae::EnemyBehaviourComponent::Notify(const Event& event, GameObject*)
 		RandomizeMoveDirection();
 		break;
 	case make_sdbm_hash("OnDied"):
+		EventManager::GetInstance().SendEvent(Event(make_sdbm_hash("OnEnemyDied")), GetOwner());
 		GetOwner()->Destroy();
 		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):
