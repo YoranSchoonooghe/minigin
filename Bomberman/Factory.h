@@ -20,4 +20,11 @@ namespace dae
 		std::unique_ptr<GameObject> CreateBomb();
 		std::unique_ptr<GameObject> CreateExplosion();
 	}
+
+	namespace ItemFactory
+	{
+		std::unique_ptr<GameObject> CreateExit();
+		std::unique_ptr<GameObject> CreatePowerUp(int powerUpType);
+		std::unique_ptr<GameObject> CreateBrick();
+	}
 }

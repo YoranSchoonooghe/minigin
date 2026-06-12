@@ -3,6 +3,7 @@
 #include "Components/TimerComponent.h"
 #include "Components/CharacterControllerComponent.h"
 #include "Components/HealthComponent.h"
+#include "Components/BrickComponent.h"
 #include "SceneManager.h"
 #include "GameObject.h"
 #include "Utils.h"
@@ -73,9 +74,10 @@ void dae::ExplosionComponent::KillOverlappingActors() const
 
 	for (auto* pGameObject : pOverlappingGameObjects)
 	{
-		if (pGameObject->GetComponent<dae::BoxColliderComponent>()->GetLayer() & static_cast<uint8_t>(CollisionUtils::Layer::Brick))
+		auto* pBrickComponent = pGameObject->GetComponent<BrickComponent>();
+		if (pBrickComponent)
 		{
-			pGameObject->Destroy();
+			pBrickComponent->Explode();
 			GetOwner()->Destroy();
 		}
 

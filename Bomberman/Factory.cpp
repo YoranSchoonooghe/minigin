@@ -10,7 +10,10 @@
 #include "Components/ExplosionComponent.h"
 #include "Components/TimerComponent.h"
 #include "Components/HealthComponent.h"
+#include "Components/ExitComponent.h"
+#include "Components/PowerUpComponent.h"
 #include "Utils.h"
+#include "GameManager.h"
 
 std::unique_ptr<dae::GameObject> dae::EnemyFactory::CreateBalloom()
 {
@@ -114,4 +117,41 @@ std::unique_ptr<dae::GameObject> dae::BombFactory::CreateExplosion()
 	pTimer->Start();
 
 	return pExplosion;
+}
+
+std::unique_ptr<dae::GameObject> dae::ItemFactory::CreateExit()
+{
+	auto pExit = std::make_unique<dae::GameObject>("Exit");
+	pExit->AddComponent<dae::RenderComponent>("Interactables/Exit.png");
+	auto* pExitCollider = pExit->AddComponent<dae::BoxColliderComponent>(32.0f, 32.0f, glm::vec2{ 16.0f, 16.0f }, true);
+	pExitCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Exit));
+	pExitCollider->SetMask(static_cast<uint8_t>(CollisionUtils::Layer::Player));
+	pExit->AddComponent<dae::ExitComponent>();
+
+	return pExit;
+}
+
+std::unique_ptr<dae::GameObject> dae::ItemFactory::CreatePowerUp(int powerUpType)
+{
+	auto pPowerUp = std::make_unique<GameObject>("PowerUp");
+	pPowerUp->AddComponent<RenderComponent>("Interactables/PowerUps.png");
+	auto* pPowerUpCollider = pPowerUp->AddComponent<BoxColliderComponent>(40.0f, 40.0f, glm::vec2{ 12.0f, 12.0f }, true);
+	pPowerUpCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::PowerUp));
+	pPowerUpCollider->SetMask(static_cast<uint8_t>(CollisionUtils::Layer::Player));
+	pPowerUp->AddComponent<PowerUpComponent>(static_cast<PowerUpComponent::Type>(powerUpType));
+
+	return pPowerUp;
+}
+
+std::unique_ptr<dae::GameObject> dae::ItemFactory::CreateBrick()
+{
+	float const tileSize{ GameManager::GetInstance().GetGrid().cellSize };
+
+	auto pBrick = std::make_unique<dae::GameObject>("Brick");
+	pBrick->AddComponent<dae::RenderComponent>("Interactables/Brick.png");
+	auto* pBrickCollider = pBrick->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize);
+	pBrickCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Brick));
+	pBrickCollider->SetMask(0b0011'0110);
+
+	return pBrick;
 }

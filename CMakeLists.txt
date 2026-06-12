@@ -52,11 +52,13 @@ add_executable(${TARGET_NAME}
     Bomberman/Components/AnimationControllerComponent.cpp
     Bomberman/Components/BombComponent.cpp
     Bomberman/Components/BombermanComponent.cpp
+    Bomberman/Components/BrickComponent.cpp
     Bomberman/Components/EnemyBehaviourComponent.cpp
     Bomberman/Components/ExitComponent.cpp
     Bomberman/Components/ExplosionComponent.cpp
     Bomberman/Components/HealthComponent.cpp
     Bomberman/Components/HealthDisplayComponent.cpp
+    Bomberman/Components/ItemDropperComponent.cpp
     Bomberman/Components/PowerUpComponent.cpp
     Bomberman/Components/RespawnComponent.cpp
     Bomberman/Components/ScoreComponent.cpp

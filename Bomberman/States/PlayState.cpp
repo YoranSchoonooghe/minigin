@@ -27,6 +27,8 @@
 #include "Components/EnemyBehaviourComponent.h"
 #include "Components/ExitComponent.h"
 #include "Components/RespawnComponent.h"
+#include "Components/BrickComponent.h"
+#include "Components/ItemDropperComponent.h"
 #include "Audio/ServiceLocator.h"
 #include "GameManager.h"
 #include "Utils.h"
@@ -230,15 +232,6 @@ void dae::PlayState::LoadScene()
 
 	scene.Add(std::move(pLevelBorder));
 
-	auto pExit = std::make_unique<dae::GameObject>("Exit");
-	pExit->AddComponent<dae::RenderComponent>("Interactables/Exit.png");
-	auto* pExitCollider = pExit->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize, glm::vec2{ 0.0f, 0.0f }, true);
-	pExitCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Exit));
-	pExitCollider->SetMask(static_cast<uint8_t>(CollisionUtils::Layer::Player));
-	m_pExit = pExit->AddComponent<dae::ExitComponent>();
-	pExit->SetLocalPosition(384.0f, 288.0f);
-	scene.Add(std::move(pExit));
-
 	auto validGridCells = LevelUtils::GetValidBrickCells(GameManager::GetInstance().GetGrid());
 
 	std::random_device rd;
@@ -255,12 +248,33 @@ void dae::PlayState::LoadScene()
 			validGridCells[index].col
 		);
 
-		auto pBrick = std::make_unique<dae::GameObject>("Brick");
-		pBrick->AddComponent<dae::RenderComponent>("Interactables/Brick.png");
-		auto* pBrickCollider = pBrick->AddComponent<dae::BoxColliderComponent>(tileSize, tileSize);
-		pBrickCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Brick));
+		auto pBrick = ItemFactory::CreateBrick();
 		pBrick->SetLocalPosition(position.x, position.y);
 		pBrick->SetParent(pBricks.get());
+
+		if (index == 0)
+		{
+			auto pExit = ItemFactory::CreateExit();
+			m_pExit = pExit.get()->GetComponent<ExitComponent>();
+			pExit->SetLocalPosition(position.x, position.y);
+			pExit->SetActive(false);
+
+			pBrick->AddComponent<ItemDropperComponent>(pExit.get());
+
+			scene.Add(std::move(pExit));
+		}
+		else if (index == 1)
+		{
+			auto pPowerUp = ItemFactory::CreatePowerUp(1);
+			pPowerUp->SetLocalPosition(position.x, position.y);
+			pPowerUp->SetActive(false);
+
+			pBrick->AddComponent<ItemDropperComponent>(pPowerUp.get());
+
+			scene.Add(std::move(pPowerUp));
+		}
+
+		pBrick->AddComponent<BrickComponent>();
 		scene.Add(std::move(pBrick));
 	}
 	scene.Add(std::move(pBricks));
@@ -287,37 +301,6 @@ void dae::PlayState::LoadScene()
 		startIndex += count;
 	}
 	scene.Add(std::move(pEnemies));
-
-	//for (int index{ stageData.bricks }; index < (stageData.bricks + totalEnemies) ; ++index)
-	//{
-	//	auto position = GridUtils::GetPositionFromCell(
-	//		GameManager::GetInstance().GetGrid(),
-	//		validGridCells[index].row,
-	//		validGridCells[index].col
-	//	);
-
-	//	auto pBalloom = std::make_unique<dae::GameObject>("Balloom");
-	//	pBalloom->AddComponent<dae::RenderComponent>();
-	//	pBalloom->AddComponent<dae::CharacterControllerComponent>(SPEED / 2.0f);
-	//	auto* pBalloomCollider = pBalloom->AddComponent<dae::BoxColliderComponent>(56.0f, 62.0f, glm::vec2{ 4.0f, 1.0f }, true, 20.0f, 2.0f);
-	//	pBalloomCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Enemy));
-	//	pBalloomCollider->SetMask(0b0011'1011);
-	//	pBalloom->AddComponent<dae::AnimatedSpriteComponent>("Characters/Balloom.png", 4, 4, 0.1f, 64.0f, false);
-	//	pBalloom->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 0, 1 });
-	//	pBalloom->AddComponent<dae::EnemyBehaviourComponent>();
-	//	pBalloom->SetLocalPosition(position.x, position.y);
-
-	//	scene.Add(std::move(pBalloom));
-	//}
-
-	auto pPowerUp = std::make_unique<dae::GameObject>("PowerUp");
-	pPowerUp->AddComponent<dae::RenderComponent>("Interactables/PowerUps.png");
-	auto* pPowerUpCollider = pPowerUp->AddComponent<dae::BoxColliderComponent>(40.0f, 40.0f, glm::vec2{ 12.0f, 12.0f }, true);
-	pPowerUpCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::PowerUp));
-	pPowerUpCollider->SetMask(static_cast<uint8_t>(CollisionUtils::Layer::Player));
-	pPowerUp->AddComponent<dae::PowerUpComponent>(dae::PowerUpComponent::Type::ExtraBomb);
-	pPowerUp->SetLocalPosition(256.0f, 416.0f);
-	scene.Add(std::move(pPowerUp));
 
 	input.BindCommand(SDL_SCANCODE_F1, KeyState::Pressed, std::make_unique<SkipStageCommand>());
 
