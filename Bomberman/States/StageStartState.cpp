@@ -38,7 +38,7 @@ void dae::StageStartState::Notify(const Event& event, GameObject*)
 	switch (event.id)
 	{
 	case make_sdbm_hash("OnTimerFinished"):
-		GameManager::GetInstance().Play();
+		GameManager::GetInstance().PlayStage();
 		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):
 		m_pTimerComponentSubject = nullptr;

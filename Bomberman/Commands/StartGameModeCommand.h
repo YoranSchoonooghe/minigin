@@ -4,14 +4,14 @@
 
 namespace dae
 {
-	class StartGameCommand final : public Command
+	class StartGameModeCommand final : public Command
 	{
 	public:
-		explicit StartGameCommand() {};
+		explicit StartGameModeCommand() {};
 
 		void Execute() override
 		{
-			GameManager::GetInstance().GoToGameModeSelection();
+			GameManager::GetInstance().StartGame();
 		}
 
 	};

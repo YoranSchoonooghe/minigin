@@ -66,6 +66,7 @@ add_executable(${TARGET_NAME}
     Bomberman/Components/TimerComponent.cpp
     Bomberman/Components/TimerDisplayComponent.cpp
     Bomberman/Factory.cpp
+    Bomberman/States/GameModeSelectionState.cpp
     Bomberman/States/MainMenuState.cpp
     Bomberman/States/PlayState.cpp
     Bomberman/States/StageStartState.cpp
