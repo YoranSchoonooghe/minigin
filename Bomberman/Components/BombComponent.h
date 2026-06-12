@@ -5,6 +5,7 @@
 namespace dae
 {
 	class Subject;
+	class BoxColliderComponent;
 
 	class BombComponent final : public Component, public Observer
 	{
@@ -21,7 +22,8 @@ namespace dae
 		void Explode();
 
 	private:
-		Subject* m_pColliderComponentSubject = nullptr;
-		Subject* m_pTimerComponentSubject = nullptr;
+		BoxColliderComponent* m_pCollider{ nullptr };
+		Subject* m_pColliderComponentSubject{ nullptr };
+		Subject* m_pTimerComponentSubject{ nullptr };
 	};
 }

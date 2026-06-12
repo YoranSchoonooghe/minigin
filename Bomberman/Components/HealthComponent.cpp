@@ -21,6 +21,8 @@ int dae::HealthComponent::GetHealth() const
 
 void dae::HealthComponent::DoDamage(int damage)
 {
+	if (m_health == 0) return;
+
 	m_health = std::max(m_health - damage, 0);
 
 	if (m_health == 0)

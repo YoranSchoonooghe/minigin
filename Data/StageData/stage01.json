@@ -2,5 +2,6 @@
     "bricks": 54,
     "enemies": [
         { "type": "balloom", "count": 6 }
-    ]
+    ],
+	"powerup": "flames"
 }

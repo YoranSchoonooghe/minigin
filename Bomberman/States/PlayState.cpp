@@ -40,6 +40,10 @@
 #include "Events/Event.h"
 #include "Commands/SkipStageCommand.h"
 
+dae::PlayState::PlayState(int stageNumber)
+	: m_stageNumber{ stageNumber }
+{}
+
 void dae::PlayState::Enter()
 {
 	LoadScene();
@@ -76,7 +80,10 @@ void dae::PlayState::LoadScene()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene();
 	auto& input = dae::InputManager::GetInstance();
 
-	auto stageData = StageLoader::LoadStage(ResourceManager::GetInstance().GetDataPath()/"StageData/stage03.json");
+	std::string stageDataPath{ "StageData/" };
+	stageDataPath += std::format("stage{:02}.json", m_stageNumber);
+
+	auto stageData = StageLoader::LoadStage(ResourceManager::GetInstance().GetDataPath()/stageDataPath);
 
 	for (const auto& [type, count] : stageData.enemies)
 	{
@@ -106,41 +113,77 @@ void dae::PlayState::LoadScene()
 	pGamepadText->SetLocalPosition(10, 80);
 	scene.Add(std::move(pGamepadText));
 
-	const float SPEED{ 200.0f };
+	auto pPlayer1 = PlayerFactory::CreateBomberman();
+	auto player1Pos{ GridUtils::GetPositionFromCell(GameManager::GetInstance().GetGrid(), 1, 1) };
+	pPlayer1->SetLocalPosition(player1Pos.x, player1Pos.y);
+	auto pPlayerHealth = pPlayer1->GetComponent<HealthComponent>();
 
-	auto pPlayer1 = std::make_unique<dae::GameObject>("Bomberman");
-	pPlayer1->AddComponent<dae::RenderComponent>();
-	pPlayer1->AddComponent<dae::CharacterControllerComponent>(SPEED);
-	auto* pPlayerCollider = pPlayer1->AddComponent<dae::BoxColliderComponent>(48.0f, 62.0f, glm::vec2{ 8.0f, 1.0f }, true, 20.0f, 2.0f);
-	constexpr uint8_t playerLayer = static_cast<uint8_t>(CollisionUtils::Layer::Player);
-	pPlayerCollider->SetLayer(playerLayer);
-	pPlayerCollider->SetMask(static_cast<uint8_t>(~playerLayer));
-	pPlayer1->AddComponent<dae::AnimatedSpriteComponent>("Characters/Bomberman.png", 4, 4, 0.07f, 64.0f, false);
-	pPlayer1->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 2, 3, 1, 0 });
-	auto* pPlayerHealth = pPlayer1->AddComponent<dae::HealthComponent>(1);
-	pPlayer1->AddComponent<dae::ScoreComponent>(GameManager::GetInstance().GetScore());
-	pPlayer1->AddComponent<dae::BombermanComponent>();
-	auto playerPos{ GridUtils::GetPositionFromCell(GameManager::GetInstance().GetGrid(), 1, 1) };
-	pPlayer1->SetLocalPosition(playerPos.x, playerPos.y);
+	auto pBombs = std::make_unique<dae::GameObject>("Bombs");
+	const int nrOfBombs{ 10 };
+	for (int i{ 0 }; i < nrOfBombs; ++i)
+	{
+		auto pBombObject = BombFactory::CreateBomb();
+		pBombObject->SetActive(false);
+		pBombObject->SetParent(pBombs.get());
+
+		m_bombsPool.push_back(pBombObject.get());
+
+		scene.Add(std::move(pBombObject));
+	}
+	scene.Add(std::move(pBombs));
 
 	input.BindCommand(0, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
 	input.BindCommand(0, dae::GamePadButton::DPadLeft, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(-1, 0)));
 	input.BindCommand(0, dae::GamePadButton::DPadDown, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, 1)));
 	input.BindCommand(0, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(1, 0)));
 
-	input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer1.get()));
+	input.BindCommand(0, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer1.get(), m_bombsPool));
 
-	input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
-	input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(-1, 0)));
-	input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, 1)));
-	input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(1, 0)));
+	if (GameManager::GetInstance().GetGameMode() == GameMode::SinglePlayer)
+	{
+		input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
+		input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(-1, 0)));
+		input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, 1)));
+		input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(1, 0)));
+		input.BindCommand(SDL_SCANCODE_UP, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, -1)));
+		input.BindCommand(SDL_SCANCODE_LEFT, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(-1, 0)));
+		input.BindCommand(SDL_SCANCODE_DOWN, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(0, 1)));
+		input.BindCommand(SDL_SCANCODE_RIGHT, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer1.get(), glm::vec2(1, 0)));
 
-	input.BindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer1.get()));
+		input.BindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer1.get(), m_bombsPool));
+	}
 
 	auto pRestartTimer = std::make_unique<dae::GameObject>("RestartTimer");
 	pRestartTimer->AddComponent<dae::TimerComponent>(3.0f);
 	pRestartTimer->AddComponent<RespawnComponent>(pPlayerHealth);
 	scene.Add(std::move(pRestartTimer));
+
+	if (GameManager::GetInstance().GetGameMode() == GameMode::CoOp)
+	{
+		auto pPlayer2 = PlayerFactory::CreateBomberwoman();
+		auto player2Pos{ GridUtils::GetPositionFromCell(GameManager::GetInstance().GetGrid(), 1, 2) };
+		pPlayer2->SetLocalPosition(player2Pos.x, player2Pos.y);
+
+		input.BindCommand(SDL_SCANCODE_W, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, -1)));
+		input.BindCommand(SDL_SCANCODE_A, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(-1, 0)));
+		input.BindCommand(SDL_SCANCODE_S, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, 1)));
+		input.BindCommand(SDL_SCANCODE_D, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(1, 0)));
+		input.BindCommand(SDL_SCANCODE_UP, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, -1)));
+		input.BindCommand(SDL_SCANCODE_LEFT, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(-1, 0)));
+		input.BindCommand(SDL_SCANCODE_DOWN, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, 1)));
+		input.BindCommand(SDL_SCANCODE_RIGHT, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(1, 0)));
+
+		input.BindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer2.get(), m_bombsPool));
+
+		input.BindCommand(1, dae::GamePadButton::DPadUp, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, -1)));
+		input.BindCommand(1, dae::GamePadButton::DPadLeft, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(-1, 0)));
+		input.BindCommand(1, dae::GamePadButton::DPadDown, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(0, 1)));
+		input.BindCommand(1, dae::GamePadButton::DPadRight, dae::KeyState::Down, std::make_unique<dae::MoveCommand>(pPlayer2.get(), glm::vec2(1, 0)));
+
+		input.BindCommand(1, dae::GamePadButton::ButtonA, dae::KeyState::Pressed, std::make_unique<dae::DropBombCommand>(pPlayer2.get(), m_bombsPool));
+
+		scene.Add(std::move(pPlayer2));
+	}
 
 	auto pUI = std::make_unique<dae::GameObject>("UI");
 
@@ -265,7 +308,7 @@ void dae::PlayState::LoadScene()
 		}
 		else if (index == 1)
 		{
-			auto pPowerUp = ItemFactory::CreatePowerUp(1);
+			auto pPowerUp = ItemFactory::CreatePowerUp(stageData.powerUp);
 			pPowerUp->SetLocalPosition(position.x, position.y);
 			pPowerUp->SetActive(false);
 
@@ -332,4 +375,14 @@ void dae::PlayState::UnbindCommands()
 	input.UnbindCommand(SDL_SCANCODE_SPACE, dae::KeyState::Pressed);
 
 	input.UnbindCommand(SDL_SCANCODE_F1, dae::KeyState::Pressed);
+
+	if (GameManager::GetInstance().GetGameMode() == GameMode::CoOp)
+	{
+		input.UnbindCommand(1, dae::GamePadButton::DPadUp, dae::KeyState::Down);
+		input.UnbindCommand(1, dae::GamePadButton::DPadLeft, dae::KeyState::Down);
+		input.UnbindCommand(1, dae::GamePadButton::DPadDown, dae::KeyState::Down);
+		input.UnbindCommand(1, dae::GamePadButton::DPadRight, dae::KeyState::Down);
+
+		input.UnbindCommand(1, dae::GamePadButton::ButtonA, dae::KeyState::Pressed);
+	}
 }

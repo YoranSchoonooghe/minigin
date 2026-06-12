@@ -35,6 +35,14 @@ void dae::ScoreComponent::Notify(const Event& event, GameObject*)
 		m_onScoreChanged->NotifyObservers(Event(make_sdbm_hash("OnScoreChanged")), GetOwner());
 	}
 		break;
+	case make_sdbm_hash("OnItemPickedUp"):
+	{
+		m_score += 1000;
+		GameManager::GetInstance().AddPoints(1000);
+
+		m_onScoreChanged->NotifyObservers(Event(make_sdbm_hash("OnScoreChanged")), GetOwner());
+	}
+	break;
 	case make_sdbm_hash("OnEventManagerDestroyed"):
 		m_pEventManager = nullptr;
 		break;

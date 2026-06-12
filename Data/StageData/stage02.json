@@ -3,5 +3,6 @@
     "enemies": [
         { "type": "balloom", "count": 3 },
         { "type": "oneal", "count": 3 }
-    ]
+    ],
+	"powerup": "bomb"
 }

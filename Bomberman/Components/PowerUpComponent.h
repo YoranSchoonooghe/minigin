@@ -26,8 +26,9 @@ namespace dae
 		void Notify(const Event& event, GameObject* pGameObject) override;
 
 	private:
-		Type m_type;
+		void PickUp() const;
 
+		Type m_type;
 		Subject* m_pColliderComponentSubject{ nullptr };
 	};
 }

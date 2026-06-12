@@ -12,6 +12,9 @@
 #include "Components/HealthComponent.h"
 #include "Components/ExitComponent.h"
 #include "Components/PowerUpComponent.h"
+#include "Components/ScoreComponent.h"
+#include "Components/BombermanComponent.h"
+#include "Components/BombComponent.h"
 #include "Utils.h"
 #include "GameManager.h"
 
@@ -102,7 +105,15 @@ std::unique_ptr<dae::GameObject> dae::EnemyFactory::CreateEnemy(const std::strin
 
 std::unique_ptr<dae::GameObject> dae::BombFactory::CreateBomb()
 {
-	return std::unique_ptr<dae::GameObject>();
+	auto pBomb = std::make_unique<GameObject>("Bomb");
+	pBomb->AddComponent<RenderComponent>();
+	pBomb->AddComponent<AnimatedSpriteComponent>("Interactables/Bomb.png", 1, 4, 0.2f, 64.0f);
+	auto* pBombCollider = pBomb->AddComponent<BoxColliderComponent>(64.0f, 64.0f, glm::vec2{ 0.0f, 0.0f }, true);
+	pBombCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Bomb));
+	pBomb->AddComponent<TimerComponent>(3.0f);
+	pBomb->AddComponent<BombComponent>();
+
+	return pBomb;
 }
 
 std::unique_ptr<dae::GameObject> dae::BombFactory::CreateExplosion()
@@ -131,14 +142,23 @@ std::unique_ptr<dae::GameObject> dae::ItemFactory::CreateExit()
 	return pExit;
 }
 
-std::unique_ptr<dae::GameObject> dae::ItemFactory::CreatePowerUp(int powerUpType)
+std::unique_ptr<dae::GameObject> dae::ItemFactory::CreatePowerUp(const std::string& powerUpType)
 {
+	PowerUpComponent::Type powerupType{};
+
+	if (powerUpType == "flames")
+		powerupType = PowerUpComponent::Type::Flames;
+	else if (powerUpType == "bomb")
+		powerupType = PowerUpComponent::Type::ExtraBomb;
+	else if (powerUpType == "detonator")
+		powerupType = PowerUpComponent::Type::Detonator;
+
 	auto pPowerUp = std::make_unique<GameObject>("PowerUp");
 	pPowerUp->AddComponent<RenderComponent>("Interactables/PowerUps.png");
 	auto* pPowerUpCollider = pPowerUp->AddComponent<BoxColliderComponent>(40.0f, 40.0f, glm::vec2{ 12.0f, 12.0f }, true);
 	pPowerUpCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::PowerUp));
 	pPowerUpCollider->SetMask(static_cast<uint8_t>(CollisionUtils::Layer::Player));
-	pPowerUp->AddComponent<PowerUpComponent>(static_cast<PowerUpComponent::Type>(powerUpType));
+	pPowerUp->AddComponent<PowerUpComponent>(powerupType);
 
 	return pPowerUp;
 }
@@ -154,4 +174,40 @@ std::unique_ptr<dae::GameObject> dae::ItemFactory::CreateBrick()
 	pBrickCollider->SetMask(0b0011'0110);
 
 	return pBrick;
+}
+
+std::unique_ptr<dae::GameObject> dae::PlayerFactory::CreateBomberman()
+{
+	auto pBomberman = std::make_unique<GameObject>("Bomberman");
+	pBomberman->AddComponent<RenderComponent>();
+	pBomberman->AddComponent<CharacterControllerComponent>(200.0f);
+	auto* pPlayerCollider = pBomberman->AddComponent<BoxColliderComponent>(48.0f, 62.0f, glm::vec2{ 8.0f, 1.0f }, true, 20.0f, 2.0f);
+	constexpr uint8_t playerLayer = static_cast<uint8_t>(CollisionUtils::Layer::Player);
+	pPlayerCollider->SetLayer(playerLayer);
+	pPlayerCollider->SetMask(static_cast<uint8_t>(~playerLayer));
+	pBomberman->AddComponent<AnimatedSpriteComponent>("Characters/Bomberman.png", 4, 4, 0.07f, 64.0f, false);
+	pBomberman->AddComponent<AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 2, 3, 1, 0 });
+	pBomberman->AddComponent<dae::HealthComponent>(1);
+	pBomberman->AddComponent<ScoreComponent>(GameManager::GetInstance().GetScore());
+	pBomberman->AddComponent<BombermanComponent>();
+
+	return pBomberman;
+}
+
+std::unique_ptr<dae::GameObject> dae::PlayerFactory::CreateBomberwoman()
+{
+	auto pBomberwoman = std::make_unique<GameObject>("Bomberwoman");
+	pBomberwoman->AddComponent<RenderComponent>();
+	pBomberwoman->AddComponent<CharacterControllerComponent>(200.0f);
+	auto* pPlayerCollider = pBomberwoman->AddComponent<BoxColliderComponent>(48.0f, 62.0f, glm::vec2{ 8.0f, 1.0f }, true, 20.0f, 2.0f);
+	constexpr uint8_t playerLayer = static_cast<uint8_t>(CollisionUtils::Layer::Player);
+	pPlayerCollider->SetLayer(playerLayer);
+	pPlayerCollider->SetMask(static_cast<uint8_t>(~playerLayer));
+	pBomberwoman->AddComponent<AnimatedSpriteComponent>("Characters/Bomberwoman.png", 4, 4, 0.07f, 64.0f, false);
+	pBomberwoman->AddComponent<AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 2, 3, 1, 0 });
+	pBomberwoman->AddComponent<dae::HealthComponent>(1);
+	pBomberwoman->AddComponent<ScoreComponent>(GameManager::GetInstance().GetScore());
+	pBomberwoman->AddComponent<BombermanComponent>();
+
+	return pBomberwoman;
 }

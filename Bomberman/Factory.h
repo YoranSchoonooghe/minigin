@@ -6,6 +6,12 @@ namespace dae
 {
 	class GameObject;
 
+	namespace PlayerFactory
+	{
+		std::unique_ptr<GameObject> CreateBomberman();
+		std::unique_ptr<GameObject> CreateBomberwoman();
+	}
+
 	namespace EnemyFactory
 	{
 		std::unique_ptr<GameObject> CreateBalloom();
@@ -24,7 +30,7 @@ namespace dae
 	namespace ItemFactory
 	{
 		std::unique_ptr<GameObject> CreateExit();
-		std::unique_ptr<GameObject> CreatePowerUp(int powerUpType);
+		std::unique_ptr<GameObject> CreatePowerUp(const std::string& powerUpType);
 		std::unique_ptr<GameObject> CreateBrick();
 	}
 }

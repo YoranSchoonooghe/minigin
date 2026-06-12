@@ -1,6 +1,7 @@
 #pragma once
 #include "Grid.h"
 #include <vector>
+#include <cmath>
 
 namespace dae
 {
@@ -55,6 +56,14 @@ namespace dae
 			cell.row = static_cast<int>((position.y - grid.offset.y) / grid.cellSize);
 
 			return cell;
+		}
+
+		inline void SnapToGrid(const Grid& grid, glm::vec3& position)
+		{
+			float const gridSize{ grid.cellSize };
+
+			position.x = std::roundf((position.x - grid.offset.x)/ gridSize) * gridSize + grid.offset.x;
+			position.y = std::roundf((position.y - grid.offset.y) / gridSize) * gridSize + grid.offset.y;
 		}
 	}
 

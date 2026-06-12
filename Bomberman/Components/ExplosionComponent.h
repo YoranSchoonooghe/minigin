@@ -17,11 +17,13 @@ namespace dae
 		ExplosionComponent& operator=(ExplosionComponent&& other) = delete;
 
 		void Notify(const Event& event, GameObject* pGameObject) override;
+		bool HitBrick() const { return m_hitBrick; }
 
 	private:
-		void KillOverlappingActors() const;
+		void KillOverlappingActors();
 
 		Subject* m_pColliderComponentSubject = nullptr;
 		Subject* m_pTimerComponentSubject = nullptr;
+		bool m_hitBrick{ false };
 	};
 }

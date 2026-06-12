@@ -14,6 +14,7 @@ namespace dae
 	{
 		int bricks;
         std::unordered_map<std::string, int> enemies;
+        std::string powerUp;
 	};
 
     namespace StageLoader
@@ -41,6 +42,8 @@ namespace dae
 
                 stage.enemies[type] = count;
             }
+
+            stage.powerUp = jsonData.at("powerup").get<std::string>();
 
             return stage;
         }

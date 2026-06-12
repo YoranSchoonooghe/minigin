@@ -5,43 +5,66 @@
 #include "Components/BombComponent.h"
 #include <cmath>
 #include "Utils.h"
+#include <vector>
+#include "Audio/ServiceLocator.h"
+#include "GameManager.h"
 
 namespace dae
 {
 	class DropBombCommand final : public Command
 	{
 	public:
-		explicit DropBombCommand(GameObject* pGameObject)
-			: m_pGameObject{ pGameObject }
+		explicit DropBombCommand(GameObject* pBomberman, std::vector<GameObject*>& bombsPool)
+			: m_pBomberman{ pBomberman }
+			, m_bombsPool{ bombsPool }
 		{
 		}
 
 		void Execute() override
 		{
-			auto position{ m_pGameObject->GetWorldPosition() };
-			SnapToGrid(position, 64.0f);
+			auto position{ m_pBomberman->GetWorldPosition() };
+			//SnapToGrid(position, 64.0f);
+			GridUtils::SnapToGrid(GameManager::GetInstance().GetGrid(), position);
 
-			auto pBomb = std::make_unique<dae::GameObject>();
-			pBomb->AddComponent<dae::RenderComponent>();
-			pBomb->AddComponent<dae::AnimatedSpriteComponent>("Interactables/Bomb.png", 1, 4, 0.2f, 64.0f);
-			auto* pBombCollider = pBomb->AddComponent<dae::BoxColliderComponent>(64.0f, 64.0f, glm::vec2{ 0.0f, 0.0f }, true);
-			pBombCollider->SetLayer(static_cast<uint8_t>(CollisionUtils::Layer::Bomb));
-			auto pTimer = pBomb->AddComponent<dae::TimerComponent>(3.0f);
-			pBomb->AddComponent<dae::BombComponent>();
-			pTimer->Start();
-			pBomb->SetLocalPosition(position.x, position.y);
+			int nrOfBombs{ 0 };
+			for (auto* pBomb : m_bombsPool)
+			{
+				if (!pBomb->IsActive()) continue;
 
-			auto pScene = SceneManager::GetInstance().GetActiveScene();
-			pScene->Add(std::move(pBomb));
+				++nrOfBombs;
+			}
+
+			int maxBombs = GameManager::GetInstance().GetPowerUpData().nrOfBombs;
+			//if (GameManager::GetInstance().GetGameMode() == GameMode::CoOp)
+			//{
+			//	maxBombs *= 2;
+			//}
+
+			if (nrOfBombs >= maxBombs) return;
+
+			for (auto* pBomb : m_bombsPool)
+			{
+				if (pBomb->IsActive()) continue;
+
+				ServiceLocator::GetSoundSystem().Play(2);
+
+				pBomb->SetLocalPosition(position.x, position.y);
+				auto* pTimer = pBomb->GetComponent<TimerComponent>();
+				pTimer->Restart();
+				pBomb->SetActive(true);
+
+				return;
+			}
 		}
 
 	private:
-		void SnapToGrid(glm::vec3& position, float gridSize)
-		{
-			position.x = std::roundf(position.x / gridSize) * gridSize;
-			position.y = std::roundf((position.y - 224.0f) / gridSize) * gridSize + 224.0f;
-		}
+		//void SnapToGrid(glm::vec3& position, float gridSize)
+		//{
+		//	position.x = std::roundf(position.x / gridSize) * gridSize;
+		//	position.y = std::roundf((position.y - 224.0f) / gridSize) * gridSize + 224.0f;
+		//}
 
-		GameObject* m_pGameObject;
+		GameObject* m_pBomberman;
+		std::vector<GameObject*>& m_bombsPool;
 	};
 }

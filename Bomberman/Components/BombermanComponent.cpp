@@ -5,14 +5,12 @@
 #include "EnemyBehaviourComponent.h"
 #include "Audio/ServiceLocator.h"
 #include "HealthComponent.h"
-#include "GameManager.h"
 #include "Utils.h"
 
 dae::BombermanComponent::BombermanComponent(GameObject* pOwner)
 	: Component{ pOwner }
 {
-	auto pBoxCollider = GetOwner()->GetComponent<BoxColliderComponent>();
-
+	auto* pBoxCollider = GetOwner()->GetComponent<BoxColliderComponent>();
 	assert(pBoxCollider != nullptr && "BombermanComponent: GameObject is missing a BoxColliderComponent!");
 
 	m_pBoxColliderComponentSubject = pBoxCollider->GetSubject();

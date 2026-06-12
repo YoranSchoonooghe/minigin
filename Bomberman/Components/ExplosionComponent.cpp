@@ -65,7 +65,7 @@ void dae::ExplosionComponent::Notify(const Event& event, GameObject* pGameObject
 	}
 }
 
-void dae::ExplosionComponent::KillOverlappingActors() const
+void dae::ExplosionComponent::KillOverlappingActors()
 {
 	const auto& pCollider = GetOwner()->GetComponent<BoxColliderComponent>();
 	assert(pCollider != nullptr && "ExplosionComponent: GameObject is missing a BoxColliderComponent!");
@@ -78,6 +78,7 @@ void dae::ExplosionComponent::KillOverlappingActors() const
 		if (pBrickComponent)
 		{
 			pBrickComponent->Explode();
+			m_hitBrick = true;
 			GetOwner()->Destroy();
 		}
 
