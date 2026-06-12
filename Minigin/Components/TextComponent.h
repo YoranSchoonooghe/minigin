@@ -25,6 +25,8 @@ namespace dae
 		void SetText(const std::string& text);
 		void SetColor(const SDL_Color& color);
 
+		std::string GetText() const { return m_text; }
+
 	private:
 		bool m_needsUpdate = true;
 		std::string m_text{};

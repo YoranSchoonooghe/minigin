@@ -102,7 +102,6 @@ void dae::EnemyBehaviourComponent::Notify(const Event& event, GameObject*)
 		break;
 	case make_sdbm_hash("OnTimerFinished"):
 		GetOwner()->SetActive(false);
-		//GetOwner()->Destroy();
 		break;
 	case make_sdbm_hash("OnSubjectDestroyed"):
 		m_pBoxColliderComponentSubject = nullptr;

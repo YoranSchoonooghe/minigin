@@ -42,7 +42,7 @@ add_library(Minigin STATIC
   Minigin/SceneHierarchy.cpp
   Minigin/SceneManager.cpp
   Minigin/StatsAndAchievements.cpp
-  "Minigin/Components/TextComponent.cpp"
+  Minigin/Components/TextComponent.cpp
   Minigin/Texture2D.cpp
   Minigin/Transform.cpp
 )
@@ -59,6 +59,7 @@ add_executable(${TARGET_NAME}
     Bomberman/Components/HealthComponent.cpp
     Bomberman/Components/HealthDisplayComponent.cpp
     Bomberman/Components/ItemDropperComponent.cpp
+    Bomberman/Components/NameEntryComponent.cpp
     Bomberman/Components/PowerUpComponent.cpp
     Bomberman/Components/RespawnComponent.cpp
     Bomberman/Components/ScoreComponent.cpp
@@ -67,6 +68,8 @@ add_executable(${TARGET_NAME}
     Bomberman/Components/TimerDisplayComponent.cpp
     Bomberman/Factory.cpp
     Bomberman/States/GameModeSelectionState.cpp
+    Bomberman/States/HighScoreMenuState.cpp
+    Bomberman/States/NameEntryState.cpp
     Bomberman/States/MainMenuState.cpp
     Bomberman/States/PlayState.cpp
     Bomberman/States/StageStartState.cpp

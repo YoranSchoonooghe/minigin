@@ -19,7 +19,7 @@ namespace dae
 
     namespace StageLoader
     {
-        StageData LoadStage(const std::filesystem::path& filePath)
+        inline StageData LoadStage(const std::filesystem::path& filePath)
         {
             std::ifstream file(filePath);
 

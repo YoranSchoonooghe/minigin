@@ -7,10 +7,13 @@
 #include "Components/RenderComponent.h"
 #include "Commands/StartGameCommand.h"
 #include "Audio/ServiceLocator.h"
+#include "HighScoreLoader.h"
+#include "ResourceManager.h"
 
 void dae::MainMenuState::Enter()
 {
 	LoadScene();
+	//LoadHighScores();
 }
 
 void dae::MainMenuState::Exit()
@@ -43,4 +46,11 @@ void dae::MainMenuState::UnbindCommands()
 
 	input.UnbindCommand(SDL_SCANCODE_RETURN, dae::KeyState::Pressed);
 	input.UnbindCommand(0, dae::GamePadButton::Start, dae::KeyState::Pressed);
+}
+
+void dae::MainMenuState::LoadHighScores()
+{
+	auto highscores = HighScoreLoader::LoadHighScores(ResourceManager::GetInstance().GetDataPath()/"HighScores.json");
+
+	GameManager::GetInstance().SetHighScores(highscores);
 }

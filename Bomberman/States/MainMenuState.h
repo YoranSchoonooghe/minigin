@@ -13,5 +13,6 @@ namespace dae
 	private:
 		void LoadScene();
 		void UnbindCommands();
+		void LoadHighScores();
 	};
 }
