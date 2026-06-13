@@ -73,6 +73,7 @@ add_executable(${TARGET_NAME}
     Bomberman/States/MainMenuState.cpp
     Bomberman/States/PlayState.cpp
     Bomberman/States/StageStartState.cpp
+    Bomberman/States/VersusState.cpp
     Bomberman/GameManager.cpp
 )
 

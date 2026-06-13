@@ -2,6 +2,7 @@
 #include "States/MainMenuState.h"
 #include "States/PlayState.h"
 #include "States/StageStartState.h"
+#include "States/VersusState.h"
 #include "States/NameEntryState.h"
 #include "States/GameModeSelectionState.h"
 #include "States/HighScoreMenuState.h"
@@ -40,12 +41,11 @@ void dae::GameManager::StartGame()
 	switch (m_selectedGameMode)
 	{
 	case dae::GameMode::SinglePlayer:
-		StartStage();
-		break;
 	case dae::GameMode::CoOp:
 		StartStage();
 		break;
 	case dae::GameMode::Versus:
+		ChangeState(std::make_unique<VersusState>());
 		break;
 	}
 }
