@@ -12,7 +12,7 @@ namespace dae
 	class EnemyBehaviourComponent final : public Component, public Observer
 	{
 	public:
-		explicit EnemyBehaviourComponent(GameObject* pOwner);
+		explicit EnemyBehaviourComponent(GameObject* pOwner, int score);
 		~EnemyBehaviourComponent();
 		EnemyBehaviourComponent(const EnemyBehaviourComponent& other) = delete;
 		EnemyBehaviourComponent(EnemyBehaviourComponent&& other) = delete;
@@ -22,6 +22,8 @@ namespace dae
 		void Update(float deltaTime) override;
 
 		void Notify(const Event& event, GameObject* pGameObject) override;
+
+		int GetScore() const { return m_score; }
 
 	private:
 		void RandomizeMoveDirection();
@@ -35,5 +37,6 @@ namespace dae
 
 		glm::vec2 m_moveDirection{ -1, 0 };
 		bool m_isDead{ false };
+		int m_score;
 	};
 }

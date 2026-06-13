@@ -30,7 +30,7 @@ std::unique_ptr<dae::GameObject> dae::EnemyFactory::CreateBalloom()
 	pBalloom->AddComponent<dae::AnimatedSpriteComponent>("Characters/Balloom.png", 4, 4, 0.1f, 64.0f, false);
 	pBalloom->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 0, 1 }, 2);
 	pBalloom->AddComponent<TimerComponent>(2.0f);
-	pBalloom->AddComponent<dae::EnemyBehaviourComponent>();
+	pBalloom->AddComponent<dae::EnemyBehaviourComponent>(100);
 	
 	return pBalloom;
 }
@@ -47,7 +47,7 @@ std::unique_ptr<dae::GameObject> dae::EnemyFactory::CreateOneal()
 	pOneal->AddComponent<dae::AnimatedSpriteComponent>("Characters/Oneal.png", 4, 4, 0.1f, 64.0f, false);
 	pOneal->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 0, 1 }, 2);
 	pOneal->AddComponent<TimerComponent>(2.0f);
-	pOneal->AddComponent<dae::EnemyBehaviourComponent>();
+	pOneal->AddComponent<dae::EnemyBehaviourComponent>(200);
 
 	return pOneal;
 }
@@ -64,7 +64,7 @@ std::unique_ptr<dae::GameObject> dae::EnemyFactory::CreateDoll()
 	pDoll->AddComponent<dae::AnimatedSpriteComponent>("Characters/Doll.png", 4, 4, 0.1f, 64.0f, false);
 	pDoll->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 0, 1 }, 2);
 	pDoll->AddComponent<TimerComponent>(2.0f);
-	pDoll->AddComponent<dae::EnemyBehaviourComponent>();
+	pDoll->AddComponent<dae::EnemyBehaviourComponent>(400);
 
 	return pDoll;
 }
@@ -81,7 +81,7 @@ std::unique_ptr<dae::GameObject> dae::EnemyFactory::CreateMinvo()
 	pMinvo->AddComponent<dae::AnimatedSpriteComponent>("Characters/Minvo.png", 4, 4, 0.1f, 64.0f, false);
 	pMinvo->AddComponent<dae::AnimationControllerComponent>(dae::SpritesheetMoveDirection{ 1, 0, 0, 1 }, 2);
 	pMinvo->AddComponent<TimerComponent>(2.0f);
-	pMinvo->AddComponent<dae::EnemyBehaviourComponent>();
+	pMinvo->AddComponent<dae::EnemyBehaviourComponent>(800);
 
 	return pMinvo;
 }

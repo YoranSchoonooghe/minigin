@@ -9,8 +9,9 @@
 #include <cassert>
 #include <cstdlib>
 
-dae::EnemyBehaviourComponent::EnemyBehaviourComponent(GameObject* pOwner)
+dae::EnemyBehaviourComponent::EnemyBehaviourComponent(GameObject* pOwner, int score)
 	: Component{ pOwner }
+	, m_score{ score }
 {
 	m_pCharacterController = GetOwner()->GetComponent<CharacterControllerComponent>();
 	assert(m_pCharacterController != nullptr && "EnemyBehaviourComponent: GameObject is missing a CharacterControllerComponent!");
@@ -75,12 +76,6 @@ void dae::EnemyBehaviourComponent::Update(float)
 
 	if (xIsEven && yIsEven)
 	{
-		//if (m_moveDirection.x == 0)
-		//{
-
-		//}
-		//else if (m_moveDirection.y == 0)
-		//m_moveDirection *= -1;
 		RandomizeMoveDirection();
 	}
 
