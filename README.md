@@ -1,88 +1,53 @@
 ﻿# Minigin
+This project contains a 2D game engine in C++, and a remake of Bomberman. This project was created for educational purposes, as part of a Programming 4 course at Howest DAE.
 
-Minigin is a very small project using [SDL3](https://www.libsdl.org/) and [glm](https://github.com/g-truc/glm) for 2D c++ game projects. It is in no way a game engine, only a barebone start project where everything sdl related has been set up. It contains glm for vector math, to aleviate the need to write custom vector and matrix classes.
+## Source Control
+The project used GitHub throughout its development.
 
-[![Build Status](https://github.com/avadae/minigin/actions/workflows/cmake.yml/badge.svg)](https://github.com/avadae/cmake/actions)
-[![Build Status](https://github.com/avadae/minigin/actions/workflows/emscripten.yml/badge.svg)](https://github.com/avadae/emscripten/actions)
-[![GitHub Release](https://img.shields.io/github/v/release/avadae/minigin?logo=github&sort=semver)](https://github.com/avadae/minigin/releases/latest)
+https://github.com/YoranSchoonooghe/minigin
 
-# Goal
+# Bomberman
+Play the game in browser [here](https://yoranschoonooghe.github.io/minigin/). 
 
-Minigin can/may be used as a start project for the exam assignment in the course [Programming 4](https://youtu.be/j96Oh6vzhmg) at DAE. In that assignment students need to recreate a popular 80's arcade game with a game engine they need to program themselves. During the course we discuss several game programming patterns, using the book '[Game Programming Patterns](https://gameprogrammingpatterns.com/)' by [Robert Nystrom](https://github.com/munificent) as reading material. 
+Bomberman is a classic NES game originally released in 1985. Players navigate grid-based levels, and must strategically place bombs to destroy obstacles, defeat enemies, and find the exit. This remake implemented some, but not all of its features, and contains 3 stages.
 
-# Disclaimer
+### Game Modes
+There are 3 game modes, being single player, multiplayer co-op, and a versus mode.
 
-Minigin is, despite perhaps the suggestion in its name, **not** a game engine. It is just a very simple SDL3 ready project with some of the scaffolding in place to get started. None of the patterns discussed in the course are used yet (except singleton which use we challenge during the course). It is up to the students to implement their own vision for their engine, apply patterns as they see fit, create their game as efficient as possible.
+### Enemies
+The remake contains 4 of its original enemies, which are: 
 
-# Use
+- Balloom
+- Oneal
+- Doll
+- Minvo
 
-Get the source from this project, or since students need to have their work on github too, they can use this repository as a template. Hit the "Use this template" button on the top right corner of the github page of this project.
+Each enemy type varies in its movement speed, its enemy AI behavior, and contributes to a different score. The first stage only contains Balloom enemies, while the second stage also has Oneal enemies. The third stage introduces both the Doll and Minvo enemy types.
 
-## Windows version
+### Power-ups
+Each stage has a different power-up, which is revealed by destroying bricks. The 3 power-ups I implemented are:
 
-Either
-- Open the root folder in Visual Studio 2026; this will be recognized as a cmake project.
-  
-Or
-- Install CMake 
-- Install CMake and CMake Tools extensions in Visual Code
-- Open the root folder in Visual Code,  this will be recognized as a cmake project.
+- Flames: this power-up gives extended range to the explosion of a bomb
+- Extra Bomb: allows the player to drop multiple bombs simultaneously
+- Detonator: allows the player to detonate bombs instead of a timer-based explosion
 
-Or
-- Use whatever editor you like :)
+# Engine
+The engine started from Minigin, a very small project using [SDL3](https://www.libsdl.org/) and [glm](https://github.com/g-truc/glm) for 2D C++ game projects. It was in no way a game engine, only a barebone start project where everything sdl related had been set up. It contains glm for vector math, to aleviate the need to write custom vector and matrix classes.
 
-## Emscripten (web) version
+### GameObject - Component
+The engine uses a final GameObject class that can own several components. The engine contains some generic components such as a RenderComponent, a BoxColliderComponent, and a TextComponent. Users of the engine can create their own game-specific components.
 
-### On windows
+### Events
+For better decoupling, the engine offers an Observer interface, and a Subject class to which observers can subscribe. There is also a global event bus which can be used for recurring events. This proved useful in Bomberman to get notified when an enemy dies, instead of having to track all individual enemies. Events contain an ID which is an SDBM hash.
 
-For installing all of the needed tools on Windows I recommend using [Chocolatey](https://chocolatey.org/). You can then run the following in a terminal to install what is needed:
+### Input - Commands
+Input is handled through commands, binding a command to a specific input. The input system handles both gamepad and keyboard input, where gamepad functionality uses the pimpl pattern to 
 
-    choco install -y cmake
-    choco install -y emscripten
-    choco install -y ninja
-    choco install -y python
+### Sound System
+The engine uses a Service Locator to register a sound system. There can be multiple sound systems, but the engine uses an SDL sound system which uses the SDL3 mixer. The SDL sound system is implemented using the pimpl pattern.
 
-In a terminal, navigate to the root folder. Run this: 
+### ImGui
+The engine contains ImGui to allow for better debugging, and various tools to improve the development. The engine starts with an Editor, which contains a Scene Hierarchy and a Properties window.
+The Scene Hierarchy displays all GameObjects in the scene with their parent-child relations, while the Properties window reveals the components of a selected GameObject and their properties.
 
-    mkdir build_web
-    cd build_web
-    emcmake cmake ..
-    emmake ninja
-
-To be able to see the webpage you can start a python webserver in the build_web folder
-
-    python -m http.server
-
-Then browse to http://localhost:8000 and you're good to go.
-
-### On OSX
-
-On Mac you can use homebrew
-
-    brew install cmake
-    brew install emscripten
-    brew install python
-
-In a terminal on OSX, navigate to the root folder. Run this: 
-
-    mkdir build_web
-    cd build_web
-    emcmake cmake .. -DCMAKE_OSX_ARCHITECTURES=""
-    emmake make
-
-To be able to see the webpage you can start a python webserver in the build_web folder
-
-    python3 -m http.server
-
-Then browse to http://localhost:8000 and you're good to go.
-
-## Github Actions
-
-This project is build with github actions.
-- The CMake workflow builds the project in Debug and Release for Windows and serves as a check that the project builds on that platform.
-- The Emscripten workflow generates a web version of the project and publishes it as a [github page](https://yoranschoonooghe.github.io/minigin/). 
-  - The url of that page will be `https://<username>.github.io/<repository>/`
-- You can embed this page with 
-
-```<iframe style="position: absolute; top: 0px; left: 0px; width: 1024px; height: 576px;" src="https://<username>.github.io/<repository>/" loading="lazy"></iframe>```
-
+When a GameObject with a BoxColliderComponent is selected, the user can for instance change the collision mask and the collision layer it belongs to.
