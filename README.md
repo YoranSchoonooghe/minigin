@@ -48,10 +48,10 @@ The engine uses a final GameObject class that can own several components. The en
 For better decoupling, the engine offers an Observer interface, and a Subject class to which observers can subscribe. There is also a global event bus which can be used for recurring events. This proved useful in Bomberman to get notified when an enemy dies, instead of having to track all individual enemies. Events contain an ID which is an SDBM hash.
 
 ### Input - Commands
-Input is handled through commands, binding a command to a specific input. The input system handles both gamepad and keyboard input, where gamepad functionality uses the pimpl pattern to 
+Input is handled through commands, binding a command to a specific input. The input system handles both gamepad and keyboard input, where gamepad functionality uses the pimpl pattern to remove the dependency on a library in the header.
 
 ### Sound System
-The engine uses a Service Locator to register a sound system. There can be multiple sound systems, but the engine uses an SDL sound system which uses the SDL3 mixer. The SDL sound system is implemented using the pimpl pattern.
+The engine uses a Service Locator to register a sound system. There can be multiple sound systems, but the engine uses an SDL sound system which uses the SDL3 mixer. The SDL sound system is also implemented using the pimpl pattern.
 
 ### ImGui
 The engine contains ImGui to allow for better debugging, and various tools to improve the development. The engine starts with an Editor, which contains a Scene Hierarchy and a Properties window.
