@@ -38,8 +38,6 @@
 #include "Factory.h"
 #include "Events/EventManager.h"
 #include "Events/Event.h"
-#include "Commands/SkipStageCommand.h"
-#include "Commands/MuteCommand.h"
 
 void dae::VersusState::Enter()
 {
