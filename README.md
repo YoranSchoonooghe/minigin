@@ -7,9 +7,13 @@ The project used GitHub throughout its development.
 https://github.com/YoranSchoonooghe/minigin
 
 # Bomberman
-Play the game in browser [here](https://yoranschoonooghe.github.io/minigin/). 
-
 Bomberman is a classic NES game originally released in 1985. Players navigate grid-based levels, and must strategically place bombs to destroy obstacles, defeat enemies, and find the exit. This remake implemented some, but not all of its features, and contains 3 stages.
+
+<p align="center">
+  <img src="Screenshots/Bomberman.png" width="512"/>
+</p>
+
+Play the game in browser [here](https://yoranschoonooghe.github.io/minigin/). 
 
 ### Game Modes
 There are 3 game modes, being single player, multiplayer co-op, and a versus mode.
@@ -30,6 +34,9 @@ Each stage has a different power-up, which is revealed by destroying bricks. The
 - Flames: this power-up gives extended range to the explosion of a bomb
 - Extra Bomb: allows the player to drop multiple bombs simultaneously
 - Detonator: allows the player to detonate bombs instead of a timer-based explosion
+
+### High Score
+Additionally, the game contains a high score system. When the player reaches the end of stage 3, or when the player lost all lives, the game checks if their score is high enough to be among the high scores. If so, the player can enter their name to make it to the leaderboard.
 
 # Engine
 The engine started from Minigin, a very small project using [SDL3](https://www.libsdl.org/) and [glm](https://github.com/g-truc/glm) for 2D C++ game projects. It was in no way a game engine, only a barebone start project where everything sdl related had been set up. It contains glm for vector math, to aleviate the need to write custom vector and matrix classes.
